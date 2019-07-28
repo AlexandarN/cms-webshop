@@ -20,6 +20,9 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+     // CONSTANTs
+const MONGODB_URI  = 'mongodb+srv://al_nikolic:Peradetlic1@cluster0-eyxah.mongodb.net/shop2?retryWrites=true';
+
           // MIDDLEWAREs	
      // Mid. for setting a Public folder - as a default one to use in views with src and href
 app.use(express.static(path.resolve('public')));  
@@ -107,7 +110,7 @@ app.use(authRoutes);
 app.use(shopRoutes);      
 
      // DB CONNECTION to APP. SERVER and STARTING the APP.SERVER	
-mongoose.connect('mongodb://localhost/shop2', {useNewUrlParser: true});   
+mongoose.connect(MONGODB_URI, {useNewUrlParser: true});   
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
