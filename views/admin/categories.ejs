@@ -1,0 +1,47 @@
+<%- include('../layouts/admin-header') %>
+
+<h2>All categories</h2>
+<a class="btn btn-primary" href="/admin/add-category">Add new category</a>
+<br><br>
+
+<% if(categories.length > 0) { %>
+     <!--  TABLE  -->
+     <table class="table table-striped sorting">
+          <thead>
+               <tr class="home">
+                    <th>Category</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+               </tr>
+          </thead>
+          <tbody>
+               <% categories.forEach(category => { %>
+               <tr id="id_<%= category._id %>">
+                    <td><%= category.title %></td>
+                    <td><a href="/admin/edit-category/<%= category.slug %>">Edit</a></td>
+                    <td><a href="/admin/delete-category/<%= category.slug %>" onclick="return confirm('Are you sure you want to delete this category?')">Delete</a></td>
+               </tr>
+               <% }) %>
+          </tbody>
+     </table>
+     <!--  End of TABLE  -->
+<% } else { %>
+     <br>
+     <h4>No categories found</h4>
+<% } %>
+
+<!--  JQUERY script to enable reordering of pages  -->	
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+     $('tbody').sortable({
+          items: "tr:not('.home')",
+          placeholder: "ui-state-highlight",
+          update: function() {
+               var ids = $('tbody').sortable("serialize");
+               var url = "/admin/reorder-categories";
+               $.post(url, ids);
+          }
+     });
+</script>
+
+<%- include('../layouts/admin-footer') %>

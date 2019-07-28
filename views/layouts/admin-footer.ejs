@@ -1,0 +1,43 @@
+          </main><!-- /.container -->
+          <!--  End of PAGE CONTENT -->	
+
+          <br><br><hr>
+          <p class="text-center">&COPY; CMS Webshop</p>
+
+          <!-- BOOTSTRAP 4 JS -->     
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+          
+          <!--  CKEDITOR 5 JS -->    
+          <script src="https://cdn.ckeditor.com/ckeditor5/12.2.0/classic/ckeditor.js"></script>
+          <!-- JS to setup the CKEditor 5 Wysiwyg textarea height -->
+          <script>
+               function MinHeightPlugin(editor) {
+                    this.editor = editor;
+               }
+
+               MinHeightPlugin.prototype.init = function() {
+                    this.editor.ui.view.editable.extendTemplate({
+                         attributes: {
+                              style: {
+                                   minHeight: '200px'
+                              }
+                         }
+                    });
+               };                   
+               ClassicEditor.builtinPlugins.push(MinHeightPlugin);    
+          </script>
+          <!-- JS to enable CKEditor 5 Wysiwyg on textarea -->
+          <script>
+               ClassicEditor
+                    .create(document.querySelector('#editor'))
+                    .then(editor => {
+                         editor.ui.view.editableElement.style.height = '300px';
+                         console.log(editor);
+                    })
+                    .catch(error => {
+                         console.error(error);
+                    });
+          </script>
+
+     </body>
+</html>

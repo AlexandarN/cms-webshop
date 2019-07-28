@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>Admin area</title>
+
+		<!--  BOOTSTRAP 4 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- OUR CUSTOMIZED CSS -->
+    <link rel="stylesheet" href="/css/adminstyle.css">
+		<!--  AJAX for REORDERING of ELEMENTS in the TABLE -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  </head>
+  <body>
+    <!--  NAVIGATION BAR  -->	
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">CMS Webshop</a>
+
+      <div class="collapse navbar-collapse">
+        <!--  Left side Navigation Links: pages, categories, products lists  -->
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item"><a class="nav-link" href="/admin/pages">Pages<span class="sr-only">(current)</span></a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/categories">Categories<span class="sr-only">(current)</span></a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/products">Products<span class="sr-only">(current)</span></a></li>
+        </ul>
+
+        <!--  Right side Navigation Links: Log out and Dashboard links -->
+				<ul class="navbar-nav navbar-right">
+          <!-- If user is logged in -->
+          <% if(user) { %>
+            <li class="nav-item"><span class="nav-link text-light"><u><%= user.name %></u></span></li>
+            <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
+          <% } %>
+          <!--  If administrator is logged in -->	
+					<% if(user && user.admin == 1) { %>   
+						<li class="nav-item"><a class="nav-link text-info" href="/dashboard">Admin Dashboard</a></li>
+					<% } %>
+        </ul>
+      </div>
+
+    </nav>
+
+    <!-- Adding class="active" to navigation links, i.e. to <li> tags --> 
+    <script>
+      for (var i = 0; i < document.links.length; i++) {
+        if (document.links[i].href == document.URL) {
+          document.links[i].parentNode.className += ' active';
+        }
+      }
+    </script>
+    <!--  End of NAVIGATION BAR  -->
+
+    <!--  PAGE CONTENT -->	
+    <main role="main" class="container">
+      <br>
+      
+      <!--  FLASH Messages  -->	
+      <% if(messageDang.length > 0) { %>
+        <div class="alert alert-danger"><%= messageDang %></div>
+      <% } %>
+      <% if(messageSucc.length > 0) { %>
+        <div class="alert alert-success"><%= messageSucc %></div>
+      <% } %>
+

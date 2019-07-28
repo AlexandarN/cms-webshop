@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="generator" content="Jekyll v3.8.5">
+
+    <title><%= title %></title>
+    
+    <!-- BOOTSTRAP 4 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- FANCYBOX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+    <!-- OUR CUSTOMIZED CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!--  AJAX for REORDERING of ELEMENTS in the TABLE and for VISUALISATION of PAYPAL CHECKOUT-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    
+  </head>
+
+  <body>
+
+    <!-- AJAX GIF for PAYPAL CHECKOUT visualisation-->
+    <div class="ajax-bground">
+      <div class="ajax-inner">
+        <h4>You are now being redirected to Paypal ...</h4>
+        <img src="/images/ajax-loader.gif">
+      </div>
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">CMS Webshop</a>
+
+      <div class="collapse navbar-collapse">
+        <!--  Left side Navbar Links: pages  -->
+        <ul class="navbar-nav mr-auto">
+          <% pages.forEach(page => {
+            if(page.slug == 'home') { %>
+              <li class="nav-item">
+                <a class="nav-link" href="/"><%= page.title %></a>
+              </li>
+            <% } else { %>
+              <li class="nav-item">
+                <a class="nav-link" href="/<%= page.slug %>"><%= page.title %></a>
+              </li>
+            <% } 
+          }) %>
+        </ul>
+
+        <!--  Right side Navbar Links: Cart, Register, Log in and Log out links -->	
+				<ul class="navbar-nav navbar-right">
+          <!-- If user is logged in -->
+          <% if(user) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/cart/checkout">My Cart (
+                <% if(typeof cart !== "undefined") { %>
+                  <%= cart.length %>
+                <% } else { %>
+                  0 
+                <% } %>)
+              </a>
+            </li>
+            <li class="nav-item"><span class="nav-link text-light"><u><%= user.name %></u></span></li>
+            <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
+            <!-- If user is not logged in -->
+          <% } else { %>
+            <li class="nav-item"><a class="nav-link" href="/login">Log in</a></li>
+            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+          <% } %>
+          <!--  If administrator is logged in -->	
+					<% if(user && user.admin == 1) { %>   
+						<li class="nav-item"><a class="nav-link text-primary" href="/dashboard">Admin Dashboard</a></li>
+					<% } %>
+				</ul>
+
+      </div>
+    </nav>
+
+    <!-- Adding class="active" to navigation links, i.e. to <li> tags -->
+    <script>
+			for(var i = 0; i < document.links.length; i++) {
+				if(document.links[i].href == document.URL) {				
+					document.links[i].parentNode.className += ' active';		
+				} }							            
+		</script>
+    <!-- End of NAVIGATION BAR -->
+
+    <!--  PAGE CONTENT  -->
+    <main role="main" class="container">
+      <br>
+
+      <!--  INNER PAGE CONTENT  -->	
+      <div class="row">	
+      	<!--  SIDEBAR  -->	
+				<div class="col-xs-12 col-md-3">
+					<h4>Categories</h4>
+					<ul class="list-group">
+						<li class="list-group-item">
+              <a href="/products">All products</a>
+            </li>
+            <% categories.forEach(category => { %>            
+							<li class="list-group-item">
+                <a href="/products/<%= category.slug %>"><%= category.title%></a>
+              </li>
+						<% }) %>
+					</ul>
+				</div>	
+        <!--  End of SIDEBAR  -->	
+
+				<div class="col-xs-12 col-md-1">
+        </div>	
+
+        <!--  CHANGABLE PAGE CONTENT  -->	
+				<div class="col-xs-12 col-md-8">
+
+          <!--  FLASH Messages  -->	
+          <% if(messageDang.length > 0) { %>
+            <div class="alert alert-danger"><%= messageDang %></div>
+          <% } %>
+          <% if(messageSucc.length > 0) { %>
+            <div class="alert alert-success"><%= messageSucc %></div>
+          <% } %>
+          <% if(messagePassport.length > 0) { %>
+            <div class="alert alert-danger"><%= messagePassport %></div>
+          <% } %>
+          <!--  FLASH Messages  -->	
+
+     
+
+

@@ -1,0 +1,41 @@
+<%- include('../layouts/admin-header') %>
+
+<h2>Edit page</h2>
+<a class="btn btn-primary" href="/admin/pages">Back to all pages</a>
+<br><br>
+
+<form method="POST" action="/admin/edit-page">
+     <!-- <% if(valErrors) { 
+          valErrors.forEach(err => { %>
+               <div class="alert alert-danger"><%= err.msg %></div>
+          <% });
+     } %> -->
+     <% if(valErrors.find(err => err.param === 'title')) { 
+          const index = valErrors.findIndex(err => err.param === 'title'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+          <label>Title</label>
+          <input class="form-control" type="text" name="title" value="<%= oldInput.title %>" placeholder="Title">
+     </div>
+
+     <div class="form-group">
+          <label>Slug</label>
+          <input class="form-control" type="text" name="slug" value="<%= oldInput.slug %>" placeholder="Slug">
+     </div>
+
+     <% if(valErrors.find(err => err.param === 'content')) { 
+          const index = valErrors.findIndex(err => err.param === 'content'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+          <label>Content</label>
+          <textarea id="editor" class="form-control" name="content" cols="25" rows="10" placeholder="Content"><%= oldInput.content %></textarea>
+     </div>
+     
+     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+     <input type="hidden" name="pageId" value="<%= oldInput.id%>">
+     <button type="submit" class="btn btn-outline-secondary">Submit</button>
+</form>
+
+<%- include('../layouts/admin-footer') %>

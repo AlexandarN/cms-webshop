@@ -1,0 +1,57 @@
+<%- include('../layouts/header') %>
+
+<h2><%= title %></h2>
+<hr>
+
+<form method="post" action="/register">
+
+     <% if(valErrors.find(err => err.param === 'name')) { 
+          const index = valErrors.findIndex(err => err.param === 'name'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+          <label>Name</label>
+          <input type="text" name="name" class="form-control" value="<%= oldInput.name %>" placeholder="Name">
+     </div>
+     
+     <% if(valErrors.find(err => err.param === 'email')) { 
+          const index = valErrors.findIndex(err => err.param === 'email'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+          <label>Email</label>
+          <input type="text" name="email" class="form-control" value="<%= oldInput.email %>" placeholder="Email">
+     </div>
+     
+     <% if(valErrors.find(err => err.param === 'username')) { 
+          const index = valErrors.findIndex(err => err.param === 'username'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" class="form-control" value="<%= oldInput.username %>" placeholder="Username">
+     </div>
+     
+     <% if(valErrors.find(err => err.param === 'password')) { 
+          const index = valErrors.findIndex(err => err.param === 'password'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" class="form-control" value="<%= oldInput.password %>" placeholder="Password">
+     </div>
+     
+     <% if(valErrors.find(err => err.param === 'confirmPassword')) { 
+          const index = valErrors.findIndex(err => err.param === 'confirmPassword'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+         <label>Confirm password</label>
+         <input type="password" name="confirmPassword" class="form-control" value="<%= oldInput.confirmPassword %>" placeholder="Confirm password">
+     </div>
+ 
+     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+     <button type="submit" class="btn btn-outline-secondary">Register</button>
+ </form>
+
+<%- include('../layouts/footer') %>

@@ -1,0 +1,131 @@
+<%- include('../layouts/admin-header') %>
+
+<h2>Edit product</h2>
+<a class="btn btn-primary" href="/admin/products">Back to all products</a>
+<br><br>
+
+<form method="POST" action="/admin/edit-product" enctype="multipart/form-data">
+     <!-- <% if(valErrors) {
+          valErrors.forEach(err => { %>
+               <div class="alert alert-danger"><%= err.msg %></div>
+          <% });
+     } %> -->
+     <% if(valErrors.find(err => err.param === 'title')) { 
+          const index = valErrors.findIndex(err => err.param === 'title'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+          <label>Name</label>
+          <input class="form-control" type="text" name="title" value="<%= oldInput.title %>" placeholder="Name">
+     </div>
+
+     <div class="form-group">
+          <label>Slug</label>
+          <input class="form-control" type="text" name="slug" value="<%= oldInput.slug %>" placeholder="Slug">
+     </div>
+
+     <% if(valErrors.find(err => err.param === 'price')) { 
+          const index = valErrors.findIndex(err => err.param === 'price'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+          <label>Price</label>
+          <input class="form-control" type="text" name="price" value="<%= oldInput.price %>" placeholder="$">
+     </div>
+
+     <% if(valErrors.find(err => err.param === 'category')) { 
+          const index = valErrors.findIndex(err => err.param === 'category'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+          <label>Category</label>
+          <select class="form-control" name="category">
+               <option value="">Choose category</option>
+               <% categories.forEach(category => { %>
+                    <option value="<%= category.slug %>" <% if(oldInput.category === category.slug) { %>selected<% } %> ><%= category.title %></option>
+               <% }) %>
+          </select>
+     </div>
+
+     <div class="form-group">
+          <label>Current image</label>
+          <p>
+               <% if(oldInput.image == "") { %>
+                    <img id="resize" src="/images/products/noimage.png">
+               <% } else { %>
+                    <img id="resize" src="/images/products/<%= oldInput.firstSlug %>/<%= oldInput.image %>">
+               <% } %>
+          </p>
+     </div>
+
+     <div class="form-group">
+          <label>Upload new image</label>
+          <div class="custom-file">
+			<!--  JS ONCHANGE EVENT for showing the preview of an uploaded image  -->                
+               <input class="custom-file-input" type="file" name="image" onchange="document.getElementById('imgPreview').style.display = 'block'; document.getElementById('imgPreview').src = window.URL.createObjectURL(this.files[0]); document.getElementById('imgPreview').width = 100; document.getElementById('imgPreview').height = 100">
+               <label class="custom-file-label">Choose file</label>
+          </div>
+          <img src="#" id="imgPreview">
+     </div>
+
+     <% if(valErrors.find(err => err.param === 'description')) { 
+          const index = valErrors.findIndex(err => err.param === 'description'); %>
+          <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+     <% } %>
+     <div class="form-group">
+          <label>Description</label>
+          <textarea id="editor" class="form-control" name="description" cols="25" rows="10" placeholder="Description"><%= oldInput.description %></textarea>
+     </div>
+
+     
+     <input type="hidden" name="firstSlug" value="<%= oldInput.firstSlug %>">
+     <input type="hidden" name="prodImage" value="<%= oldInput.image %>">
+     <input type="hidden" name="productId" value="<%= oldInput.id %>">
+     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+     <button type="submit" class="btn btn-outline-secondary">Submit</button>
+</form>
+<hr>
+
+<!--  GALLERY with thumb images  -->								
+<h5>Gallery</h5>
+<ul class="gallery">
+     <% galleryImages.forEach(galImage => {
+          if(galImage != "thumbs") { %>
+               <li>
+                    <img src="/images/products/<%= oldInput.firstSlug %>/gallery/thumbs/<%= galImage %>"> &nbsp;
+                    <a class="confirmDeletion" href="/admin/delete-image/<%= oldInput.firstSlug %>?name=<%= galImage %>" onclick="return confirm('Are you sure you want to delete this image?')">Delete</a>      
+               </li>
+          <% }
+     }); %>
+</ul>
+
+<!-- DROPZONE FORM for multiple files upload -->
+<form action="/admin/product-gallery/<%= oldInput.firstSlug %>" method="POST" class="dropzone" id="dropzoneForm" enctype="multipart/form-data">
+     <div class="fallback">
+          <input type="file" name="file">
+          <input type="submit" value="Upload">
+     </div>
+</form>
+
+<!-- Dropzone CDN CSS and JS file links -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/basic.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script>
+
+<!-- Dropzone JS code -->
+<script>
+     Dropzone.options.dropzoneForm = {
+          acceptedFiles: "image/*", // accept all image files
+          maxFileSize: 10, // MB
+          init: function() {  // Called when dropzone initialized You can add event listeners here
+               this.on("queuecomplete", function(file) {  // Called when all files in the queue finish uploading.
+                    setTimeout (function() { // setTimeout() method calls a function after a specified number of milliseconds.
+                         location.reload() // The reload() method is used to reload the current document, same as reload button in browser
+                    }, 100);
+               });
+          }
+
+     }
+</script>
+
+<%- include('../layouts/admin-footer') %>

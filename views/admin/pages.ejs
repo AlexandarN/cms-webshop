@@ -1,0 +1,52 @@
+<%- include('../layouts/admin-header') %>
+
+<h2>All pages</h2>
+<a class="btn btn-primary" href="/admin/add-page">Add new page</a>
+<br><br>
+
+<% if(pages.length > 0) { %>
+     <!--  TABLE  -->
+     <table class="table table-striped sorting">
+          <thead>
+               <tr class="home">
+                    <th>Title</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+               </tr>
+          </thead>
+          <tbody>
+               <% pages.forEach(page => { %>
+               <tr id="id_<%= page._id %>" class="<%= page.slug %>">
+                    <td><a href="/<%= page.slug %>"><%= page.title %></a></td>
+                    <td><a href="/admin/edit-page/<%= page.slug %>">Edit</a></td>
+                    <% if(page.slug !== 'home') { %>
+                         <td><a href="/admin/delete-page/<%= page.slug %>" onclick="return confirm('Are you sure you want to delete this page?')">Delete</a></td>
+                    <% } else { %>
+                         <td></td>
+                    <% } %>
+               </tr>
+               <% }) %>
+          </tbody>
+     </table>
+     <!--  End of TABLE  -->
+<% } else { %>
+     <br>
+     <h4 class="page-title">No pages found</h4>
+<% } %>
+
+<!--  JQUERY script to enable REORDERING of pages  -->	
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+     $('tbody').sortable({
+          items: "tr:not('.home')",
+          placeholder: "ui-state-highlight",
+          update: function() {
+               var ids = $('tbody').sortable("serialize");
+               var url = "/admin/reorder-pages";
+               $.post(url, ids);
+          }
+     })
+</script>
+
+<%- include('../layouts/admin-footer') %>

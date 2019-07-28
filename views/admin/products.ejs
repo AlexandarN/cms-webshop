@@ -1,0 +1,45 @@
+<%- include('../layouts/admin-header') %>
+
+<h2>All products</h2>
+<a class="btn btn-primary" href="/admin/add-product">Add new product</a>
+<br><br>
+
+<% if(products.length > 0) { %>
+     <!--  TABLE  -->
+     <table class="table table-striped alignMiddle">
+          <thead>
+               <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Image</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+               </tr>
+          </thead>
+          <tbody>
+               <% products.forEach(product => { %>
+               <tr>
+                    <td><a href="/products/<%= product.category %>/<%= product.slug %>"><%= product.title %></a></td>
+                    <td>$ <%= parseFloat(product.price).toFixed(2) %></td>
+                    <td><%= product.category %></td>
+                    <td>
+                         <% if(!product.image) { %>
+                              <img id="resize" src="/images/products/noimage.png">
+                         <% } else { %>
+                              <img id="resize" src="/images/products/<%= product.firstSlug %>/<%= product.image %>">
+                         <% } %>
+                    </td>
+                    <td><a href="/admin/edit-product/<%= product.slug %>">Edit</a></td>
+                    <td><a href="/admin/delete-product/<%= product.slug %>" onclick="return confirm('Are you sure you want to delete this product?')">Delete</a></td>
+               </tr>
+               <% }) %>
+          </tbody>
+     </table>
+     <!--  End of TABLE  -->
+<% } else { %>
+     <br>
+     <h4>No products found</h4>
+<% } %>
+
+<%- include('../layouts/admin-footer') %>

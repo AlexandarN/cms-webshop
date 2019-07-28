@@ -1,0 +1,117 @@
+<%- include('../layouts/header.ejs') %>
+
+<h2><%= title %></h2>
+<hr>
+
+<% if (typeof cart !== 'undefined') { %>
+     <!--  TABLE  -->
+     <table class="table table-striped alignMiddle center">
+          <thead>
+               <tr>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th></th>
+                    <th>Subtotal</th>
+               </tr>
+          </thead>
+          <tbody>
+               <% let total = 0;
+               cart.forEach(item => { 
+                    total += item.subtotal; %>
+               <tr>
+                    <td><img class="imgResize" src="<%= item.imagePath %>"></td>
+                    <td align="left"><a href="/products/<%= item.category %>/<%= item.slug %>"><%= item.title %></a></td>
+                    <td>$ <%= parseFloat(item.price).toFixed(2) %></td>
+                    <td><%= item.quantity %></td>
+                    <td>
+                         <a href="/cart/update/<%= item.slug %>?action=add">+</a>&nbsp;
+                         <a href="/cart/update/<%= item.slug %>?action=substract">-</a>&nbsp;
+                         <a href="/cart/update/<%= item.slug %>?action=clear">Clear</a>&nbsp;
+                    <td>$ <%= parseFloat(item.subtotal).toFixed(2) %></td>
+               </tr>
+               <% }) %>
+               <tr>
+                    <td colspan="5"></td>
+                    <td><b>Total: $ <%= parseFloat(total).toFixed(2) %></b></td>
+               </tr>
+               <tr>
+				<td colspan="5" align="right">
+					<a class="btn btn-danger" href="/cart/clear" onclick="return confirm('Are you sure you want to clear your cart?')">Clear cart</a>
+				</td>
+				<td>
+                         <!-- Stripe button for card payments -->
+                         <form action="/cart/checkout/pay" method="POST">
+                              <script
+                                   src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                                   data-key="<%= stripePubKey %>"
+                                   data-amount="<%= parseFloat(total * 100).toFixed(2) %>"
+                                   data-name="CMS Webshop"
+                                   data-description="All the products you've ordered"
+                                   data-image="/images/marketplace.png"
+                                   data-locale="auto"
+                                   data-currency="usd">
+                              </script>
+                              <!-- Hide the default Stripe button -->
+                              <script>
+                                   document.getElementsByClassName('stripe-button-el')[0].style.display = 'none';
+                              </script>
+                              <!-- Create Bootsrtap button that will be used insteead of Stripe button -->
+                              <button type=submit" class="btn btn-primary">Pay with card</button>
+                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                         </form>
+                         <!-- End of Stripe button for card payments -->
+				</td>
+               </tr>
+          </tbody>
+     </table>
+     <!--  End of TABLE  -->
+
+     <!--  PAYPAL FORM  -->
+     <input type="hidden" name="cmd" value="_ext-enter">
+     <form class="paypal" action="https://www.sandbox.paypal.com/us/cgi-bin/webscr" method="post">
+          <input type="hidden" name="cmd" value="_cart">
+          <input type="hidden" name="upload" value="1">
+          <input type="hidden" name="business" value="al_nikolic-facilitator@yahoo.com">
+          <% let number = 0 
+            cart.forEach(item => {
+               number++; %>
+               <input type="hidden" name="item_name_<%= number %>" value="<%= item.title %>">
+               <input type="hidden" name="amount_<%= number %>" value="<%= item.price %>">
+               <input type="hidden" name="quantity_<%= number %>" value="<%= item.quantity %>">
+          <% }); %>           
+          <input type="hidden" name="currency_code" value="USD">
+          <input type="hidden" name="amount" value="<%= total %>">
+          <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal" onclick="document.getElementsByClassName('ajax-bground')[0].style.display = 'block'">
+     </form>
+     <!--  End of PAYPAL FORM  -->
+     <br><br>
+
+     <!-- Create Invoice button -->
+     <a class="btn btn-secondary" href="/cart/invoice">Create Invoice</a>
+     <!-- End of Create Invoice button -->
+
+
+<% } else { %>
+     <br>
+     <h4>Your cart is empty.</h4>
+<% } %>
+
+<!-- JQUERY for PAYPAL CHECKOUT visualisation and redirection to payment site -->
+<script>
+     $(function() {
+          $('a.buynow').on('click', function(e) {
+               e.preventDefault();
+
+               $.get('/cart/checkout/buynow', function() {
+                    $('form.paypal input[type=image]').click();
+                    $('.ajax-bground').show();
+               });
+          });
+     });
+</script>
+
+<script src="https://js.stripe.com/v3/"></script>
+
+<%- include('../layouts/footer.ejs') %>

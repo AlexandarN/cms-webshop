@@ -1,0 +1,43 @@
+<%- include('../layouts/header.ejs') %>
+
+<h2><%= title %></h2>
+<hr>
+
+<div class="row">
+	<div class="col-xs-12 col-md-6">
+		<img class="imgWdhSngl" src="/images/products/<%= product.firstSlug %>/<%= product.image %>">
+          <br>
+	</div>
+	<div class="col-xs-12 col-md-6">
+		<p><%- product.description %></p>   
+		<p>Price: <span class="text-danger">$ <%= parseFloat(product.price).toFixed(2) %></span></p>
+
+		<% if(user) { %>
+			<p><a href="/cart/add/<%= product.slug %>">Add to cart</a></p>
+		<% } else { %>
+			<p class="text-info">You must be logged in in order to be able purchase this item!</p>
+		<% } %>
+	</div>
+
+     <h5>Gallery</h5>
+	<!--  GALLERY with thumb images  -->								
+	<div class="col-xs-12 col-md-12">
+		<ul class="gallery">
+			<% galleryImages.forEach(galImage => {
+				if(galImage != "thumbs") { %>   
+		       		<li>	
+					  	<!--  FANCYBOX attribute for displaying images in the form of SLIDESHOW GALLERY  -->		
+				          <a data-fancybox="gallery" href="/images/products/<%= product.firstSlug %>/gallery/<%= galImage %>">
+					          <img src="/images/products/<%= product.firstSlug %>/gallery/thumbs/<%= galImage %>">
+					     </a>
+		       		</li>										 
+				<% }
+			}); %> 
+		</ul>
+	</div>
+	<!--  End of GALLERY -->								
+
+</div>
+
+
+<%- include('../layouts/footer.ejs') %>
