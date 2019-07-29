@@ -14,6 +14,7 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 require('./config/passport')(passport);
+const env = require('./config/env/env');
 
      // INITIATION of EXPRESS	and setting VIEW ENGINEs
 const app = express();
@@ -21,7 +22,8 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
      // CONSTANTs
-const MONGODB_URI  = 'mongodb+srv://al_nikolic:Peradetlic1@cluster0-eyxah.mongodb.net/shop2?retryWrites=true';
+// const MONGODB_URI  = 'mongodb+srv://al_nikolic:Peradetlic1@cluster0-eyxah.mongodb.net/shop2?retryWrites=true'; // for development phase
+const MONGODB_URI  = 'mongodb+srv://' + env.mongodbUser + ':' + env.mongodbPassword + '@cluster0-eyxah.mongodb.net/' + env.mongodbDefaultDB + '?retryWrites=true'; // for deployment phase
 
           // MIDDLEWAREs	
      // Mid. for setting a Public folder - as a default one to use in views with src and href
