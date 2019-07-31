@@ -8,6 +8,11 @@ const flash = require('connect-flash');
 const fileUpload = require('express-fileupload');
 const passport = require('passport');
 const csrf = require('csurf');
+          // Deployment packages
+const helmet = require('helmet');
+const compression = require('compression');
+const fs = require('fs');
+const morgan = require('morgan');
 
      // IMPORTING our custom files (ROUTEs, CONTROLLERs, MODELs, ...)
 const adminRoutes = require('./routes/admin');
@@ -106,6 +111,13 @@ app.use((req, res, next) => {
 //      }
 // });
 
+     // MIDDLEWAREs for DEPLOYMENT
+app.use(helmet());  
+app.use(compression());   
+          // Morgan middl.
+const accessLogStream = fs.createWriteStream(path.resolve('access.log'), {flags: 'a'});
+app.use(morgan('combined', {stream: accessLogStream}));
+     
      // ROUTES MIDDLEWAREs -> always at the end of the middlewares section
 app.use('/admin', adminRoutes);
 app.use(authRoutes);                                                    

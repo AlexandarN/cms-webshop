@@ -36,39 +36,69 @@ exports.getPage = (req, res, next) => {
           .catch(err => console.log(err));
 }
 
+const ITEMS_PER_PAGE = 3;
 
 exports.getAllProducts = (req, res, next) => {
-     // Find all products in DB 
-	Product.find()							           
-		.then(products => {   
+     // Pagination - parse current page number
+     const currentPage = +req.query.page || 1;
+     let numProducts;
+          // Find total no. of products in DB
+     Product.find().countDocuments()
+          .then(numOfProducts => {
+               numProducts = numOfProducts;
+               // Find all products in DB that belong to the specified current page
+               return Product.find()
+                    .skip((currentPage - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE);							           
+          })
+		.then(limitedProducts => {   
 			// Render view file and send data	
 			res.render('shop/products', {
-				products: products, 
-                    title: 'All products' 
+				products: limitedProducts, 
+                    title: 'All products',
+                    currentPage: currentPage,
+                    nextPage: currentPage + 1,
+                    prevPage: currentPage - 1,
+                    lastPage: Math.ceil(numProducts / ITEMS_PER_PAGE) 
                }); 
           })
           .catch(err => console.log(err)); 
 }		
           
 exports.getProductsByCategory = (req, res, next) => {
+     // Pagination 1st part - parse current page number
+     const currentPage = +req.query.page || 1;
+     let numProducts;
      // Find requested category in DB	
      const slug = req.params.categorySlug;
      Category.findOne({slug: slug})
           .then(category => {
-               // Find all products in DB that belong to requested category
-               Product.find({category: slug})
-                    .then(products => {   
+               // Pagination 2nd part - Find total no. of products for the requested category
+               Product.find({category: slug}).countDocuments()
+                    .then(numOfProducts => {
+                         numProducts = numOfProducts;
+                         // Pagination 3rd part - Find all products in DB for the requested category and belong to the specified current page
+                         return Product.find({category: slug})
+                              .skip((currentPage - 1) * ITEMS_PER_PAGE)
+                              .limit(ITEMS_PER_PAGE);
+                    })
+                    .then(limitedProducts => {   
                          // Render view file and send data	
                          res.render('shop/products', {
-                              products: products, 
-                              title: category.title 
+                              products: limitedProducts, 
+                              title: category.title,
+                              currentPage: currentPage,
+                              nextPage: currentPage + 1,
+                              prevPage: currentPage - 1,
+                              lastPage: Math.ceil(numProducts / ITEMS_PER_PAGE)
                          }); 
                     })
                     .catch(err => console.log(err)); 
-               })
-          .catch(err => console.log(err));	
+          })
+          .catch(err => console.log(err));
 }
      
+
 exports.getProduct = (req, res, next) => {
      const slug = req.params.prodSlug;
      // Find product in DB	
