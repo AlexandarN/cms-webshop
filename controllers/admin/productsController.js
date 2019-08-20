@@ -9,7 +9,20 @@ const Category = require('../../models/Category');
 
 exports.getProductsListPage = (req, res, next) => {
      Product.find()
+          .then(prods => {
+               console.log(prods);
+               const products = prods.map(product => {
+                    Category.find({slug: product.category})
+                         .then(category => {
+                              console.log(category);
+                              return {...product, catName: category.title};
+                         })
+                         .catch(err => console.log(err));   
+               });
+               return products;
+          })
           .then(products => {
+               console.log(products);
                // Render view file and send data
                res.render('admin/products', {
                     products: products

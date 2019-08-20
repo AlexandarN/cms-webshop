@@ -4,11 +4,12 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const MongoDBSessionStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 const fileUpload = require('express-fileupload');
 const passport = require('passport');
 const csrf = require('csurf');
-          // Deployment packages
+          // DEPLOYMENT packages
 const helmet = require('helmet');
 const compression = require('compression');
 const fs = require('fs');
@@ -21,14 +22,14 @@ const authRoutes = require('./routes/auth');
 require('./config/passport')(passport);
 const env = require('./config/env/env');
 
-     // INITIATION of EXPRESS	and setting VIEW ENGINEs
+     // INITIATION of EXPRESS	and VIEW ENGINE setting
 const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
      // CONSTANTs
 // const MONGODB_URI  = 'mongodb+srv://al_nikolic:Peradetlic1@cluster0-eyxah.mongodb.net/shop2?retryWrites=true'; // for development phase
-const MONGODB_URI  = 'mongodb+srv://' + env.mongodbUser + ':' + env.mongodbPassword + '@cluster0-eyxah.mongodb.net/' + env.mongodbDefaultDB + '?retryWrites=true'; // for deployment phase
+const MONGODB_URI  = 'mongodb+srv://' + env.mongodbUser + ':' + env.mongodbPassword + '@cluster0-eyxah.mongodb.net/' + env.mongodbDefaultDB; // for deployment phase
 
           // MIDDLEWAREs	
      // Mid. for setting a Public folder - as a default one to use in views with src and href
@@ -39,11 +40,13 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use(fileUpload());
 
-     // General Session and Flash Middlewares
+     // SESSION and FLASH Middlewares
+const store = new MongoDBSessionStore({uri: MONGODB_URI, collection: 'sessions'});  
 app.use(session({
      secret: 'keyboard cat',
      resave: false,
-     saveUninitialized: false
+     saveUninitialized: false,
+     store: store
      // cookie: { secure: true }
    }));
 app.use(flash());
@@ -70,14 +73,13 @@ Category.find().sort({sorting: 1})
      })   
      .catch(err => console.log(err));
 
-     // GLOBAL VARIABLES MIDDLEWARE - for Session, Flash and CSRF - we can then use them in views (responses)
+     // GLOBAL VARIABLES MIDDLEWARE - using SESSION and FLASH - we can then use these variables in all views (responses)
 app.use((req, res, next) => {
      res.locals.messageDang = req.flash('message-danger');
      res.locals.messageSucc = req.flash('message-success');
      res.locals.messagePassport = req.flash('error');
      res.locals.cart = req.session.cart;
      res.locals.user = req.user || null;
-     // res.locals.csrfToken = req.csrfToken();
      next();
 });
           

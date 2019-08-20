@@ -22,7 +22,7 @@
                <tr>
                     <td><a href="/products/<%= product.category %>/<%= product.slug %>"><%= product.title %></a></td>
                     <td>$ <%= parseFloat(product.price).toFixed(2) %></td>
-                    <td><%= product.category %></td>
+                    <td><%= product.catName %></td>
                     <td>
                          <% if(!product.image) { %>
                               <img id="resize" src="/images/products/noimage.png">
