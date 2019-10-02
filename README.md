@@ -17,5 +17,5 @@ If you want your customers to start using the online store you previously built 
 
 I welcome you to try!
 
-Related image
+
 Aleksandar Nikolic
