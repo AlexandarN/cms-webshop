@@ -7,6 +7,8 @@ This CMS platform is an example of a complex eCommerce Web API that allows you t
 
 This web-shop platform comes with essential features that every eCommerce website needs, such as a built-in shopping cart app, support for payment gateways and third-party integrations. This app also alows to send informative emails to customers, as part of marketing strategy.
 
+To check this app use the following link: https://cms-webshop.herokuapp.com.
+
 If you would like to check this application and its features or start building your store using this Web API platform, you should then login as administrator with the following credentials:
 
 Username: admin
