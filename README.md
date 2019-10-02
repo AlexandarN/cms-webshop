@@ -10,6 +10,7 @@ This web-shop platform comes with essential features that every eCommerce websit
 If you would like to check this application and its features or start building your store using this Web API platform, you should then login as administrator with the following credentials:
 
 Username: admin
+
 Password: aaA1!
 
 NOTE: 
