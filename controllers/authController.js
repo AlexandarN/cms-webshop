@@ -9,7 +9,7 @@ const User = require('../models/User');
 const env = reuire('../config/env/env');
 
 const transporter = nodemailer.createTransport(sendgrid({
-	auth: { api_key: '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' } }) );             
+	auth: { api_key: env.sendgridApiKey} }) );             
 exports.getRegisterPage = (req, res, next) => {
      // Render view file and send data	
      res.render('shop/register', {
