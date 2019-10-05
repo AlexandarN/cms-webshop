@@ -3,5 +3,6 @@ module.exports = {
      stripeSecKey: process.env.STRIPE_SECRET_KEY,
      mongodbUser: process.env.MONGODB_USER,
      mongodbPassword: process.env.MONGODB_PASSWORD,
-     mongodbDefaultDB: process.env.MONGODB_DEFAULT_DB
+     mongodbDefaultDB: process.env.MONGODB_DEFAULT_DB,
+     sendgridApiKey: process.env.SENDGRID_KEY
 }

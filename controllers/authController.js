@@ -3,13 +3,13 @@ const passport = require('passport');
 const nodemailer = require('nodemailer');
 const sendgrid = require('nodemailer-sendgrid-transport');
 const crypto = require('crypto');
-
-const transporter = nodemailer.createTransport(sendgrid({
-	auth: { api_key: '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' } }) );             
 const { validationResult } = require('express-validator/check');	
 
 const User = require('../models/User');
+const env = reuire('../config/env/env');
 
+const transporter = nodemailer.createTransport(sendgrid({
+	auth: { api_key: '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' } }) );             
 exports.getRegisterPage = (req, res, next) => {
      // Render view file and send data	
      res.render('shop/register', {
