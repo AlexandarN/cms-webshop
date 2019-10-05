@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const { validationResult } = require('express-validator/check');	
 
 const User = require('../models/User');
-const env = reuire('../config/env/env');
+const env = require('../config/env/env');
 
 const transporter = nodemailer.createTransport(sendgrid({
 	auth: { api_key: env.sendgridApiKey} }) );             
