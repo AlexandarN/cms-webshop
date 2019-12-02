@@ -384,7 +384,7 @@ exports.postResetPassword = (req, res, next) => {
 							to: email,
 							from: 'cmswebshop@shop.com',
 							subject: 'Reset your password at CMS Webshop',
-							html: `<p>Dear <b>${ user.name }</b>,</p> <p>You have requested a password reset.</p> <p>Please, click this <a href="https://cms-webshop.herokuapp.com//new-password/${ token }"><b>link</b></a> in order to proceed.</p>` //${ token } - za dinamičko embedovanje varijabli u kod
+							html: `<p>Dear <b>${ user.name }</b>,</p> <p>You have requested a password reset.</p> <p>Please, click this <a href="https://cms-webshop.herokuapp.com/new-password/${ token }"><b>link</b></a> in order to proceed.</p>` //${ token } - za dinamičko embedovanje varijabli u kod
                                    }); 
                               })
 					.then(result => console.log("Reset token sent to user's email!"))          
