@@ -1,0 +1,154 @@
+<!-- SIDEBAR -->
+<div id="column-left" class="col-sm-3 hidden-xs column-left">
+
+  <!-- CATEGORIES MENU -->
+  <div class="Categories left-sidebar-widget">
+    <div class="columnblock-title">Top Categories</div>
+
+    <!-- Categories -->
+    <div class="category_block">
+      <ul class="box-category treeview">
+
+        <!-- Link -> All Products -->
+        <li><a href="/products" class="activSub">All Products</a></li>
+        
+        <!-- Link -> Category -->
+        <% categories.forEach(category => { %>
+          <li><a href="/products/<%= category.slug %>" class="activSub"><%= category.title %></a>
+            <ul>
+              <li><a href="#">Subcategory 1</a></li>
+              <li><a href="#" class="activSub">Subcategory 2</a>
+                <ul>
+                  <li><a href="#">test 1</a></li>
+                  <li><a href="#">test 2</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        <% }); %>
+
+      </ul>
+    </div>
+    <!-- End of Categories -->
+
+  </div>
+  <!-- End of CATEGORIES MENU -->
+
+  <% if(title !== 'Cart' && title !== 'Checkout' && title !== 'Successful Payment' && title !== 'Wishlist') { %>
+    <!-- REFINE SEARCH MENU -->
+    <div class="filter left-sidebar-widget">
+      <div class="columnblock-title">Refine Search</div>
+      <div class="filter-block">
+        <div class="list-group">
+          <p class="list-group-item">Color</p>
+          <div class="list-group-item">
+            <div id="filter-group1">
+              <label class="checkbox">
+                <input name="filter[]" type="checkbox" value="1" />
+                Black (7)</label>
+              <label class="checkbox">
+                <input name="filter[]" type="checkbox" value="2" />
+                Blue (6)</label>
+              <label class="checkbox">
+                <input name="filter[]" type="checkbox" value="3" />
+                Red (6)</label>
+            </div>
+          </div>
+          <p class="list-group-item">Price</p>
+          <div class="list-group-item">
+            <div id="filter-group2">
+              <label class="checkbox">
+                <input name="filter[]" type="checkbox" value="4" />
+                $100-$300 (6)</label>
+              <label class="checkbox">
+                <input name="filter[]" type="checkbox" value="5" />
+                $301-$1000 (6)</label>
+            </div>
+          </div>
+          <p class="list-group-item">Size</p>
+          <div class="list-group-item">
+            <div id="filter-group3">
+              <label class="checkbox">
+                <input name="filter[]" type="checkbox" value="6" />
+                Big (3)</label>
+              <label class="checkbox">
+                <input name="filter[]" type="checkbox" value="7" />
+                Medium (3)</label>
+              <label class="checkbox">
+                <input name="filter[]" type="checkbox" value="8" />
+                Small (1)</label>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <button type="button" id="button-filter" class="btn btn-primary">Refine Search</button>
+        </div>
+      </div>
+    </div>
+    <!-- End of REFINE SEARCH MENU -->
+
+    <!-- COMMERCIAL BANNER -->
+    <div class="banner left-sidebar-widget"> 
+        <% pages.forEach(page => {
+          if(page.firstSlug == 'shop') { %>
+            <a href="<%= page.subtitle1 %>">
+              <img src="/images/pages/<%= page.firstSlug %>/<%= page.image1 %>" alt="<%= page.image1 %>" class="img-responsive">
+            </a> 
+          <% }
+        }); %>
+    </div>
+    <!-- End of COMMERCIAL BANNER -->
+  <% } %>
+
+
+  <!-- SPECIAL PRODUCTS MENU -->
+  <div class="special left-sidebar-widget">
+    <div class="columnblock-title">Special Products</div>
+    <ul class="row ">
+
+      <!-- Special product -->
+      <% specialProds.forEach(product => { %>
+        <li class="product-layout">
+          <!-- Image -->
+          <div class="product-list col-xs-4">
+            <div class="product-thumb">
+              <div class="image product-imageblock">
+                <a href="/products/<%= product.category %>/<%= product.slug %>">
+                  <img class="img-responsive" title="<%= product.title %>" alt="<%= product.image %>" src="/images/products/<%= product.firstSlug %>/<%= product.image %>">
+                  <img class="img-responsive" title="<%= product.title %>" alt="<%= product.image %>" src="/images/products/<%= product.firstSlug %>/<%= product.image %>">
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- Data -->
+          <div class="col-xs-8">
+            <div class="caption product-detail">
+              <h4 class="product-name">
+                <a title="<%= product.title %>" href="/products/<%= product.category %>/<%= product.slug %>"><%= product.title %></a>
+              </h4>
+              <p class="price product-price"> 
+                <span class="price-new">$<%= parseFloat(product.price).toFixed(2) %></span> 
+                <span class="less">$<%= parseFloat(product.originalPrice).toFixed(2) %></span> 
+              </p>
+              <div class="addto-cart">
+                <% if(user) { %>
+                  <a href="/cart/add/<%= product.slug %>">Add to Cart</a>
+                  <!-- <a href="/cart/add/<%= product.slug %>?url=<%= title %>">Add to Cart</a> -->
+                <% } else { %>
+                  <a href="/cart/add/<%= product.slug %>" onclick="return confirm('Please log in, in order to be able to purchase this product!')">Add to Cart</a>
+                <% }; %>
+              </div>
+            </div>
+          </div>
+        </li>
+      <% }); %>
+      <!-- End of Special product -->
+
+    </ul>
+  </div>
+  <!-- End of SPECIAL PRODUCTS MENU -->
+
+
+</div>
+<!-- End of SIDEBAR -->
+

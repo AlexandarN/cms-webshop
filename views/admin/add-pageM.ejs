@@ -1,0 +1,207 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/admin-navigationM.ejs') %>
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <% pages.forEach(page => {
+    if(page.firstSlug == 'shop') { %>
+      <div class="parallax"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="<%= page.banner %>"></div>
+    <% }
+  }); %>
+  <h1 class="category-title"><%= title %></h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/admin/pages">All Pages</a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+
+<!-- BELLOW BANNER CONTENT -->
+<main class="container">
+  <div class="row">
+
+    <div class="col-sm-9" id="content">
+
+      <!-- FLASH MESSAGES -->
+      <%- include('../layouts/flashMessages.ejs') %>
+
+      <!-- HEADLINE -->
+      <h1>Add new page</h1>
+      <p>Please enter all required information in order to add new page to this website.</p>
+      <p>NOTE: New page will be automatically shown in the website Navigation menu.</p>
+      <br>
+      <a class="btn btn-primary" href="/admin/pages">Back to all pages</a>
+      <br><br><br>
+
+
+      <!-- FORM -->
+      <form name="form" method="POST" class="form-horizontal" action="/admin/add-page" enctype="multipart/form-data" onsubmit="return checkCheckBox(this);">
+        <!-- VALIDATION ERROR MESSAGES ALL TOGETHER
+        <% if(valErrors) {
+              valErrors.forEach(err => { %>
+                <div class="alert alert-danger"><%= err.msg %></div>
+             <% });
+        } %> -->
+
+        <!-- PAGE DATA -->
+        <fieldset id="data">
+          <legend>Page Data</legend>
+
+          <!-- Title -->
+          <% if(valErrors.find(err => err.param === 'title')) { 
+            const index = valErrors.findIndex(err => err.param === 'title'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-title" class="col-sm-2 control-label">Title</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-title" placeholder="Title" value="<%= oldInput.title %>" name="title">
+            </div>
+          </div>
+
+          <!-- Slug -->
+          <% if(valErrors.find(err => err.param === 'slug')) { 
+            const index = valErrors.findIndex(err => err.param === 'slug'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-slug" class="col-sm-2 control-label">Slug</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-slug" placeholder="Slug" value="<%= oldInput.slug %>" name="slug">
+            </div>
+          </div>
+
+          <!-- Banner -->
+          <div class="form-group">
+            <label for="input-subcontent" class="col-sm-2 control-label">Banner</label>
+            <div class="custom-file col-sm-10">
+              <!--  JS ONCHANGE EVENT for showing the preview of an uploaded image  -->      
+              <input class="custom-file-input form-control" type="file" name="banner" placeholder="Browse" onchange="document.getElementById('imgPreview').style.display = 'block'; document.getElementById('imgPreview').src = window.URL.createObjectURL(this.files[0]); document.getElementById('imgPreview').height = 200">
+            </div>
+            <br><br><br>
+            <label for="input-banner" class="col-sm-2 control-label"></label>
+            <div class="custom-file col-sm-10">
+              <img src="#" id="imgPreview" style="display: none;">
+            </div>
+          </div>
+
+        </fieldset>
+        <!-- End of PAGE DATA -->
+
+        <!-- UPPER PAGE CONTENT -->
+        <fieldset id="uper-content">
+          <legend>Upper Page Content</legend>
+          <!-- Subtitle 1 -->
+          <% if(valErrors.find(err => err.param === 'subtitle1')) { 
+            const index = valErrors.findIndex(err => err.param === 'subtitle1'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-subtitle1" class="col-sm-2 control-label">Subtitle 1</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-subtitle1" placeholder="Subtitle 1" value="<%= oldInput.subtitle1 %>" name="subtitle1">
+            </div>
+          </div>
+
+          <!-- Content 1 -->
+          <% if(valErrors.find(err => err.param === 'content')) { 
+            const index = valErrors.findIndex(err => err.param === 'content'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-content1" class="col-sm-2 control-label">Content 1</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" cols="20" rows="10" id="editor" placeholder="Enter text here. You can include html tags as well." name="content"><%= oldInput.content %></textarea>
+            </div>
+          </div>
+
+          <!-- Image 1 -->
+          <div class="form-group">
+            <label for="input-image1" class="col-sm-2 control-label">Image 1</label>
+            <div class="custom-file col-sm-10">
+              <!--  JS ONCHANGE EVENT for showing the preview of an uploaded image  -->      
+              <input class="custom-file-input form-control" type="file" name="image1" placeholder="Browse" onchange="document.getElementById('imgPreview1').style.display = 'block'; document.getElementById('imgPreview1').src = window.URL.createObjectURL(this.files[0]); document.getElementById('imgPreview1').height = 200;">
+            </div>
+            <br><br><br>
+            <label for="input-image1" class="col-sm-2 control-label"></label>
+            <div class="custom-file col-sm-10">
+              <img src="#" id="imgPreview1" style="display: none;">
+            </div>
+          </div>
+    
+        </fieldset>
+        <!-- End of UPPER PAGE CONTENT -->
+
+
+        <!-- LOWER PAGE CONTENT -->
+        <fieldset id="lower-content">
+          <legend>Lower Page Content</legend>
+
+          <!-- Subtitle 2 -->
+          <% if(valErrors.find(err => err.param === 'subtitle2')) { 
+            const index = valErrors.findIndex(err => err.param === 'subtitle2'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-subtitle2" class="col-sm-2 control-label">Subtitle 2</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-subtitle2" placeholder="Subtitle 2" value="<%= oldInput.subtitle2 %>" name="subtitle2">
+            </div>
+          </div>
+    
+          <!-- Content 2 -->
+          <% if(valErrors.find(err => err.param === 'subcontent')) { 
+            const index = valErrors.findIndex(err => err.param === 'subcontent'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-subcontent" class="col-sm-2 control-label">Content 2</label>
+            <div class="col-sm-10">
+              <textarea type="text" class="form-control" cols="20" rows="10" id="editor2" placeholder="Enter text here. You can include html tags as well." name="subcontent"><%= oldInput.subcontent %></textarea>
+            </div>
+          </div>
+
+          <!-- Image 2 -->
+          <div class="form-group required">
+            <label for="input-image2" class="col-sm-2 control-label">Image 2</label>
+            <div class="custom-file col-sm-10">
+              <!--  JS ONCHANGE EVENT for showing the preview of an uploaded image  -->      
+              <input class="custom-file-input form-control" type="file" name="image2" placeholder="Browse" onchange="document.getElementById('imgPreview2').style.display = 'block'; document.getElementById('imgPreview2').src = window.URL.createObjectURL(this.files[0]); document.getElementById('imgPreview2').height = 200;">
+            </div>
+            <br><br><br>
+            <label for="input-image2" class="col-sm-2 control-label"></label>
+            <div class="custom-file col-sm-10">
+              <img src="#" id="imgPreview2" style="display: none;">
+            </div>
+          </div>
+
+        </fieldset>
+        <!-- End of LOWER PAGE CONTENT -->
+
+          
+        <!-- BUTTON -->
+        <div class="buttons">
+          <div class="pull-left">
+            <!-- CSRF -->
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+        <!-- End of BUTTON -->
+
+      </form>
+      <!-- End of FORM -->
+
+
+    </div>
+
+  </div>
+</main>
+<!-- End of BELOW BANNER CONTENT -->
+
+
+<%- include('../layouts/footerM.ejs') %>

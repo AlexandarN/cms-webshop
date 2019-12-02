@@ -1,0 +1,46 @@
+{
+  "name": "cms-webshop",
+  "version": "1.0.1",
+  "description": "Welcome to the",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": "11.4.0"
+  },
+  "author": "Aleksandar Nikolic",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-decoupled-document": "^12.4.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "connect-flash": "^0.1.1",
+    "connect-mongodb-session": "^2.2.0",
+    "csurf": "^1.10.0",
+    "ejs": "^2.7.4",
+    "ejs-lint": "^0.3.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.6",
+    "express-session": "^1.17.0",
+    "express-validator": "^5.3.1",
+    "fs-extra": "^8.1.0",
+    "helmet": "^3.21.2",
+    "mkdirp": "^0.5.1",
+    "mongoose": "^5.7.13",
+    "morgan": "^1.9.1",
+    "nodemailer": "^6.3.1",
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pdfkit": "^0.10.0",
+    "resize-img": "^1.1.2",
+    "stripe": "^7.14.0"
+  }
+}

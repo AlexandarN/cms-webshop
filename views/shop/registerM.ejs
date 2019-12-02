@@ -1,0 +1,507 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/navigationM.ejs') %>
+
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <div class="parallax"><img src="/images/prlx.jpg" alt="banner"></div>
+  <h1>Register Account</h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <!-- <li><a href="#">Account</a></li> -->
+    <li><a href="/register">Register</a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+<!-- BELLOW BANNER CONTENT -->
+<div class="container">
+  <div class="row">
+
+    <!-- ACCOUNT SIDEBAR -->
+    <%- include('../layouts/sidebar-accountM.ejs') %>
+
+
+    <!-- REGISTER FORM -->
+    <div class="col-sm-9" id="content">
+
+      <!-- FLASH MESSAGES -->
+      <%- include('../layouts/flashMessages.ejs') %>
+
+      <p>If you already have an account with us, please login at the <a href="/login"><b>login page</b></a>.</p>
+
+      <!-- Form -->
+      <form name="form" class="form-horizontal" method="POST" action="/register" onsubmit="return checkCheckBox(this);">
+
+        <fieldset id="account">
+          <legend>Your Personal Details</legend>
+
+          <!-- username -->
+          <% if(valErrors.find(err => err.param === 'username')) { 
+            const index = valErrors.findIndex(err => err.param === 'username'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-username" class="col-sm-2 control-label">Username</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-username" placeholder="Username" value="<%= oldInput.username %>" name="username">
+            </div>
+          </div>
+
+          <!-- email -->
+          <% if(valErrors.find(err => err.param === 'email')) { 
+            const index = valErrors.findIndex(err => err.param === 'email'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-email" class="col-sm-2 control-label">E-Mail</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-email" placeholder="E-Mail" value="<%= oldInput.email %>" name="email">
+            </div>
+          </div>
+
+          <!-- firstName -->
+          <% if(valErrors.find(err => err.param === 'firstName')) { 
+            const index = valErrors.findIndex(err => err.param === 'firstName'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-firstName" class="col-sm-2 control-label">First Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-firstName" placeholder="First Name" value="<%= oldInput.firstName %>" name="firstName">
+            </div>
+          </div>
+
+          <!-- lastName -->
+          <% if(valErrors.find(err => err.param === 'lastName')) { 
+            const index = valErrors.findIndex(err => err.param === 'lastName'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-lastName" class="col-sm-2 control-label">Last Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-lastName" placeholder="Last Name" value="<%= oldInput.lastName %>" name="lastName">
+            </div>
+          </div>
+
+          <!-- telephone -->
+          <% if(valErrors.find(err => err.param === 'telephone')) { 
+            const index = valErrors.findIndex(err => err.param === 'telephone'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group">
+            <label for="input-telephone" class="col-sm-2 control-label">Telephone</label>
+            <div class="col-sm-10">
+              <input type="tel" class="form-control" id="input-telephone" placeholder="Telephone" value="<%= oldInput.telephone %>" name="telephone">
+            </div>
+          </div>
+        </fieldset>
+
+
+        <fieldset id="address">
+          <legend>Your Address</legend>
+
+          <!-- company -->
+          <% if(valErrors.find(err => err.param === 'company')) { 
+            const index = valErrors.findIndex(err => err.param === 'company'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group">
+            <label for="input-company" class="col-sm-2 control-label">Company</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-company" placeholder="Company" value="<%= oldInput.company %>" name="company">
+            </div>
+          </div>
+
+          <!-- street -->
+          <% if(valErrors.find(err => err.param === 'street')) { 
+            const index = valErrors.findIndex(err => err.param === 'street'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-street" class="col-sm-2 control-label">Street Address</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-street" placeholder="Street Address" value="<%= oldInput.street %>" name="street">
+            </div>
+          </div>
+
+          <!-- city -->
+          <% if(valErrors.find(err => err.param === 'city')) { 
+            const index = valErrors.findIndex(err => err.param === 'city'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group">
+            <label for="input-city" class="col-sm-2 control-label">City</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-city" placeholder="City" value="<%= oldInput.city %>" name="city">
+            </div>
+          </div>
+
+          <!-- postCode -->
+          <% if(valErrors.find(err => err.param === 'postCode')) { 
+            const index = valErrors.findIndex(err => err.param === 'postCode'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group">
+            <label for="input-postcode" class="col-sm-2 control-label">Post Code</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-postcode" placeholder="Post Code" value="<%= oldInput.postCode %>" name="postCode">
+            </div>
+          </div>
+
+          <!-- country -->
+          <div class="form-group">
+            <label for="input-country" class="col-sm-2 control-label">Country</label>
+            <div class="col-sm-10">
+              <select class="form-control" id="input-country" name="country">
+                <option value=""> --- Please Select --- </option>
+                <option value="Aaland Islands" <% if(oldInput.country === 'Aaland Islands') { %>selected<% } %> >Aaland Islands</option>
+                <option value="Afghanistan" <% if(oldInput.country === 'Afghanistan') { %>selected<% } %> >Afghanistan</option>
+                <option value="Albania" <% if(oldInput.country === 'Albania') { %>selected<% } %> >Albania</option>
+                <option value="Algeria" <% if(oldInput.country === 'Algeria') { %>selected<% } %> >Algeria</option>
+                <option value="American Samoa" <% if(oldInput.country === 'American Samoa') { %>selected<% } %> >American Samoa</option>
+                <option value="Andorra" <% if(oldInput.country === 'Andorra') { %>selected<% } %> >Andorra</option>
+                <option value="Angola" <% if(oldInput.country === 'Angola') { %>selected<% } %> >Angola</option>
+                <option value="Anguilla" <% if(oldInput.country === 'Anguilla') { %>selected<% } %> >Anguilla</option>
+                <option value="Antarctica" <% if(oldInput.country === 'Antarctica') { %>selected<% } %> >Antarctica</option>
+                <option value="Antigua and Barbuda" <% if(oldInput.country === 'Antigua and Barbuda') { %>selected<% } %> >Antigua and Barbuda</option>
+                <option value="Argentina" <% if(oldInput.country === 'Argentina') { %>selected<% } %> >Argentina</option>
+                <option value="Armenia" <% if(oldInput.country === 'Armenia') { %>selected<% } %> >Armenia</option>
+                <option value="Aruba" <% if(oldInput.country === 'Aruba') { %>selected<% } %> >Aruba</option>
+                <option value="Ascension Island (British)" <% if(oldInput.country === 'Ascension Island (British)') { %>selected<% } %> >Ascension Island (British)</option>
+                <option value="Australia" <% if(oldInput.country === 'Australia') { %>selected<% } %> >Australia</option>
+                <option value="Austria" <% if(oldInput.country === 'Austria') { %>selected<% } %> >Austria</option>
+                <option value="Azerbaijan" <% if(oldInput.country === 'Azerbaijan') { %>selected<% } %> >Azerbaijan</option>
+                <option value="Bahamas" <% if(oldInput.country === 'Bahamas') { %>selected<% } %> >Bahamas</option>
+                <option value="Bahrain" <% if(oldInput.country === 'Bahrain') { %>selected<% } %> >Bahrain</option>
+                <option value="Bangladesh" <% if(oldInput.country === 'Bangladesh') { %>selected<% } %> >Bangladesh</option>
+                <option value="Barbados" <% if(oldInput.country === 'Barbados') { %>selected<% } %> >Barbados</option>
+                <option value="Belarus" <% if(oldInput.country === 'Belarus') { %>selected<% } %> >Belarus</option>
+                <option value="Belgium" <% if(oldInput.country === 'Belgium') { %>selected<% } %> >Belgium</option>
+                <option value="Belize" <% if(oldInput.country === 'Belize') { %>selected<% } %> >Belize</option>
+                <option value="Benin" <% if(oldInput.country === 'Benin') { %>selected<% } %> >Benin</option>
+                <option value="Bermuda" <% if(oldInput.country === 'Bermuda') { %>selected<% } %> >Bermuda</option>
+                <option value="Bhutan" <% if(oldInput.country === 'Bhutan') { %>selected<% } %> >Bhutan</option>
+                <option value="Bolivia" <% if(oldInput.country === 'Bolivia') { %>selected<% } %> >Bolivia</option>
+                <option value="Bonaire, Sint Eustatius and Saba" <% if(oldInput.country === 'Bonaire, Sint Eustatius and Saba') { %>selected<% } %> >Bonaire, Sint Eustatius and Saba</option>
+                <option value="Bosnia and Herzegovina" <% if(oldInput.country === 'Bosnia and Herzegovina') { %>selected<% } %> >Bosnia and Herzegovina</option>
+                <option value="Botswana" <% if(oldInput.country === 'Botswana') { %>selected<% } %> >Botswana</option>
+                <option value="Bouvet Island" <% if(oldInput.country === 'Bouvet Island') { %>selected<% } %> >Bouvet Island</option>
+                <option value="Brazil" <% if(oldInput.country === 'Brazil') { %>selected<% } %> >Brazil</option>
+                <option value="British Indian Ocean Territory" <% if(oldInput.country === 'British Indian Ocean Territory') { %>selected<% } %> >British Indian Ocean Territory</option>
+                <option value="Brunei" <% if(oldInput.country === 'Brunei') { %>selected<% } %> >Brunei</option>
+                <option value="Bulgaria" <% if(oldInput.country === 'Bulgaria') { %>selected<% } %> >Bulgaria</option>
+                <option value="Burkina Faso" <% if(oldInput.country === 'Burkina Faso') { %>selected<% } %> >Burkina Faso</option>
+                <option value="Burundi" <% if(oldInput.country === 'Burundi') { %>selected<% } %> >Burundi</option>
+                <option value="Cambodia" <% if(oldInput.country === 'Cambodia') { %>selected<% } %> >Cambodia</option>
+                <option value="Cameroon" <% if(oldInput.country === 'Cameroon') { %>selected<% } %> >Cameroon</option>
+                <option value="Canada" <% if(oldInput.country === 'Canada') { %>selected<% } %> >Canada</option>
+                <option value="Canary Islands" <% if(oldInput.country === 'Canary Islands') { %>selected<% } %> >Canary Islands</option>
+                <option value="Cape Verde" <% if(oldInput.country === 'Cape Verde') { %>selected<% } %> >Cape Verde</option>
+                <option value="Cayman Islands" <% if(oldInput.country === 'Cayman Islands') { %>selected<% } %> >Cayman Islands</option>
+                <option value="Central African Republic" <% if(oldInput.country === 'Central African Republic') { %>selected<% } %> >Central African Republic</option>
+                <option value="Chad" <% if(oldInput.country === 'Chad') { %>selected<% } %> >Chad</option>
+                <option value="Chile" <% if(oldInput.country === 'Chile') { %>selected<% } %> >Chile</option>
+                <option value="China" <% if(oldInput.country === 'China') { %>selected<% } %> >China</option>
+                <option value="Christmas Island" <% if(oldInput.country === 'Christmas Island') { %>selected<% } %> >Christmas Island</option>
+                <option value="Cocos Islands" <% if(oldInput.country === 'Cocos Islands') { %>selected<% } %> >Cocos Islands</option>
+                <option value="Colombia" <% if(oldInput.country === 'Colombia') { %>selected<% } %> >Colombia</option>
+                <option value="Comoros" <% if(oldInput.country === 'Comoros') { %>selected<% } %> >Comoros</option>
+                <option value="Congo" <% if(oldInput.country === 'Congo') { %>selected<% } %> >Congo</option>
+                <option value="Cook Islands" <% if(oldInput.country === 'Cook Islands') { %>selected<% } %> >Cook Islands</option>
+                <option value="Costa Rica" <% if(oldInput.country === 'Costa Rica') { %>selected<% } %> >Costa Rica</option>
+                <option value="Cote D'Ivoire" <% if(oldInput.country === "Cote D'Ivoire") { %>selected<% } %> >Cote D'Ivoire</option>
+                <option value="Croatia" <% if(oldInput.country === 'Croatia') { %>selected<% } %> >Croatia</option>
+                <option value="Cuba" <% if(oldInput.country === 'Cuba') { %>selected<% } %> >Cuba</option>
+                <option value="Curacao" <% if(oldInput.country === 'Curacao') { %>selected<% } %> >Curacao</option>
+                <option value="Cyprus" <% if(oldInput.country === 'Cyprus') { %>selected<% } %> >Cyprus</option>
+                <option value="Czech Republic" <% if(oldInput.country === 'Czech Republic') { %>selected<% } %> >Czech Republic</option>
+                <option value="Democratic Republic of Congo" <% if(oldInput.country === 'Democratic Republic of Congo') { %>selected<% } %> >Democratic Republic of Congo</option>
+                <option value="Denmark" <% if(oldInput.country === 'Denmark') { %>selected<% } %> >Denmark</option>
+                <option value="Djibouti" <% if(oldInput.country === 'Djibouti') { %>selected<% } %> >Djibouti</option>
+                <option value="Dominica" <% if(oldInput.country === 'Dominica') { %>selected<% } %> >Dominica</option>
+                <option value="Dominican Republic" <% if(oldInput.country === 'Dominican Republic') { %>selected<% } %> >Dominican Republic</option>
+                <option value="East Timor" <% if(oldInput.country === 'East Timor') { %>selected<% } %> >East Timor</option>
+                <option value="Ecuador" <% if(oldInput.country === 'Ecuador') { %>selected<% } %> >Ecuador</option>
+                <option value="Egypt" <% if(oldInput.country === 'Egypt') { %>selected<% } %> >Egypt</option>
+                <option value="El Salvador" <% if(oldInput.country === 'El Salvador') { %>selected<% } %> >El Salvador</option>
+                <option value="Equatorial Guinea" <% if(oldInput.country === 'Equatorial Guinea') { %>selected<% } %> >Equatorial Guinea</option>
+                <option value="Eritrea" <% if(oldInput.country === 'Eritrea') { %>selected<% } %> >Eritrea</option>
+                <option value="Estonia" <% if(oldInput.country === 'Estonia') { %>selected<% } %> >Estonia</option>
+                <option value="Ethiopia" <% if(oldInput.country === 'Ethiopia') { %>selected<% } %> >Ethiopia</option>
+                <option value="Falkland Islands (Malvinas)" <% if(oldInput.country === 'Falkland Islands (Malvinas)') { %>selected<% } %> >Falkland Islands (Malvinas)</option>
+                <option value="Faroe Islands" <% if(oldInput.country === 'Faroe Islands') { %>selected<% } %> >Faroe Islands</option>
+                <option value="Fiji" <% if(oldInput.country === 'Fiji') { %>selected<% } %> >Fiji</option>
+                <option value="Finland" <% if(oldInput.country === 'Finland') { %>selected<% } %> >Finland</option>
+                <option value="France" <% if(oldInput.country === 'France') { %>selected<% } %> >France</option>
+                <option value="French Guiana" <% if(oldInput.country === 'French Guiana') { %>selected<% } %> >French Guiana</option>
+                <option value="French Polynesia" <% if(oldInput.country === 'French Polynesia') { %>selected<% } %> >French Polynesia</option>
+                <option value="French Southern Territories" <% if(oldInput.country === 'French Southern Territories') { %>selected<% } %> >French Southern Territories</option>
+                <option value="Gabon" <% if(oldInput.country === 'Gabon') { %>selected<% } %> >Gabon</option>
+                <option value="Gambia" <% if(oldInput.country === 'Gambia') { %>selected<% } %> >Gambia</option>
+                <option value="Georgia" <% if(oldInput.country === 'Georgia') { %>selected<% } %> >Georgia</option>
+                <option value="Germany" <% if(oldInput.country === 'Germany') { %>selected<% } %> >Germany</option>
+                <option value="Ghana" <% if(oldInput.country === 'Ghana') { %>selected<% } %> >Ghana</option>
+                <option value="Gibraltar" <% if(oldInput.country === 'Gibraltar') { %>selected<% } %> >Gibraltar</option>
+                <option value="Greece" <% if(oldInput.country === 'Greece') { %>selected<% } %> >Greece</option>
+                <option value="Greenland" <% if(oldInput.country === 'Greenland') { %>selected<% } %> >Greenland</option>
+                <option value="Grenada" <% if(oldInput.country === 'Grenada') { %>selected<% } %> >Grenada</option>
+                <option value="Guadeloupe" <% if(oldInput.country === 'Guadeloupe') { %>selected<% } %> >Guadeloupe</option>
+                <option value="Guam" <% if(oldInput.country === 'Guam') { %>selected<% } %> >Guam</option>
+                <option value="Guatemala" <% if(oldInput.country === 'Guatemala') { %>selected<% } %> >Guatemala</option>
+                <option value="Guernsey" <% if(oldInput.country === 'Guernsey') { %>selected<% } %> >Guernsey</option>
+                <option value="Guinea" <% if(oldInput.country === 'Guinea') { %>selected<% } %> >Guinea</option>
+                <option value="Guinea-Bissau" <% if(oldInput.country === 'Guinea-Bissau') { %>selected<% } %> >Guinea-Bissau</option>
+                <option value="Guyana" <% if(oldInput.country === 'Guyana') { %>selected<% } %> >Guyana</option>
+                <option value="Haiti" <% if(oldInput.country === 'Haiti') { %>selected<% } %> >Haiti</option>
+                <option value="Heard and McDonald Islands"<% if(oldInput.country === 'Heard and McDonald Islands') { %>selected<% } %>>Heard and McDonald Islands</option>
+                <option value="Honduras" <% if(oldInput.country === 'Honduras') { %>selected<% } %> >Honduras</option>
+                <option value="Hong Kong" <% if(oldInput.country === 'Hong Kong') { %>selected<% } %> >Hong Kong</option>
+                <option value="Hungary" <% if(oldInput.country === 'Hungary') { %>selected<% } %> >Hungary</option>
+                <option value="Iceland" <% if(oldInput.country === 'Iceland') { %>selected<% } %> >Iceland</option>
+                <option value="India" <% if(oldInput.country === 'India') { %>selected<% } %> >India</option>
+                <option value="Indonesia" <% if(oldInput.country === 'Indonesia') { %>selected<% } %> >Indonesia</option>
+                <option value="Iran" <% if(oldInput.country === 'Iran') { %>selected<% } %> >Iran</option>
+                <option value="Iraq" <% if(oldInput.country === 'Iraq') { %>selected<% } %> >Iraq</option>
+                <option value="Ireland" <% if(oldInput.country === 'Ireland') { %>selected<% } %> >Ireland</option>
+                <option value="Isle of Man" <% if(oldInput.country === 'Isle of Man') { %>selected<% } %> >Isle of Man</option>
+                <option value="Israel" <% if(oldInput.country === 'Israel') { %>selected<% } %> >Israel</option>
+                <option value="Italy" <% if(oldInput.country === 'Italy') { %>selected<% } %> >Italy</option>
+                <option value="Jamaica" <% if(oldInput.country === 'Jamaica') { %>selected<% } %> >Jamaica</option>
+                <option value="Japan" <% if(oldInput.country === 'Japan') { %>selected<% } %> >Japan</option>
+                <option value="Jersey" <% if(oldInput.country === 'Jersey') { %>selected<% } %> >Jersey</option>
+                <option value="Jordan" <% if(oldInput.country === 'Jordan') { %>selected<% } %> >Jordan</option>
+                <option value="Kazakhstan" <% if(oldInput.country === 'Kazakhstan') { %>selected<% } %> >Kazakhstan</option>
+                <option value="Kenya" <% if(oldInput.country === 'Kenya') { %>selected<% } %> >Kenya</option>
+                <option value="Kiribati" <% if(oldInput.country === 'Kiribati') { %>selected<% } %> >Kiribati</option>
+                <option value="Kosovo" <% if(oldInput.country === 'Kosovo') { %>selected<% } %> >Kosovo</option>
+                <option value="Kuwait" <% if(oldInput.country === 'Kuwait') { %>selected<% } %> >Kuwait</option>
+                <option value="Kyrgyzstan" <% if(oldInput.country === 'Kyrgyzstan') { %>selected<% } %> >Kyrgyzstan</option>
+                <option value="Laos" <% if(oldInput.country === 'Laos') { %>selected<% } %> >Laos</option>
+                <option value="Latvia" <% if(oldInput.country === 'Latvia') { %>selected<% } %> >Latvia</option>
+                <option value="Lebanon" <% if(oldInput.country === 'Lebanon') { %>selected<% } %> >Lebanon</option>
+                <option value="Lesotho" <% if(oldInput.country === 'Lesotho') { %>selected<% } %> >Lesotho</option>
+                <option value="Liberia" <% if(oldInput.country === 'Liberia') { %>selected<% } %> >Liberia</option>
+                <option value="Libia" <% if(oldInput.country === 'Libia') { %>selected<% } %> >Libia</option>
+                <option value="Liechtenstein" <% if(oldInput.country === 'Liechtenstein') { %>selected<% } %> >Liechtenstein</option>
+                <option value="Lithuania" <% if(oldInput.country === 'Lithuania') { %>selected<% } %> >Lithuania</option>
+                <option value="Luxembourg" <% if(oldInput.country === 'Luxembourg') { %>selected<% } %> >Luxembourg</option>
+                <option value="Macau" <% if(oldInput.country === 'Macau') { %>selected<% } %> >Macau</option>
+                <option value="Madagascar" <% if(oldInput.country === 'Madagascar') { %>selected<% } %> >Madagascar</option>
+                <option value="Malawi" <% if(oldInput.country === 'Malawi') { %>selected<% } %> >Malawi</option>
+                <option value="Malaysia" <% if(oldInput.country === 'Malaysia') { %>selected<% } %> >Malaysia</option>
+                <option value="Maldives" <% if(oldInput.country === 'Maldives') { %>selected<% } %> >Maldives</option>
+                <option value="Mali" <% if(oldInput.country === 'Mali') { %>selected<% } %> >Mali</option>
+                <option value="Malta" <% if(oldInput.country === 'Malta') { %>selected<% } %> >Malta</option>
+                <option value="Marshall Islands" <% if(oldInput.country === 'Marshall Islands') { %>selected<% } %> >Marshall Islands</option>
+                <option value="Martinique" <% if(oldInput.country === 'Martinique') { %>selected<% } %> >Martinique</option>
+                <option value="Mauritania" <% if(oldInput.country === 'Mauritania') { %>selected<% } %> >Mauritania</option>
+                <option value="Mauritius" <% if(oldInput.country === 'Mauritius') { %>selected<% } %> >Mauritius</option>
+                <option value="Mayotte" <% if(oldInput.country === 'Mayotte') { %>selected<% } %> >Mayotte</option>
+                <option value="Mexico" <% if(oldInput.country === 'Mexico') { %>selected<% } %> >Mexico</option>
+                <option value="Micronesia" <% if(oldInput.country === 'Micronesia') { %>selected<% } %> >Micronesia</option>
+                <option value="Moldova" <% if(oldInput.country === 'Moldova') { %>selected<% } %> >Moldova</option>
+                <option value="Monaco" <% if(oldInput.country === 'Monaco') { %>selected<% } %> >Monaco</option>
+                <option value="Mongolia" <% if(oldInput.country === 'Mongolia') { %>selected<% } %> >Mongolia</option>
+                <option value="Montenegro" <% if(oldInput.country === 'Montenegro') { %>selected<% } %> >Montenegro</option>
+                <option value="Montserrat" <% if(oldInput.country === 'Montserrat') { %>selected<% } %> >Montserrat</option>
+                <option value="Morocco" <% if(oldInput.country === 'Morocco') { %>selected<% } %> >Morocco</option>
+                <option value="Mozambique" <% if(oldInput.country === 'Mozambique') { %>selected<% } %> >Mozambique</option>
+                <option value="Myanmar" <% if(oldInput.country === 'Myanmar') { %>selected<% } %> >Myanmar</option>
+                <option value="Namibia" <% if(oldInput.country === 'Namibia') { %>selected<% } %> >Namibia</option>
+                <option value="Nauru" <% if(oldInput.country === 'Nauru') { %>selected<% } %> >Nauru</option>
+                <option value="Nepal" <% if(oldInput.country === 'Nepal') { %>selected<% } %> >Nepal</option>
+                <option value="Netherlands" <% if(oldInput.country === 'Netherlands') { %>selected<% } %> >Netherlands</option>
+                <option value="Netherlands Antilles" <% if(oldInput.country === 'Netherlands Antilles') { %>selected<% } %> >Netherlands Antilles</option>
+                <option value="New Caledonia" <% if(oldInput.country === 'New Caledonia') { %>selected<% } %> >New Caledonia</option>
+                <option value="New Zealand" <% if(oldInput.country === 'New Zealand') { %>selected<% } %> >New Zealand</option>
+                <option value="Nicaragua" <% if(oldInput.country === 'Nicaragua') { %>selected<% } %> >Nicaragua</option>
+                <option value="Niger" <% if(oldInput.country === 'Niger') { %>selected<% } %> >Niger</option>
+                <option value="Nigeria" <% if(oldInput.country === 'Nigeria') { %>selected<% } %> >Nigeria</option>
+                <option value="Niue" <% if(oldInput.country === 'Niue') { %>selected<% } %> >Niue</option>
+                <option value="Norfolk Island" <% if(oldInput.country === 'Norfolk Island') { %>selected<% } %> >Norfolk Island</option>
+                <option value="North Korea" <% if(oldInput.country === 'North Korea') { %>selected<% } %> >North Korea</option>
+                <option value="North Macedonia" <% if(oldInput.country === 'North Macedonia') { %>selected<% } %> >North Macedonia</option>
+                <option value="Northern Mariana Islands" <% if(oldInput.country === 'Northern Mariana Islands') { %>selected<% } %> >Northern Mariana Islands</option>
+                <option value="Norway" <% if(oldInput.country === 'Norway') { %>selected<% } %> >Norway</option>
+                <option value="Oman" <% if(oldInput.country === 'Oman') { %>selected<% } %> >Oman</option>
+                <option value="Pakistan" <% if(oldInput.country === 'Pakistan') { %>selected<% } %> >Pakistan</option>
+                <option value="Palau" <% if(oldInput.country === 'Palau') { %>selected<% } %> >Palau</option>
+                <option value="Palestinian Territory" <% if(oldInput.country === 'Palestinian Territory') { %>selected<% } %> >Palestinian Territory</option>
+                <option value="Panama" <% if(oldInput.country === 'Panama') { %>selected<% } %> >Panama</option>
+                <option value="Papua New Guinea" <% if(oldInput.country === 'Papua New Guinea') { %>selected<% } %> >Papua New Guinea</option>
+                <option value="Paraguay" <% if(oldInput.country === 'Paraguay') { %>selected<% } %> >Paraguay</option>
+                <option value="Peru" <% if(oldInput.country === 'Peru') { %>selected<% } %> >Peru</option>
+                <option value="Philippines" <% if(oldInput.country === 'Philippines') { %>selected<% } %> >Philippines</option>
+                <option value="Pitcairn" <% if(oldInput.country === 'Pitcairn') { %>selected<% } %> >Pitcairn</option>
+                <option value="Poland" <% if(oldInput.country === 'Poland') { %>selected<% } %> >Poland</option>
+                <option value="Portugal" <% if(oldInput.country === 'Portugal') { %>selected<% } %> >Portugal</option>
+                <option value="Puerto Rico" <% if(oldInput.country === 'Puerto Rico') { %>selected<% } %> >Puerto Rico</option>
+                <option value="Qatar" <% if(oldInput.country === 'Qatar') { %>selected<% } %> >Qatar</option>
+                <option value="Reunion" <% if(oldInput.country === 'Reunion') { %>selected<% } %> >Reunion</option>
+                <option value="Romania" <% if(oldInput.country === 'Romania') { %>selected<% } %> >Romania</option>
+                <option value="Russia" <% if(oldInput.country === 'Russia') { %>selected<% } %> >Russia</option>
+                <option value="Rwanda" <% if(oldInput.country === 'Rwanda') { %>selected<% } %> >Rwanda</option>
+                <option value="Saint Kitts and Nevis" <% if(oldInput.country === 'Saint Kitts and Nevis') { %>selected<% } %> >Saint Kitts and Nevis</option>
+                <option value="Saint Lucia" <% if(oldInput.country === 'Saint Lucia') { %>selected<% } %> >Saint Lucia</option>
+                <option value="Saint Vincent and the Grenadines" <% if(oldInput.country === 'Saint Vincent and the Grenadines') { %>selected<% } %> >Saint Vincent and the Grenadines</option>
+                <option value="Samoa" <% if(oldInput.country === 'Samoa') { %>selected<% } %> >Samoa</option>
+                <option value="San Marino" <% if(oldInput.country === 'San Marino') { %>selected<% } %> >San Marino</option>
+                <option value="Sao Tome and Principe" <% if(oldInput.country === 'Sao Tome and Principe') { %>selected<% } %> >Sao Tome and Principe</option>
+                <option value="Saudi Arabia" <% if(oldInput.country === 'Saudi Arabia') { %>selected<% } %> >Saudi Arabia</option>
+                <option value="Senegal" <% if(oldInput.country === 'Senegal') { %>selected<% } %> >Senegal</option>
+                <option value="Serbia" <% if(oldInput.country === 'Serbia') { %>selected<% } %> >Serbia</option>
+                <option value="Seychelles" <% if(oldInput.country === 'Seychelles') { %>selected<% } %> >Seychelles</option>
+                <option value="Sierra Leone" <% if(oldInput.country === 'Sierra Leone') { %>selected<% } %> >Sierra Leone</option>
+                <option value="Singapore" <% if(oldInput.country === 'Singapore') { %>selected<% } %> >Singapore</option>
+                <option value="Slovakia" <% if(oldInput.country === 'Slovakia') { %>selected<% } %> >Slovakia</option>
+                <option value="Slovenia" <% if(oldInput.country === 'Slovenia') { %>selected<% } %> >Slovenia</option>
+                <option value="Solomon Islands" <% if(oldInput.country === 'Solomon Islands') { %>selected<% } %> >Solomon Islands</option>
+                <option value="Somalia" <% if(oldInput.country === 'Somalia') { %>selected<% } %> >Somalia</option>
+                <option value="South Africa" <% if(oldInput.country === 'South Africa') { %>selected<% } %> >South Africa</option>
+                <option value="South Korea" <% if(oldInput.country === 'South Korea') { %>selected<% } %> >South Korea</option>
+                <option value="South Sandwich Islands" <% if(oldInput.country === 'South Sandwich Islands') { %>selected<% } %> >South Sandwich Islands</option>
+                <option value="South Sudan" <% if(oldInput.country === 'South Sudan') { %>selected<% } %> >South Sudan</option>
+                <option value="Spain" <% if(oldInput.country === 'Spain') { %>selected<% } %> >Spain</option>
+                <option value="Sri Lanka" <% if(oldInput.country === 'Sri Lanka') { %>selected<% } %> >Sri Lanka</option>
+                <option value="St. Barthelemy" <% if(oldInput.country === 'St. Barthelemy') { %>selected<% } %> >St. Barthelemy</option>
+                <option value="St. Helena" <% if(oldInput.country === 'St. Helena') { %>selected<% } %> >St. Helena</option>
+                <option value="St. Martin (French part)" <% if(oldInput.country === 'St. Martin (French part)') { %>selected<% } %> >St. Martin (French part)</option>
+                <option value="St. Pierre and Miquelon" <% if(oldInput.country === 'St. Pierre and Miquelon') { %>selected<% } %> >St. Pierre and Miquelon</option>
+                <option value="Sudan" <% if(oldInput.country === 'Sudan') { %>selected<% } %> >Sudan</option>
+                <option value="Suriname" <% if(oldInput.country === 'Suriname') { %>selected<% } %> >Suriname</option>
+                <option value="Svalbard and Jan Mayen Islands" <% if(oldInput.country === 'Svalbard and Jan Mayen Islands') { %>selected<% } %> >Svalbard and Jan Mayen Islands</option>
+                <option value="Swaziland" <% if(oldInput.country === 'Swaziland') { %>selected<% } %> >Swaziland</option>
+                <option value="Sweden" <% if(oldInput.country === 'Sweden') { %>selected<% } %> >Sweden</option>
+                <option value="Switzerland" <% if(oldInput.country === 'Switzerland') { %>selected<% } %> >Switzerland</option>
+                <option value="Syria" <% if(oldInput.country === 'Syria') { %>selected<% } %> >Syria</option>
+                <option value="Taiwan" <% if(oldInput.country === 'Taiwan') { %>selected<% } %> >Taiwan</option>
+                <option value="Tajikistan" <% if(oldInput.country === 'Tajikistan') { %>selected<% } %> >Tajikistan</option>
+                <option value="Tanzania" <% if(oldInput.country === 'Tanzania') { %>selected<% } %> >Tanzania</option>
+                <option value="Thailand" <% if(oldInput.country === 'Thailand') { %>selected<% } %> >Thailand</option>
+                <option value="Togo" <% if(oldInput.country === 'Togo') { %>selected<% } %> >Togo</option>
+                <option value="Tokelau" <% if(oldInput.country === 'Tokelau') { %>selected<% } %> >Tokelau</option>
+                <option value="Tonga" <% if(oldInput.country === 'Tonga') { %>selected<% } %> >Tonga</option>
+                <option value="Trinidad and Tobago" <% if(oldInput.country === 'Trinidad and Tobago') { %>selected<% } %> >Trinidad and Tobago</option>
+                <option value="Tristan da Cunha" <% if(oldInput.country === 'Tristan da Cunha') { %>selected<% } %> >Tristan da Cunha</option>
+                <option value="Tunisia" <% if(oldInput.country === 'Tunisia') { %>selected<% } %> >Tunisia</option>
+                <option value="Turkey" <% if(oldInput.country === 'Turkey') { %>selected<% } %> >Turkey</option>
+                <option value="Turkmenistan" <% if(oldInput.country === 'Turkmenistan') { %>selected<% } %> >Turkmenistan</option>
+                <option value="Turks and Caicos" <% if(oldInput.country === 'Turks and Caicos') { %>selected<% } %> >Turks and Caicos</option>
+                <option value="Tuvalu" <% if(oldInput.country === 'Tuvalu') { %>selected<% } %> >Tuvalu</option>
+                <option value="Uganda" <% if(oldInput.country === 'Uganda') { %>selected<% } %> >Uganda</option>
+                <option value="Ukraine" <% if(oldInput.country === 'Ukraine') { %>selected<% } %> >Ukraine</option>
+                <option value="United Arab Emirates" <% if(oldInput.country === 'United Arab Emirates') { %>selected<% } %> >United Arab Emirates</option>
+                <option value="United Kingdom" <% if(oldInput.country === 'United Kingdom') { %>selected<% } %> >United Kingdom</option>
+                <option value="United States" <% if(oldInput.country === 'United States') { %>selected<% } %> >United States</option>
+                <option value="Uruguay" <% if(oldInput.country === 'Uruguay') { %>selected<% } %> >Uruguay</option>
+                <option value="Uzbekistan" <% if(oldInput.country === 'Uzbekistan') { %>selected<% } %> >Uzbekistan</option>
+                <option value="Vanuatu" <% if(oldInput.country === 'Vanuatu') { %>selected<% } %> >Vanuatu</option>
+                <option value="Vatican" <% if(oldInput.country === 'Vatican') { %>selected<% } %> >Vatican</option>
+                <option value="Venezuela" <% if(oldInput.country === 'Venezuela') { %>selected<% } %> >Venezuela</option>
+                <option value="Vietnam" <% if(oldInput.country === 'Vietnam') { %>selected<% } %> >Vietnam</option>
+                <option value="Virgin Islands (British)" <% if(oldInput.country === 'Virgin Islands (British)') { %>selected<% } %> >Virgin Islands (British)</option>
+                <option value="Virgin Islands (U.S.)" <% if(oldInput.country === 'Virgin Islands (U.S.)') { %>selected<% } %> >Virgin Islands (U.S.)</option>
+                <option value="Wallis and Futuna Islands" <% if(oldInput.country === 'Wallis and Futuna Islands') { %>selected<% } %> >Wallis and Futuna Islands</option>
+                <option value="Western Sahara" <% if(oldInput.country === 'Western Sahara') { %>selected<% } %> >Western Sahara</option>
+                <option value="Yemen" <% if(oldInput.country === 'Yemen') { %>selected<% } %> >Yemen</option>
+                <option value="Zambia" <% if(oldInput.country === 'Zambia') { %>selected<% } %> >Zambia</option>
+                <option value="Zimbabwe" <% if(oldInput.country === 'Zimbabwe') { %>selected<% } %> >Zimbabwe</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Your Password</legend>
+
+          <!-- password -->
+          <% if(valErrors.find(err => err.param === 'password')) { 
+            const index = valErrors.findIndex(err => err.param === 'password'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-password" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="input-password" placeholder="Password" value="<%= oldInput.password %>" name="password">
+            </div>
+          </div>
+
+          <!-- confirmPassword -->
+          <% if(valErrors.find(err => err.param === 'confirmPassword')) { 
+            const index = valErrors.findIndex(err => err.param === 'confirmPassword'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-confirm" class="col-sm-2 control-label">Password Confirm</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="input-confirm" placeholder="Password Confirm" value="<%= oldInput.confirmPassword %>" name="confirmPassword">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Newsletter</legend>
+
+          <!-- newsletter -->
+          <% if(valErrors.find(err => err.param === 'newsletter')) { 
+            const index = valErrors.findIndex(err => err.param === 'newsletter'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Subscribe</label>
+            <div class="col-sm-10">
+              <label class="radio-inline">
+                <input type="radio" value="yes" name="newsletter" <% if(oldInput.newsletter === 'yes') { %>checked<% } %> >
+                Yes
+              </label>
+              <label class="radio-inline">
+                <input type="radio" value="no" name="newsletter" <% if(oldInput.newsletter === 'no') { %>checked<% } %> >
+                No
+              </label>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- buttons -->
+        <div class="buttons">
+          <div class="pull-right">
+            I have read and agree to the <a class="agree" href="/privacy-policy"><b>Privacy Policy</b></a>
+
+            <!-- Privacy Policy Agree CHECKBOX -->
+            <input id="checkbox" type="checkbox" value="1" name="agreeBox">
+            &nbsp;
+
+            <!-- CSRF -->
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <!-- SUBMIT button -->
+            <input type="submit" class="btn btn-primary" value="Register">
+          </div>
+        </div>
+
+      </form>
+      <!-- End of Form -->
+
+    </div>
+    <!-- End of REGISTER FORM -->
+
+  </div>
+</div>
+<!-- End of BELLOW BANNER CONTENT -->
+
+<!-- JS SCRIPT to check if Privacy Policy checkbox is checked -->
+<script type="text/javascript" language="JavaScript">
+  function checkCheckBox(form) {
+    if (form.agreeBox.checked == false) {
+      alert ('Please read through and agree to the Privacy Policy!');
+      return false;
+    } else { 	
+      return true;
+    }
+  }
+</script> 
+
+<%- include('../layouts/footerM.ejs') %>
+

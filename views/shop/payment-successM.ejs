@@ -1,0 +1,56 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/navigationM.ejs') %>
+
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <% pages.forEach(page => {
+    if(page.firstSlug == 'shop') { %>
+      <div class="parallax"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="<%= page.banner %>"></div>
+    <% }
+  }); %>  
+  <h1><%= title %></h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/products">Products</a></li>
+    <li><a href="/cart">Shopping Cart</a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+<!-- BELLOW BANNER CONTENT -->
+<div class="container">
+  <div class="row">
+
+    <!-- SIDEBAR -->
+    <%- include('../layouts/sidebarM.ejs') %>
+
+
+    <!-- INFORMATION DIV -->
+    <div class="col-sm-9" id="content">
+      <div id="accordion" class="panel-group">
+
+        <!-- FLASH MESSAGES -->
+        <%- include('../layouts/flashMessages.ejs') %>
+
+        <h3>Thank you for your purchase.</h3>
+        <h4>The products you have ordered will be sent to you within 1-2 business days.</h4>
+        <br>
+
+        <!-- CONTINUE SHOPPING BUTTON -->
+        <div class="buttons">
+          <div class="pull-left"><a class="btn btn-default" href="/">Continue Shopping</a></div>
+        </div>
+
+      </div>
+    </div>
+    <!-- End of INFORMATION DIV -->
+
+  </div>
+</div>
+<!-- End of BELOW BANNER CONTENT -->
+
+
+<%- include('../layouts/footerM.ejs') %>
+

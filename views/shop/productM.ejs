@@ -1,0 +1,303 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/navigationM.ejs') %>
+
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <div class="parallax"><img src="/images/prlx.jpg" alt="#"></div>
+  <h1><%= product.title %></h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/products">Products</a></li>
+    <li><a href="/products/<%= product.category %>"><%= category.title %></a></li>
+    <li><a href="/products/<%= product.category %>/<%= product.slug %>"><%= product.title %></a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+
+<!-- BELLOW BANNER CONTENT -->
+<div class="container">
+  <div class="row">
+
+
+    <!-- PRODUCT -->
+    <div class="content col-sm-12">
+
+      <!-- PRODUCT IMAGES and DATA -->
+      <div class="row">
+        <!-- PRODUCT IMAGE and GALLERY -->
+        <div class="col-sm-5">
+          <div class="thumbnails">
+            <!-- PRODUCT IMAGE -->
+            <div>
+              <a class="thumbnail fancybox" href="/images/products/<%= product.firstSlug %>/<%= product.image %>" title="<%= product.title %>">
+                <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" title="<%= product.title %>" alt="<%= product.image %>">
+              </a>
+            </div>
+            <!-- End of PRODUCT IMAGE -->
+            <!-- PRODUCT GALLERY THUMBNAILS -->
+            <div id="product-thumbnail" class="owl-carousel">
+              <!-- Thumbnail -->
+              <% galleryImages.forEach(galImage => { %>
+                <% if(galImage != 'thumbs') { %>
+                  <div class="item">
+                    <div class="image-additional">
+                      <a class="thumbnail fancybox" href="/images/products/<%= product.firstSlug %>/gallery/<%= galImage %>" title="<%= galImage %>"> 
+                        <img src="/images/products/<%= product.firstSlug %>/gallery/thumbs/<%= galImage %>" title="<%= galImage %>" alt="<%= galImage %>">
+                      </a>
+                    </div>
+                  </div>
+                <% } %>
+              <% }); %>
+              <!-- End of Thumbnail -->
+            </div>
+            <!-- End of PRODUCT GALLERY THUMBNAILS -->
+          </div>
+        </div>
+        <!-- End of PRODUCT IMAGES -->
+
+
+        <!-- PRODUCT DATA -->
+        <div class="col-sm-7 prodetail">
+
+          <!-- FLASH MESSAGES -->
+          <%- include('../layouts/flashMessages.ejs') %>
+      
+          <h1 class="productpage-title"><%= product.title %></h1>
+          <!--Stars -->
+          <div class="rating"> 
+            <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+            <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+            <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+            <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+            <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+            <span class="riview"><a href="#">1 reviews</a> / <a href="#">Write a review</a></span> 
+          </div>
+          <!-- End of Stars -->
+          <!-- Prices -->
+          <ul class="list-unstyled productinfo-details-top">
+            <li><h2 class="productpage-price">$<%= parseFloat(product.price).toFixed(2) %></h2></li>
+            <% if (product.originalPrice !== product.price) { %>
+              <li><h2 class="productpage-price less">$<%= parseFloat(product.originalPrice).toFixed(2) %></h2></li>
+            <% } %> 
+            <li><span class="productinfo-tax">Ex Tax: $<%= parseFloat(product.price * 0.8).toFixed(2) %></span></li>
+          </ul>
+          <!-- End of Prices -->
+          <hr>
+          <!-- Brand and data -->
+          <ul class="list-unstyled product_info">
+            <li>
+              <label>Brand:</label>
+              <span> <a href="#"><b><%= product.brand %></b></a></span>
+            </li>
+            <li>
+              <label>Product Code:</label>
+              <span> <%= product.productCode %></span></li>
+            <li>
+              <label>Availability:</label>
+              <span> <b><%= product.availability %></b></span></li>
+          </ul>
+          <hr>
+          <!-- Product Features -->
+          <p class="product-desc"><%- product.features %></p>
+
+          <!-- Filters Menu and ACTION BUTTONS -->
+          <div id="product">
+            <div class="form-group">
+
+              <!-- Filters Menu -->
+              <div class="row">
+                <!-- Sort By filter -->
+                <div class="Sort-by col-md-6">
+                  <label>Sort by</label>
+                  <select id="select-by-size" class="selectpicker form-control">
+                    <option value="#" selected="selected">Small</option>
+                    <option value="#">Medium</option>
+                    <option value="#">Large</option>
+                  </select>
+                </div>
+                <!-- Color filter -->
+                <div class="Color col-md-6">
+                  <label>Color</label>
+                  <select id="select-by-color" class="selectpicker form-control">
+                    <option value="#" selected="selected">Blue</option>
+                    <option value="#">Green</option>
+                    <option value="#">Orange</option>
+                    <option value="#">White</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Enf of Filters Menu -->
+
+              <!-- ACTION BUTTONS -->
+              <div class="qty">
+                <label>Qty</label>
+                <input id="qty" placeholder="1" type="number">
+                <ul class="button-group list-btn">
+                  <!-- Enter quantity button -->
+                  <li>
+                    <button type="button" class="wishlist" data-toggle="tooltip" data-placement="top" title="Add to Wish List"><a href="/wishlist/add/<%= product.slug %>"><i class="fa fa-heart-o"></i></a></button>
+                  </li>
+                  <!-- Add to Cart button -->
+                  <li>
+                    <% if(user) { %>
+                      <button type="button" class="addtocart-btn" data-toggle="tooltip" data-placement="top" title="Add to Cart"><a href="/cart/add/<%= product.slug %>"><i class="fa fa-shopping-bag"></i></a></button>
+                    <% } else { %>
+                      <button type="button" class="addtocart-btn" data-toggle="tooltip" data-placement="top" title="Add to Cart" onclick="return confirm('Please log in, order to be able to purchase this product!')"><i class="fa fa-shopping-bag"></i></button>
+                    <% } %>
+                  </li>
+                  <!-- Compare button -->
+                  <!-- <li>
+                    <button type="button" class="compare" data-toggle="tooltip" data-placement="top" title="Compare this Product" ><i class="fa fa-exchange"></i></button>
+                  </li> -->
+                  <!-- Quick view button -->
+                  <!-- <li>
+                    <button type="button" class="quick-view" data-toggle="tooltip" data-placement="top" title="Quick View" ><i class="fa fa-eye"></i></button>
+                  </li> -->
+                </ul>
+              </div>
+              <!-- End of ACTION BUTTONS -->
+            </div>
+          </div>
+          <!-- End of Filters Menu -->
+        </div>
+        <!-- End of PRODUCT DATA -->
+      </div>
+      <!-- End of PRODUCT IMAGES and DATA -->
+
+      <!-- PRODUCT DESCRIPTION and REVIEWS -->
+      <div class="productinfo-tab">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#tab-description" data-toggle="tab">Description</a></li>
+          <li><a href="#tab-review" data-toggle="tab">Reviews (0)</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab-description">
+            <div class="cpt_product_description ">
+              <div>
+                <p><%- product.description %></p>
+              </div>
+            </div>
+            <!-- cpt_container_end --></div>
+          <div class="tab-pane" id="tab-review">
+            <form class="form-horizontal">
+              <div id="review"></div>
+              <h2>Write a review</h2>
+              <div class="form-group required">
+                <div class="col-sm-12">
+                  <label class="control-label" for="input-name">Your Name</label>
+                  <input type="text" name="name" value="" id="input-name" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group required">
+                <div class="col-sm-12">
+                  <label class="control-label" for="input-review">Your Review</label>
+                  <textarea name="text" rows="5" id="input-review" class="form-control"></textarea>
+                  <div class="help-block"><span class="text-danger">Note:</span> HTML is not translated!</div>
+                </div>
+              </div>
+              <div class="form-group required">
+                <div class="col-sm-12">
+                  <label class="control-label">Rating</label>
+                  &nbsp;&nbsp;&nbsp; Bad&nbsp;
+                  <input type="radio" name="rating" value="1" />
+                  &nbsp;
+                  <input type="radio" name="rating" value="2" />
+                  &nbsp;
+                  <input type="radio" name="rating" value="3" />
+                  &nbsp;
+                  <input type="radio" name="rating" value="4" />
+                  &nbsp;
+                  <input type="radio" name="rating" value="5" />
+                  &nbsp;Good</div>
+              </div>
+              <div class="buttons clearfix">
+                <div class="pull-right">
+                  <button type="button" id="button-review" data-loading-text="Loading..." class="btn btn-primary">Continue</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- End of PRODUCT DESCRIPTION and REVIEW -->
+
+      <!-- RELATED PRODUCTS -->
+      <% if(catProducts.length > 0) { %>
+      <h3 class="productblock-title">Related Products</h3>
+      <h4 class="title-subline">What’s so special? Check it out!</h4>
+      <div class="box">
+        <div id="related-slidertab" class="row owl-carousel product-slider">
+
+          <!-- Related Product -->
+          <% catProducts.forEach(product => { %>
+            <div class="item">
+              <div class="product-thumb transition">
+                <!-- Product image -->
+                <div class="image product-imageblock"> 
+                  <a href="product.html">
+                    <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive">
+                    <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive">
+                  </a>
+                  <ul class="button-group">
+                    <li>
+                      <button title="" data-placement="top" data-toggle="tooltip" class="wishlist" type="button" data-original-title="Add to Wish List"><i class="fa fa-heart-o"></i></button>
+                    </li>
+                    <!-- <li>
+                      <button title="" data-placement="top" data-toggle="tooltip" class="compare" type="button" data-original-title="Compare this Product"><i class="fa fa-exchange"></i></button>
+                    </li> -->
+                    <li>
+                      <button title="" data-placement="top" data-toggle="tooltip" class="quick-view" type="button" data-original-title="Quick View"><a href="/products/<%= product.category %>/<%= product.slug %>"><i class="fa fa-eye"></i></a></button>
+                    </li>
+                    <li>
+                      <% if(user) { %>
+                        <button type="button" data-placement="top" data-toggle="tooltip" class="addtocart-btn" title="Add to Cart"><a href="/cart/add/<%= product.slug %>"><i class="fa fa-shopping-bag"></i></a></button>
+                      <% } else { %>
+                        <button type="button" class="addtocart-btn" title="Add to Cart" data-placement="top" data-toggle="tooltip" onclick="return confirm('Please log in, order to be able to purchase this product!')"><i class="fa fa-shopping-bag"></i></button>
+                      <% } %>
+                    </li>
+                  </ul>
+                </div>
+                <!-- Product data -->
+                <div class="caption product-detail">
+                  <div class="rating"> 
+                    <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                    <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                    <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                    <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                    <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> 
+                  </div>
+                  <h4 class="product-name">
+                    <a href="/products/<%= product.category %>/<%= product.slug %>" title="<%= product.title %>"><%= product.title %></a>
+                  </h4>
+                  <p class="price product-price">
+                    $<%= parseFloat(product.price).toFixed(2) %>
+                    <% if (product.originalPrice !== product.price) { %>
+                      <span class="less">$<%= parseFloat(product.originalPrice).toFixed(2) %></span>
+                    <% } %>
+                    <span class="price-tax">Ex Tax: $<%= parseFloat(product.price * 0.8).toFixed(2) %></span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+          <!-- End of Related Product -->
+
+        </div>
+      </div>
+      <% } %>
+      <!-- End of RELATED PRODUCTS -->
+
+    </div>
+    <!-- End of PRODUCT -->
+
+  </div>
+</div>
+<!-- End of BELLOW BANNER CONTENT -->
+
+
+
+<%- include('../layouts/footerM.ejs') %>
+

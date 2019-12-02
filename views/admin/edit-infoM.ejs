@@ -1,0 +1,258 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/admin-navigationM.ejs') %>
+
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <% pages.forEach(page => {
+    if(page.firstSlug == 'shop') { %>
+      <div class="parallax"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="<%= page.banner %>"></div>
+    <% }
+  }); %>
+  <h1 class="category-title"><%= title %></h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+<!-- BELLOW BANNER CONTENT -->
+<main class="container">
+  <div class="row">
+
+    <div class="col-sm-9" id="content">
+
+      <!-- FLASH MESSAGES -->
+      <%- include('../layouts/flashMessages.ejs') %>
+
+      <!-- HEADLINE -->
+      <h1>Edit Website Information</h1>
+      <p>Please enter all required information and click the submit button below in order to save changes.</p>
+      <br>
+      <a class="btn btn-primary" href="/dashboard">Back to Dashboard</a>
+      <br><br><br>
+
+
+      <!-- FORM -->
+      <form name="form" method="POST" class="form-horizontal" action="/admin/edit-info" enctype="multipart/form-data" onsubmit="return checkCheckBox(this);">
+
+        <!-- WEBSITE NAME -->
+        <fieldset id="data">
+          <legend>Website Name</legend>
+
+          <!-- Shop name -->
+          <div class="form-group">
+            <label for="input-shopName" class="col-sm-2 control-label">Webshop Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-shopName" placeholder="Name" value="<%= oldInput.shopName %>" name="shopName">
+            </div>
+          </div>
+
+        </fieldset>
+        <!-- End of WEBSITE NAME -->
+
+
+        <!-- WEBSITE IMAGES -->
+        <fieldset id="data">
+          <legend>Website Images</legend>
+
+          <!-- Current logo -->
+          <div class="form-group">
+            <label for="input-logo" class="col-sm-2 control-label">Current webshop logo</label>
+            <div class="custom-file col-sm-10">
+              <% if(oldInput.logo == "") { %>
+                <img style="height: 80px;" src="/images/info/noimage.png">
+              <% } else { %>
+                <img style="height: 80px; max-width: 600px;" src="/images/info/<%= oldInput.logo %>"> &nbsp;
+                <a class="confirmDeletion" href="/admin/delete-image/info?name=<%= oldInput.logo %>&type=logo" onclick="return confirm('Are you sure you want to delete this image?')">Delete logo</a>  
+              <% } %>
+            </div>
+         </div>
+
+          <!-- New logo -->
+          <div class="form-group">
+            <label for="input-logo" class="col-sm-2 control-label">Upload new logo</label>
+            <div class="custom-file col-sm-10">
+              <!--  JS ONCHANGE EVENT for showing the preview of an uploaded image  -->      
+              <input class="custom-file-input form-control" type="file" name="logo" placeholder="Browse" onchange="document.getElementById('imgPreview').style.display = 'block'; document.getElementById('imgPreview').src = window.URL.createObjectURL(this.files[0]); document.getElementById('imgPreview').height = 80;">
+            </div>
+            <br><br><br>
+            <label for="input-logo" class="col-sm-2 control-label"></label>
+            <div class="custom-file col-sm-10">
+              <img src="#" id="imgPreview" style="display: none;">
+            </div>
+          </div>
+
+          <!-- Current Favicon -->
+          <div class="form-group">
+            <label for="input-favicon" class="col-sm-2 control-label">Current webshop favicon</label>
+            <div class="custom-file col-sm-10">
+              <% if(oldInput.favicon == "") { %>
+                <img style="height: 30px;" src="/images/info/noimage.png">
+              <% } else { %>
+                <img style="height: 30px; max-width: 600px;" src="/images/info/<%= oldInput.favicon %>"> &nbsp;
+                <a class="confirmDeletion" href="/admin/delete-image/info?name=<%= oldInput.favicon %>&type=favicon" onclick="return confirm('Are you sure you want to delete this image?')">Delete favicon</a>  
+              <% } %>
+            </div>
+         </div>
+
+          <!-- New Favicon -->
+          <div class="form-group">
+            <label for="input-favicon" class="col-sm-2 control-label">Upload new favicon</label>
+            <div class="custom-file col-sm-10">
+              <!--  JS ONCHANGE EVENT for showing the preview of an uploaded image  -->      
+              <input class="custom-file-input form-control" type="file" name="favicon" placeholder="Browse" onchange="document.getElementById('imgPreview1').style.display = 'block'; document.getElementById('imgPreview1').src = window.URL.createObjectURL(this.files[0]); document.getElementById('imgPreview1').height = 30;">
+            </div>
+            <br><br><br>
+            <label for="input-favicon" class="col-sm-2 control-label"></label>
+            <div class="custom-file col-sm-10">
+              <img src="#" id="imgPreview1" style="display: none;">
+            </div>
+          </div>
+
+          <!-- Current Footer Banner -->
+          <div class="form-group">
+            <label for="input-banner" class="col-sm-2 control-label">Current footer banner</label>
+            <div class="custom-file col-sm-10">
+              <% if(oldInput.footerBanner == "") { %>
+                <img style="height: 200px;" src="/images/info/noimage.png">
+              <% } else { %>
+                <img style="height: 200px; max-width: 600px;" src="/images/info/<%= oldInput.footerBanner %>"> &nbsp;
+                <a class="confirmDeletion" href="/admin/delete-image/info?name=<%= oldInput.footerBanner %>&type=footerBanner" onclick="return confirm('Are you sure you want to delete this image?')">Delete banner</a>  
+              <% } %>
+            </div>
+         </div>
+
+          <!-- New Footer Banner -->
+          <div class="form-group">
+            <label for="input-banner" class="col-sm-2 control-label">Upload new footer banner</label>
+            <div class="custom-file col-sm-10">
+              <!--  JS ONCHANGE EVENT for showing the preview of an uploaded image  -->      
+              <input class="custom-file-input form-control" type="file" name="footerBanner" placeholder="Browse" onchange="document.getElementById('imgPreview2').style.display = 'block'; document.getElementById('imgPreview2').src = window.URL.createObjectURL(this.files[0]); document.getElementById('imgPreview2').height = 200;">
+            </div>
+            <br><br><br>
+            <label for="input-banner" class="col-sm-2 control-label"></label>
+            <div class="custom-file col-sm-10">
+              <img src="#" id="imgPreview2" style="display: none;">
+            </div>
+          </div>
+
+        </fieldset>
+        <!-- End of WEBSITE IMAGES -->
+
+
+        <!-- CONTACT ADDRESS -->
+        <fieldset id="uper-content">
+          <legend>Contact Address</legend>
+
+          <!-- Street -->
+          <div class="form-group">
+            <label for="input-street" class="col-sm-2 control-label">Street</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-street" placeholder="Street" value="<%= oldInput.street %>" name="street">
+            </div>
+          </div>
+
+          <!-- City -->
+          <div class="form-group">
+            <label for="input-city" class="col-sm-2 control-label">City</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-city" placeholder="City" value="<%= oldInput.city %>" name="city">
+            </div>
+          </div>
+
+          <!-- Country -->
+          <div class="form-group">
+            <label for="input-country" class="col-sm-2 control-label">Country</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-country" placeholder="Country" value="<%= oldInput.country %>" name="country">
+            </div>
+          </div>
+
+        </fieldset>
+        <!-- End of CONTACT ADDRESS -->
+
+
+        <!-- CONTACT INFO -->
+        <fieldset id="uper-content">
+          <legend>Contact Info</legend>
+
+          <!-- Email 1 -->
+          <div class="form-group required">
+            <label for="input-email1" class="col-sm-2 control-label">Email 1</label>
+            <div class="col-sm-10">
+              <input type="email" class="form-control" id="input-email1" placeholder="Email 1" value="<%= oldInput.email1 %>" name="email1">
+            </div>
+          </div>
+
+          <!-- Email 2 -->
+          <div class="form-group required">
+            <label for="input-email2" class="col-sm-2 control-label">Email 2</label>
+            <div class="col-sm-10">
+              <input type="email" class="form-control" id="input-email2" placeholder="Email 2" value="<%= oldInput.email2 %>" name="email2">
+            </div>
+          </div>
+
+          <!-- Email 3 -->
+          <div class="form-group required">
+            <label for="input-email3" class="col-sm-2 control-label">Email 3</label>
+            <div class="col-sm-10">
+              <input type="email" class="form-control" id="input-email3" placeholder="Email 3" value="<%= oldInput.email3 %>" name="email3">
+            </div>
+          </div>
+
+          <!-- Phone 1 -->
+          <div class="form-group required">
+            <label for="input-phone1" class="col-sm-2 control-label">Phone 1</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-email1" placeholder="Phone 1" value="<%= oldInput.phone1 %>" name="phone1">
+            </div>
+          </div>
+
+          <!-- Phone 2 -->
+          <div class="form-group required">
+            <label for="input-phone2" class="col-sm-2 control-label">Phone 2</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-email2" placeholder="Phone 2" value="<%= oldInput.phone2 %>" name="phone2">
+            </div>
+          </div>
+
+          <!-- Phone 3 -->
+          <div class="form-group required">
+            <label for="input-phone3" class="col-sm-2 control-label">Phone 3</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-email3" placeholder="Phone 3" value="<%= oldInput.phone3 %>" name="phone3">
+            </div>
+          </div>
+
+        </fieldset>
+        <!-- End of CONTACT INFO -->
+          
+
+        <!-- BUTTON -->
+        <div class="buttons">
+          <div class="pull-left">
+            <!-- CSRF and other HIDDEN BUTTONS -->
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden" name="oldLogo" value="<%= oldInput.logo %>">
+            <input type="hidden" name="oldFavicon" value="<%= oldInput.favicon %>">
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary">Submit changes</button>
+          </div>
+        </div>
+        <!-- End of BUTTON -->
+
+      </form>
+      <!-- End of FORM -->
+
+
+    </div>
+
+  </div>
+</main>
+<!-- End of BELOW BANNER CONTENT -->
+
+
+<%- include('../layouts/footerM.ejs') %>

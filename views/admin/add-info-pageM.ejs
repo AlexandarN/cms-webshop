@@ -1,0 +1,123 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/admin-navigationM.ejs') %>
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <% pages.forEach(page => {
+    if(page.firstSlug == 'shop') { %>
+      <div class="parallax"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="<%= page.banner %>"></div>
+    <% }
+  }); %>
+  <h1 class="category-title"><%= title %></h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/admin/info-pages">All Info Pages</a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+
+<!-- BELLOW BANNER CONTENT -->
+<main class="container">
+  <div class="row">
+
+    <div class="col-sm-9" id="content">
+
+      <!-- FLASH MESSAGES -->
+      <%- include('../layouts/flashMessages.ejs') %>
+
+      <!-- HEADLINE -->
+      <h1>Add new info page</h1>
+      <p>Please enter all required information in order to add new info page to this website.</p>
+      <p>NOTE: New info page will be immediately shown in the website Footer menu.</p>
+      <br>
+      <a class="btn btn-primary" href="/admin/info-pages">Back to all info pages</a>
+      <br><br><br>
+
+
+      <!-- FORM -->
+      <form name="form" method="POST" class="form-horizontal" action="/admin/add-info-page" enctype="multipart/form-data" onsubmit="return checkCheckBox(this);">
+        <!-- VALIDATION ERROR MESSAGES ALL TOGETHER
+        <% if(valErrors) {
+              valErrors.forEach(err => { %>
+                <div class="alert alert-danger"><%= err.msg %></div>
+             <% });
+        } %> -->
+
+        <!-- PAGE DATA -->
+        <fieldset id="data">
+          <legend>Info Page Data</legend>
+
+          <!-- Title -->
+          <% if(valErrors.find(err => err.param === 'title')) { 
+            const index = valErrors.findIndex(err => err.param === 'title'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-title" class="col-sm-2 control-label">Title</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-title" placeholder="Title" value="<%= oldInput.title %>" name="title">
+            </div>
+          </div>
+
+          <!-- Slug -->
+          <% if(valErrors.find(err => err.param === 'slug')) { 
+            const index = valErrors.findIndex(err => err.param === 'slug'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-slug" class="col-sm-2 control-label">Slug</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-slug" placeholder="Slug" value="<%= oldInput.slug %>" name="slug">
+            </div>
+          </div>
+
+
+        </fieldset>
+        <!-- End of PAGE DATA -->
+
+        <!-- PAGE CONTENT -->
+        <fieldset id="uper-content">
+          <legend>Info Page Content</legend>
+
+          <!-- Content -->
+          <% if(valErrors.find(err => err.param === 'content')) { 
+            const index = valErrors.findIndex(err => err.param === 'content'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-content1" class="col-sm-2 control-label">Content</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" cols="20" rows="10" id="editor" placeholder="Enter text here. You can include html tags as well." name="content"><%= oldInput.content %></textarea>
+            </div>
+          </div>
+    
+        </fieldset>
+        <!-- End of PAGE CONTENT -->
+
+          
+        <!-- BUTTON -->
+        <div class="buttons">
+          <div class="pull-left">
+            <!-- CSRF -->
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+        <!-- End of BUTTON -->
+
+      </form>
+      <!-- End of FORM -->
+
+
+    </div>
+
+  </div>
+</main>
+<!-- End of BELOW BANNER CONTENT -->
+
+
+<%- include('../layouts/footerM.ejs') %>

@@ -1,0 +1,53 @@
+/*   "admin/pages.ejs" i "admin/categories.ejs"  */								
+.sorting tr:not(.home) {
+     cursor: pointer;
+}
+
+.ui-state-highlight {
+     border: 1px dashed #ccc;
+}
+
+
+
+/*   "admin/add-product.ejs" i "admin/edit-product.ejs"  */								
+#imgPreview, #imgPreview1, #imgPreview2 {
+     margin: 20px;
+     display: none;
+}
+
+
+
+/*   "admin/products.ejs" i "admin/edit-product.ejs"  */								
+#resize {
+     /* width: 150px; */
+     height: 125px;
+}
+
+#resizeBanner {
+     /* width: 300px; */
+     height: 125px;
+}
+
+
+
+/*   "admin/edit-product.ejs"  */								
+ul.gallery {
+     padding: 0;
+}
+
+ul.gallery li:first-child {
+     margin-left: 0;
+}
+
+ul.gallery li {
+	margin: 20px;
+	display: inline-block;
+     list-style: none; 
+}
+
+
+
+/*   "admin/products.ejs"  */								
+.alignMiddle td {
+     vertical-align: middle !important;
+}

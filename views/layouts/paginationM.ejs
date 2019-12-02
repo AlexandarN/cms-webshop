@@ -1,0 +1,53 @@
+<!-- PAGINATION -->
+<div class="category-page-wrapper">
+     <div class="result-inner">
+          Showing <%= (currentPage - 1) * perPage + 1  %> 
+           to 
+               <% if(numProducts >= (currentPage * perPage)) { %>
+                    <%= currentPage * perPage %>
+               <% } else { %>
+                    <%= numProducts %>
+               <% } %> 
+           products of <%= numProducts %>
+           (<%= lastPage %> Page<% if(lastPage > 1) { %>s<% } %>)
+     </div>
+     <div class="pagination-inner">
+          <ul class="pagination">
+               <!-- arrow previous -->
+               <% if(currentPage > 1) { %>
+                    <li><a href="?page=<%= prevPage %>">&lt;Prev</a></li>
+               <% } %>
+               <!-- page 1 -->
+               <% if(currentPage > 1) { %>
+                    <li><a href="?page=1"><span>1</span></a></li>
+               <% } %>
+               <!-- ... -->
+               <% if(currentPage - 2 > 1) { %>
+                    <li><a href="#"></a>...</a></li>
+               <% } %>
+               <!-- previous page -->
+               <% if(prevPage > 1) { %>
+                    <li><a href="?page=<%= prevPage %>"><%= prevPage %></a></li>
+               <% } %>
+               <!-- current page -->
+                    <li class="active"><a href="?page=<%= currentPage %>"><%= currentPage %></a></li>
+               <!-- next page -->
+               <% if(nextPage < lastPage) { %>
+                    <li><a href="?page=<%= nextPage %>"><%= nextPage %></a></li>
+               <% } %>
+               <!-- ... -->
+               <% if(currentPage + 2 < lastPage) { %>
+                    <li><a href="#">...</a></li>
+               <% } %>
+               <!-- last page -->
+               <% if(currentPage < lastPage) { %>
+                    <li><a href="?page=<%= lastPage %>"><%= lastPage %></a></li>
+               <% } %>
+               <!-- arrow next -->
+               <% if(nextPage <= lastPage) { %>
+                    <li><a href="?page=<%= nextPage %>">Next&gt;</a></li>
+               <% } %>
+          </ul>
+     </div>
+</div>
+<!-- End of PAGINATION -->

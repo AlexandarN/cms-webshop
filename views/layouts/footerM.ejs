@@ -1,0 +1,289 @@
+<!-- SIGN UP PARALLAX -->
+<div class="footer-top-cms parallax-container">
+  <div class="parallax">
+    <img src="/images/info/<%= info.footerBanner %>" alt="<%= info.footerBanner %>">
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="newslatter">
+        <form>
+          <h5>SIGN UP FOR OUR DISCOUNTS TODAY!</h5>
+          <h4 class="title-subline">Be sure to follow our blog and sign up for all of our mailing updates!</h4>
+          <div class="input-group">
+            <input type="text" class=" form-control" placeholder="Your-email@website.com">
+            <button type="submit" value="Sign up" class="btn btn-large btn-primary">Subscribe</button>
+          </div>
+        </form>
+      </div>
+      <div class="footer-social">
+        <ul>
+          <li class="facebook"><a href="#"><i class="fa fa-facebook"></i></a></li>
+          <li class="linkedin"><a href="#"><i class="fa fa-linkedin"></i></a></li>
+          <li class="twitter"><a href="#"><i class="fa fa-twitter"></i></a></li>
+          <li class="gplus"><a href="#"><i class="fa fa-google-plus"></i></a></li>
+          <li class="youtube"><a href="#"><i class="fa fa-youtube-play"></i></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of SIGN UP PARALLAX -->
+
+
+<footer>
+  <!-- UPPER FOOTER -->
+  <div class="cms_searvice">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 ">
+          <div class="cms-block1 z-depth-5">
+            <h4>Free Shipping</h4>
+            <p>All order over $150</p>
+          </div>
+        </div>
+        <div class="col-md-3 ">
+          <div class="cms-block2">
+            <h4>30 Days Returns</h4>
+            <p>Money Back Guarantee</p>
+          </div>
+        </div>
+        <div class="col-md-3 ">
+          <div class="cms-block3">
+            <h4>24/7 Support</h4>
+            <p>Feel free to Contact us</p>
+          </div>
+        </div>
+        <div class="col-md-3 ">
+          <div class="cms-block4">
+            <h4>Online Shopping </h4>
+            <p>Save Up to 70% on Store</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of UPPER FOOTER -->
+
+
+  <!-- MIDDLE FOOTER -->
+  <div class="container">
+    <div class="row">
+
+      <!-- INFO PAGES LINKS -->
+      <div class="col-sm-3 footer-block">
+        <h5 class="footer-title">INFORMATION</h5>
+        <ul class="list-unstyled ul-wrapper">
+          <% pages.forEach(page => { 
+            if(page.firstSlug == 'about-us') { %>
+            <li><a href="/<%= page.slug %>">About Us</a></li>
+            <% }
+          }); %>
+          <% infoPages.forEach(infoPage => { %>
+            <li><a href="/info/<%= infoPage.slug %>"><%= infoPage.title %></a></li>
+          <% }); %>
+        </ul>
+      </div>
+      <!-- End of INFO PAGES LINKS -->
+
+      <!-- MY ACCOUNT LINKS -->
+      <div class="col-sm-3 footer-block">
+        <h5 class="footer-title">MY ACCOUNT</h5>
+        <ul class="list-unstyled ul-wrapper">
+          <li><a href="/contact">Contact Us</a></li>
+          <li><a href="#">My Account</a></li>
+          <!-- <li><a href="#">Order History</a></li> -->
+          <li><a href="/wishlist">Wish List</a></li>
+          <!-- <li><a href="#">Newsletter</a></li> -->
+          <!-- <li><a href="#">Gift Certificates</a></li> -->
+          <!-- <li><a href="#">Brands</a></li> -->
+          <li><a href="/#tab-kitche">Specials</a></li>
+          <!-- <li><a href="#">Affiliates</a></li> -->
+        </ul>
+      </div>
+      <!-- End of MY ACCOUNT LINKS -->
+
+      <!-- CATEGORIES LINKS -->
+      <div class="col-sm-3 footer-block">
+        <h5 class="footer-title">Categories</h5>
+        <ul class="list-unstyled ul-wrapper">
+          <% categories.forEach(category => { %>
+            <li><a href="/products/<%= category.slug %>"><%= category.title %></a></li>
+          <% }); %>
+        </ul>
+      </div>
+      <!-- End of CATEGORIES LINKS -->
+
+      <!-- CONTACT INFO -->
+      <div class="col-sm-3 footer-block">
+        <div class="content_footercms_right">
+          <div class="footer-contact">
+            <h5 class="contact-title footer-title">Contact Us</h5>
+            <ul class="ul-wrapper">
+
+              <!-- ADDRESS -->
+              <li>
+                <i class="fa fa-map-marker"></i>
+                <span class="location2">Office Address:
+                  <br>
+                  <% if (info && info.contact && info.contact.address && info.contact.address.street) { %>
+                    <%= info.contact.address.street %>
+                    <br>
+                  <% } %>
+                  <% if (info && info.contact && info.contact.address && info.contact.address.city) { %>
+                    <%= info.contact.address.city %>
+                    <br>
+                  <% } %>
+                  <% if (info && info.contact && info.contact.address && info.contact.address.country) { %>
+                    <%= info.contact.address.country %>
+                  <% } %>
+                  <!-- 218,Drimlend Building -->
+                  <!-- Sarthana jakatnaka, Surat City
+                  <br>
+                  Gujarat-395013  INDIA -->
+                </span>
+              </li>
+
+              <!-- EMAILS -->
+              <li>
+                <i class="fa fa-envelope"></i>
+                <span class="mail2">
+                  <% if(info && info.contact && info.contact.email1) { %>
+                    <a href="mailto:<%= info.contact.email1 %>"><%= info.contact.email1 %></a>
+                    <br>
+                  <% } %>  
+                  <% if(info && info.contact && info.contact.email2) { %>
+                    <a href="mailto:<%= info.contact.email2 %>"><%= info.contact.email2 %></a>
+                    <br>
+                  <% } %>  
+                  <% if(info && info.contact && info.contact.email3) { %>
+                    <a href="mailto:<%= info.contact.email3 %>"><%= info.contact.email3 %></a>
+                  <% } %>  
+                </span>
+              </li>
+
+              <!-- PHONES -->
+              <li>
+                <i class="fa fa-mobile"></i>
+                <span class="phone2">
+                  <% if(info && info.contact && info.contact.phone1) { %>
+                    <%= info.contact.phone1 %>
+                    <br>
+                  <% } %>
+                  <% if(info && info.contact && info.contact.phone2) { %>
+                    <%= info.contact.phone2 %>
+                    <br>
+                  <% } %>
+                  <% if(info && info.contact && info.contact.phone2) { %>
+                    <%= info.contact.phone2 %>
+                    <br>
+                  <% } %>
+ 
+                </span>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- End of CONTACT INFO -->
+
+    </div>
+  </div>
+  <!-- End of MIDDLE FOOTER -->
+
+
+  <!-- BOTTOM FOOTER -->
+  <div class="footer-bottom">
+    <div id="bottom-footer">
+
+      <!-- PAGES LINKS -->
+      <ul class="footer-link">
+        <% pages.forEach(page => {
+          if(page.firstSlug == 'home') { %>
+            <li><a href="/"><%= page.title %></a></li>
+          <% } else if(page.firstSlug == 'shop') { %>
+            <li><a href="/products"><%= page.title %></a></li>
+          <% } else { %>
+            <li><a href="/<%= page.slug %>"><%= page.title %></a></li>
+          <% }
+        }); %>
+      </ul>
+      <!-- End of PAGES LINKS -->
+
+      <!-- COPYRIGHT -->
+      <div class="copyright"> Copyright - <a class="yourstore" href="http://www.lionode.com/"> Created by <%= info.shopName %> &copy; 2019 </a></div>
+      <div class="footer-bottom-cms">
+        <div class="footer-payment">
+          <ul>
+            <li class="mastero"><a href="#"><img alt="" src="imageM/payment/mastero.jpg"></a></li>
+            <li class="visa"><a href="#"><img alt="" src="imageM/payment/visa.jpg"></a></li>
+            <li class="currus"><a href="#"><img alt="" src="imageM/payment/currus.jpg"></a></li>
+            <li class="discover"><a href="#"><img alt="" src="imageM/payment/discover.jpg"></a></li>
+          </ul>
+        </div>
+      </div>
+      <!-- End of COPYRIGHT -->
+
+    </div>
+  </div>
+  <!-- End of BOTTOM FOOTER -->
+
+
+  <!-- SCROLL BUTTON -->
+  <a id="scrollup">Scroll</a> 
+</footer>
+
+
+<!-- PARALLAX JQUERY -->
+<script src="/javascriptM/jquery.parallax.js"></script> 
+<script>
+     jQuery(document).ready(function ($) {
+          $('.parallax').parallax();
+     });
+</script>
+
+
+<!--  CKEDITOR 5 JS -->    
+<script src="https://cdn.ckeditor.com/ckeditor5/12.2.0/classic/ckeditor.js"></script>
+<!-- JS to setup the CKEditor 5 Wysiwyg textarea height -->
+<script>
+     function MinHeightPlugin(editor) {
+          this.editor = editor;
+     }
+     MinHeightPlugin.prototype.init = function() {
+          this.editor.ui.view.editable.extendTemplate({
+               attributes: {
+                    style: {
+                         minHeight: '200px'
+                    }
+               }
+          });
+     };                   
+     ClassicEditor.builtinPlugins.push(MinHeightPlugin);    
+</script>
+<!-- JS to enable CKEditor 5 Wysiwyg on textarea -->
+<script>
+     ClassicEditor
+          .create(document.querySelector('#editor'))
+          .then(editor => {
+               // editor.ui.view.editableElement.style.height = '300px';
+               // window.editor1 = editor;
+               console.log(editor);
+          })
+          .catch(error => {
+               console.error(error);
+          });
+     ClassicEditor
+          .create(document.querySelector('#editor2'))
+          .then(editor2 => {
+               // editor.ui.view.editableElement.style.height = '300px';
+               // window.editor2 = editor;
+               console.log(editor2);
+          })
+          .catch(error => {
+               console.error(error);
+          });
+</script>
+
+</body>
+</html>

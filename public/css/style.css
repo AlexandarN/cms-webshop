@@ -1,0 +1,159 @@
+/* header.ejs */
+nav.navbar {
+     background-color: #646b91 ;
+}
+
+/* all ejs files */
+body {
+     /* background-color: #eae4dd; */
+     color: #646b91;
+}
+
+
+/* sidebar.ejs */
+li a {
+     color: #646b91;
+}
+
+
+/* shop/home.ejs */
+a.btn {
+     width: 95px;
+     background-color: #f7882f; 
+     color: white;
+     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.card {
+     border: none;
+     margin-bottom: 10px;
+}
+
+.card-title {
+     text-transform: uppercase;
+}
+
+.card-img-overlay .card-title {
+     text-align: right;
+}
+
+.row .no-gutters {
+     background-color: #ebf1fb;
+     text-align: right;
+}
+
+.row .no-gutters h6 {
+     text-align: right;
+}
+
+.row .no-gutters p {
+     font-size: 13px;
+}
+
+.jumbotron {
+     border: none;
+     background-color: #f7882f;
+     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+     height: 328px;
+}
+
+.jumbotron .no-gutters {
+     background-color: #f7882f;
+}
+
+.jumbotron h3 {
+     font-weight: bold;
+}
+
+.jumbotron ol {
+     background-color: #f7882f;
+}
+
+.card.mb-3 .no-gutters {
+     background-color: #ebf1fb;
+}
+
+
+
+/* "shop/products.ejs" */
+img.imgWdh {
+     width: 150px;
+}
+
+a.prodDisp {
+     display: inline-block;
+     height: 195px;
+}
+
+.row.prods .prodMrg {
+     margin-top: 20px;
+     margin-bottom: 20px;
+}
+
+.prodMrg h5, h6 {
+     text-align: center;
+}
+
+.prodMrg a {
+     text-align: center;
+     display: block;
+     margin: auto;
+}
+
+.card.mb-3.banner {
+     background-color: #f7882f;
+}
+
+
+
+
+/* "shop/product.ejs" */
+img.imgWdhSngl {
+     width: 100%;
+     /* max-height: 200px; */
+}
+
+ul.gallery li {
+	margin: 20px;
+	display: inline-block;
+     list-style: none; 
+}
+
+
+
+/*  "shop/checkout.ejs" */								
+.imgResize {				
+     width: 90px; 
+}
+
+.alignMiddle td {
+     vertical-align: middle !important;
+}
+
+.center {
+     text-align: center;
+}
+
+.paypal {
+     position: absolute;
+     /* left: -3000px; */
+}
+
+
+/*  "shop/header.ejs" - PAYPAL GIF */	
+.ajax-bground {
+     position: absolute;
+     width: 100%;
+     height: 100%;
+     background:  rgba(255, 255, 255, .8);
+     z-index: 2;
+     display: none;
+}
+
+.ajax-inner {
+     position: absolute;
+     left: 50%;
+     top: 50%;
+     transform: translate(-50%, -50%);
+     text-align: center;
+}

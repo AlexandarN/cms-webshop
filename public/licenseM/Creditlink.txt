@@ -1,0 +1,24 @@
+for free images
+------------------------------------------------
+https://pixabay.com/
+
+
+------------------------------------------------
+
+java script
+------------------------------------------------
+
+http://www.jqueryscript.net/loading/Basic-Customizable-jQuery-Progress-Bar-Plugin-DioProcess.html
+http://owlgraphic.com/owlcarousel/
+https://github.com/fancyapps/fancyBox
+-----------------------------------------------
+
+bootstrap
+-----------------------------------------------
+
+http://getbootstrap.com/getting-started/#download
+
+fontawesome
+------------------------------------------------
+https://fortawesome.github.io/Font-Awesome/
+

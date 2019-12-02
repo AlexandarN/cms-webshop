@@ -1,0 +1,452 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/navigationM.ejs') %>
+
+
+<!-- MAIN BANNER -->
+<div class="mainbanner">
+  <div id="main-banner" class="owl-carousel home-slider">
+    <% if(page.banner) { %>
+      <div class="item">
+        <a href="/products"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="main-banner1" class="img-responsive"></a> 
+      </div>
+    <% } %>
+    <% if(page.image1) { %>
+      <div class="item"> 
+        <a href="/products"><img src="/images/pages/<%= page.firstSlug %>/<%= page.image1 %>" alt="main-banner2" class="img-responsive"></a> 
+     </div>
+    <% } %>
+    <% if(page.image2) { %>
+      <div class="item"> 
+        <a href="/products"><img src="/images/pages/<%= page.firstSlug %>/<%= page.image2 %>" alt="main-banner3" class="img-responsive"></a> 
+      </div>
+    <% } %>
+  </div>
+</div>
+<!-- End of MAIN BANNER -->
+
+
+<!-- MINI NAVBAR -->
+
+<!-- <h3 class="productblock-title">Categories</h3> -->
+
+<!-- End of MINI NAVBAR -->
+
+<!-- CATEGORIES CARDS -->
+<% if(categories.length > 0) { %>
+<div class="container-fluid"> 
+<div class="cms_banner">
+  <div class="row">
+    <% categories.forEach(category => { %>
+      <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="banner sub-hover">
+          <a href="/products/<%= category.slug %>">
+               <img src="/images/categories/<%= category.firstSlug %>/<%= category.image %>" alt="<%= category.image %>" class="img-responsive" style="width: 135px; height: 135px; float: right;">
+          </a>
+          <div class="bannertext">
+            <h2><%= category.title %></h2>
+            <p><%= category.text %></p>
+            <a href="/products/<%= category.slug %>"><button class="btn">Shop Now</button></a>
+          </div>            
+       </div>
+      </div>
+    <% }); %>  
+  </div>
+</div>
+</div>
+<% } %>
+<!-- End of CATEGORIES CARDS -->
+
+
+<!-- OUR COLLECTION -->
+<div id="center">
+  <div class="container">
+
+    <div class="row">
+      <div class="content col-sm-12">
+
+        <!-- MINI NAVBAR -->
+        <div class="customtab">
+          <h3 class="productblock-title"><%= page.subtitle1 %></h3>
+          <div id="tabs" class="customtab-wrapper">
+            <ul class='customtab-inner'>
+              <li class='tab'><a href="#tab-furnitur">Popular</a></li>
+              <li class='tab'><a href="#tab-livin">Best Sellers</a></li>
+              <li class='tab'><a href="#tab-kitche">Specials</a></li>
+              <li class='tab'><a href="#tab-outdoo">New product</a></li>
+            </ul>
+          </div>
+        </div>
+        <!-- End of MINI NAVBAR -->
+
+
+        <!-- FLASH MESSAGES -->
+        <%- include('../layouts/flashMessages.ejs') %>
+
+
+        <!-- PRODUCTS -->
+
+        <!-- POPULAR PRODUCTS -->
+        <div id="tab-furnitur" class="tab-content">
+
+          <!-- Single PRODUCT -->
+          <% popularProds.forEach(product => { %>
+            <div class="product-layout product-grid col-lg-3 col-md-4 col-sm-6 col-xs-12">
+              <div class="item">
+                <div class="product-thumb">
+                  <!-- PRODUCT IMAGE -->
+                  <div class="image product-imageblock"> 
+                    <a href="/products/<%= product.category %>/<%= product.slug %>"> 
+                      <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive">
+                      <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive"> 
+                    </a>
+                    <!-- Hovering BUTTONS -->
+                    <ul class="button-group">
+                      <li>
+                        <button type="button" class="wishlist" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><a href="/wishlist/add/<%= product.slug %>"><i class="fa fa-heart-o"></i></a></button>
+                      </li>
+                      <!-- <li>
+                        <button type="button" class="compare" data-toggle="tooltip" data-placement="top" title="Compare this Product" ><i class="fa fa-exchange"></i></button>
+                      </li> -->
+                      <li>
+                        <button type="button" class="quick-view" data-toggle="tooltip" data-placement="top" title="Quick View"><a href="/products/<%= product.category %>/<%= product.slug %>"><i class="fa fa-eye"></i></a></button>
+                      </li>
+                      <li>
+                        <% if(user) { %>
+                          <button type="button" data-toggle="tooltip" data-placement="top" class="addtocart-btn" title="Add to Cart"><a href="/cart/add/<%= product.slug %>"><i class="fa fa-shopping-bag"></i></a></button>
+                        <% } else { %>
+                          <button type="button" data-toggle="tooltip" data-placement="top" class="addtocart-btn" title="Add to Cart" onclick="return confirm('Please log in, in order to be able to purchase this product!')"><i class="fa fa-shopping-bag"></i></button>
+                        <% } %>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- End of PRODUCT IMAGE -->
+                  <!-- PRODUCT TITLE and PRICE -->
+                  <div class="caption product-detail">
+                    <!-- RATING STARS -->
+                    <div class="rating"> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> 
+                    </div>
+                    <!-- PRODUCT TITLE -->
+                    <h4 class="product-name"><a href="/products/<%= product.category %>/<%= product.slug %>" title="Casual Shirt With Ruffle Hem"><%= product.title %></a></h4>
+                    <!-- PRODUCT PRICE -->
+                    <p class="price product-price">
+                      $<%= parseFloat(product.price).toFixed(2) %>
+                      <% if (product.originalPrice !== product.price) { %>
+                        <span class="less">$<%= parseFloat(product.originalPrice).toFixed(2) %></span>
+                      <% } %>
+                      <span class="price-tax">Ex Tax: $<%= parseFloat(product.price * 0.8).toFixed(2) %></span>
+                    </p>
+                  </div>
+                  <!-- End of PRODUCT TITLE and PRICE -->
+                </div>
+              </div>
+            </div>
+          <% }); %>
+          <!-- End of PRODUCT -->
+
+          <div class="viewmore">
+            y<a class="btn" href="/products">View More Products</a>
+          </div>
+        </div>
+        <!-- End of POPULAR PRODUCTS -->
+
+
+        <!-- BEST SELLER PRODUCTS -->
+        <div id="tab-livin" class="tab-content">
+
+          <!-- Single PRODUCT -->
+          <% bestSellProds.forEach(product => { %>
+            <div class="product-layout product-grid col-lg-3 col-md-4 col-sm-6 col-xs-12">
+              <div class="item">
+                <div class="product-thumb">
+                  <!-- PRODUCT IMAGE -->
+                  <div class="image product-imageblock"> 
+                    <a href="/products/<%= product.category %>/<%= product.slug %>"> 
+                      <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive">
+                      <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive"> 
+                    </a>
+                    <!-- Hovering BUTTONS -->
+                    <ul class="button-group">
+                      <li>
+                        <button type="button" class="wishlist" data-toggle="tooltip" data-placement="top" title="Add to Wish List"><a href="/wishlist/add/<%= product.slug %>"><i class="fa fa-heart-o"></i></a></button>
+                      </li>
+                      <!-- <li>
+                        <button type="button" class="compare" data-toggle="tooltip" data-placement="top" title="Compare this Product" ><i class="fa fa-exchange"></i></button>
+                      </li> -->
+                      <li>
+                        <button type="button" class="quick-view" data-toggle="tooltip" data-placement="top" title="Quick View"><a href="/products/<%= product.category %>/<%= product.slug %>"><i class="fa fa-eye"></i></a></button>
+                      </li>
+                      <li>
+                        <% if(user) { %>
+                          <button type="button" data-toggle="tooltip" data-placement="top" class="addtocart-btn" title="Add to Cart"><a href="/cart/add/<%= product.slug %>"><i class="fa fa-shopping-bag"></i></a></button>
+                        <% } else { %>
+                          <button type="button" data-toggle="tooltip" data-placement="top" class="addtocart-btn" title="Add to Cart" onclick="return confirm('Please log in, in order to be able to purchase this product!')"><i class="fa fa-shopping-bag"></i></button>
+                        <% } %>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- End of PRODUCT IMAGE -->
+                  <!-- PRODUCT TITLE and PRICE -->
+                  <div class="caption product-detail">
+                    <!-- RATING STARS -->
+                    <div class="rating"> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> 
+                    </div>
+                    <!-- PRODUCT TITLE -->
+                    <h4 class="product-name"><a href="/products/<%= product.category %>/<%= product.slug %>" title="Casual Shirt With Ruffle Hem"><%= product.title %></a></h4>
+                    <!-- PRODUCT PRICE -->
+                    <p class="price product-price">
+                      $<%= parseFloat(product.price).toFixed(2) %>
+                      <% if (product.originalPrice !== product.price) { %>
+                        <span class="less">$<%= parseFloat(product.originalPrice).toFixed(2) %></span>
+                      <% } %>
+                      <span class="price-tax">Ex Tax: $<%= parseFloat(product.price * 0.8).toFixed(2) %></span>
+                    </p>
+                  </div>
+                  <!-- End of PRODUCT TITLE and PRICE -->
+                </div>
+              </div>
+            </div>
+          <% }); %>
+          <!-- End of PRODUCT -->
+
+          <div class="viewmore">
+            <div class="btn">View More Products</div>
+          </div>
+        </div>
+        <!-- End of BEST SELLER PRODUCTS -->
+
+        <!-- SPECIAL PRODUCTS -->
+        <div id="tab-kitche" class="tab-content">
+
+          <!-- Single PRODUCT -->
+          <% specialProds.forEach(product => { %>
+            <div class="product-layout product-grid col-lg-3 col-md-4 col-sm-6 col-xs-12">
+              <div class="item">
+                <div class="product-thumb">
+                  <!-- PRODUCT IMAGE -->
+                  <div class="image product-imageblock"> 
+                    <a href="/products/<%= product.category %>/<%= product.slug %>"> 
+                      <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive">
+                      <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive"> 
+                    </a>
+                    <!-- Hovering BUTTONS -->
+                    <ul class="button-group">
+                      <li>
+                        <button type="button" class="wishlist" data-toggle="tooltip" data-placement="top" title="Add to Wish List"><a href="/wishlist/add/<%= product.slug %>"><i class="fa fa-heart-o"></a></i></button>
+                      </li>
+                      <!-- <li>
+                        <button type="button" class="compare" data-toggle="tooltip" data-placement="top" title="Compare this Product" ><i class="fa fa-exchange"></i></button>
+                      </li> -->
+                      <li>
+                        <button type="button" class="quick-view" data-toggle="tooltip" data-placement="top" title="Quick View"><a href="/products/<%= product.category %>/<%= product.slug %>"><i class="fa fa-eye"></i></a></button>
+                      </li>
+                      <li>
+                        <% if(user) { %>
+                          <button type="button" data-toggle="tooltip" data-placement="top" class="addtocart-btn" title="Add to Cart"><a href="/cart/add/<%= product.slug %>"><i class="fa fa-shopping-bag"></i></a></button>
+                        <% } else { %>
+                          <button type="button" data-toggle="tooltip" data-placement="top" class="addtocart-btn" title="Add to Cart" onclick="return confirm('Please log in, in order to be able to purchase this product!')"><i class="fa fa-shopping-bag"></i></button>
+                        <% } %>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- End of PRODUCT IMAGE -->
+                  <!-- PRODUCT TITLE and PRICE -->
+                  <div class="caption product-detail">
+                    <!-- RATING STARS -->
+                    <div class="rating"> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> 
+                    </div>
+                    <!-- PRODUCT TITLE -->
+                    <h4 class="product-name"><a href="/products/<%= product.category %>/<%= product.slug %>" title="Casual Shirt With Ruffle Hem"><%= product.title %></a></h4>
+                    <!-- PRODUCT PRICE -->
+                    <p class="price product-price">
+                      $<%= parseFloat(product.price).toFixed(2) %>
+                      <% if (product.originalPrice !== product.price) { %>
+                        <span class="less">$<%= parseFloat(product.originalPrice).toFixed(2) %></span>
+                      <% } %>
+                      <span class="price-tax">Ex Tax: $<%= parseFloat(product.price * 0.8).toFixed(2) %></span>
+                    </p>
+                  </div>
+                  <!-- End of PRODUCT TITLE and PRICE -->
+                </div>
+              </div>
+            </div>
+          <% }); %>
+          <!-- End of PRODUCT -->
+
+          <div class="viewmore">
+            <div class="btn">View More Products</div>
+          </div>
+        </div>
+        <!-- End of SPECIAL PRODUCTS -->
+
+        <!-- NEW PRODUCTS -->
+        <div id="tab-outdoo" class="tab-content">
+
+          <!-- Single PRODUCT -->
+          <% newProds.forEach(product => { %>
+            <div class="product-layout product-grid col-lg-3 col-md-4 col-sm-6 col-xs-12">
+              <div class="item">
+                <div class="product-thumb">
+                  <!-- PRODUCT IMAGE -->
+                  <div class="image product-imageblock"> 
+                    <a href="/products/<%= product.category %>/<%= product.slug %>"> 
+                      <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive">
+                      <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive"> 
+                    </a>
+                    <!-- Hovering BUTTONS -->
+                    <ul class="button-group">
+                      <li>
+                        <button type="button" class="wishlist" data-toggle="tooltip" data-placement="top" title="Add to Wish List"><a href="/wishlist/add/<%= product.slug %>"><i class="fa fa-heart-o"></i></a></button>
+                      </li>
+                      <!-- <li>
+                        <button type="button" class="compare" data-toggle="tooltip" data-placement="top" title="Compare this Product" ><i class="fa fa-exchange"></i></button>
+                      </li> -->
+                      <li>
+                        <button type="button" class="quick-view" data-toggle="tooltip" data-placement="top" title="Quick View"><a href="/products/<%= product.category %>/<%= product.slug %>"><i class="fa fa-eye"></i></a></button>
+                      </li>
+                      <li>
+                        <% if(user) { %>
+                          <button type="button" data-toggle="tooltip" data-placement="top" class="addtocart-btn" title="Add to Cart"><a href="/cart/add/<%= product.slug %>"><i class="fa fa-shopping-bag"></i></a></button>
+                        <% } else { %>
+                          <button type="button" data-toggle="tooltip" data-placement="top" class="addtocart-btn" title="Add to Cart" onclick="return confirm('Please log in, in order to be able to purchase this product!')"><i class="fa fa-shopping-bag"></i></button>
+                        <% } %>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- End of PRODUCT IMAGE -->
+                  <!-- PRODUCT TITLE and PRICE -->
+                  <div class="caption product-detail">
+                    <!-- RATING STARS -->
+                    <div class="rating"> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> 
+                    </div>
+                    <!-- PRODUCT TITLE -->
+                    <h4 class="product-name"><a href="/products/<%= product.category %>/<%= product.slug %>" title="Casual Shirt With Ruffle Hem"><%= product.title %></a></h4>
+                    <!-- PRODUCT PRICE -->
+                    <p class="price product-price">
+                      $<%= parseFloat(product.price).toFixed(2) %>
+                      <% if (product.originalPrice !== product.price) { %>
+                        <span class="less">$<%= parseFloat(product.originalPrice).toFixed(2) %></span>
+                      <% } %>
+                      <span class="price-tax">Ex Tax: $<%= parseFloat(product.price * 0.8).toFixed(2) %></span>
+                    </p>
+                  </div>
+                  <!-- End of PRODUCT TITLE and PRICE -->
+                </div>
+              </div>
+            </div>
+          <% }); %>
+          <!-- End of PRODUCT -->
+              
+          <div class="viewmore">
+            <div class="btn">View More Products</div>
+          </div>
+        </div>
+        <!-- End of NEW PRODUCTS -->
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of PRODUCTS -->
+
+<!-- FEATURED PRODUCTS -->
+<div class="container">
+  <div class="row">
+    <div class="content col-sm-12">
+
+      <!-- Subtitle -->
+      <div class="customtab">
+        <h3 class="productblock-title"><%= page.subtitle2 %></h3>
+        <h4 class="title-subline"><%- page.subcontent %></h4>
+      </div>
+
+      <!-- Featured products -->
+      <div id="tab-furniture" class="tab-content">
+          <div id="special-slidertab" class="row owl-carousel product-slider">
+
+            <!-- Featured product -->
+            <% featuredProds.forEach(product => { %>
+              <div class="item">
+                <div class="product-thumb">
+                  <div class="image product-imageblock"> 
+                    <!-- Image -->
+                    <a href="products/<%= product.category %>/<%= product.slug %>"> 
+                      <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive"> 
+                      <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>>" title="<%= product.title %>" class="img-responsive"> 
+                    </a>
+                    <!-- Buttons -->
+                    <ul class="button-group">
+                      <li>
+                        <button type="button" class="wishlist" data-toggle="tooltip" data-placement="top" title="Add to Wish List"><a href="/wishlist/add/<%= product.slug %>"><i class="fa fa-heart-o"></i></a></button>
+                      </li>
+                      <!-- <li>
+                        <button type="button" class="compare" data-toggle="tooltip" data-placement="top" title="Compare this Product"><i class="fa fa-exchange"></i></button>
+                      </li> -->
+                      <li>
+                        <button type="button" class="quick-view" data-toggle="tooltip" data-placement="top" title="Quick View"><a href="/products/<%= product.category %>/<%= product.slug %>"><i class="fa fa-eye"></i></a></button>
+                      </li>
+                      <li>
+                        <% if(user) { %>
+                          <button type="button" class="addtocart-btn" data-toggle="tooltip" data-placement="top" title="Add to Cart"><a href="/cart/add/<%= product.slug %>"><i class="fa fa-shopping-bag"></i></a></button>
+                        <% } else { %>
+                          <button type="button" class="addtocart-btn" data-toggle="tooltip" data-placement="top" title="Add to Cart" onclick="return confirm('Please log in, in order to be able to purchase this product!')"><i class="fa fa-shopping-bag"></i></button>
+                        <% } %>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- Product description and price -->
+                  <div class="caption product-detail">
+                    <div class="rating"> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i><i class="fa fa-star fa-stack-2x"></i></span> 
+                      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> 
+                    </div>
+                    <h4 class="product-name">
+                      <a href="products/<%= product.category %>/<%= product.slug %>" title="<%= product.title %>"><%= product.title %>
+                      </a>
+                    </h4>
+                    <p class="price product-price">
+                      $<%= parseFloat(product.price).toFixed(2) %>
+                      <% if (product.originalPrice !== product.price) { %>
+                        <span class="less">$<%= parseFloat(product.originalPrice).toFixed(2) %></span>
+                      <% } %>
+                      <span class="price-tax">Ex Tax: $<%= parseFloat(product.price * 0.8).toFixed(2) %></span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+            <!-- End of Featured Product -->
+            
+          </div>
+      </div>
+    </div>
+    <!-- End of FEATURED PRODUCTS -->
+
+  </div>
+</div>
+<!-- End of FEATURED PRODUCTS -->
+
+
+<%- include('../layouts/footerM.ejs') %>

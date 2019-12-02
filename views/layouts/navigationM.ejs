@@ -1,0 +1,52 @@
+<nav id="menu" class="navbar">
+    <div class="nav-inner">
+
+      
+      <!-- NAVBAR when in XS VIEW -->
+      <div class="navbar-header">
+        <span id="category" class="visible-xs">Categories</span>
+        <button type="button" class="btn btn-navbar navbar-toggle" ><i class="fa fa-bars"></i></button>
+      </div>
+      <!-- End of NAVBAR in XS VIEW -->
+
+
+      <!-- NAVBAR when in DESKTOP VIEW -->
+      <div class="navbar-collapse">
+        <ul class="main-navigation">
+
+          <!-- PAGES LINKS -->
+          <% pages.forEach(page => { 
+            if(page.firstSlug == 'home') { %>
+              <li><a href="/" class="parent"><%= page.title %></a></li>
+            <% } else if(page.firstSlug == 'shop') { %>
+              <li><a href="/products" class="parent"><%= page.title %></a>
+                  <ul>
+                      <% categories.forEach(category => { %>
+                        <li><a href="/products/<%= category.slug %>"><%= category.title %></a></li>
+                      <% }); %>
+                  </ul>
+              </li>
+            <% } else { %>
+              <li><a href="/<%= page.slug %>" class="parent"><%= page.title %></a></li>
+            <% } 
+          }) %>
+          <!-- End of PAGES LINKS -->
+
+          <!-- DASHBOARD Dropdown -->
+          <% if(user && user.admin == 1) { %>
+            <li><a href="/dashboard" class="parent">Admin Dashboard</a>
+              <ul>
+                <li><a href="/admin/pages">All Pages</a></li>
+                <li><a href="/admin/categories">All Categories</a></li>
+                <li><a href="/admin/products">All Products</a></li>
+                <li><a href="/admin/info">Site Data</a></li>
+                <li><a href="/admin/info-pages">Info Pages</a></li>
+              </ul>
+            </li>
+          <% } %>  
+          <!-- End of DASHBOARD Dropdown -->
+
+        </ul>
+      </div>
+    </div>
+  </nav>

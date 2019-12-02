@@ -1,0 +1,104 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/navigationM.ejs') %>
+
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <% pages.forEach(page => {
+    if(page.firstSlug == 'shop') { %>
+      <div class="parallax"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="<%= page.banner %>"></div>
+    <% }
+  }); %>
+  <h1>Wishlist</h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/products">Shop</a></li>
+    <li><a href="/wishlist">Wishlist</a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+<!-- BELLOW BANNER CONTENT -->
+<div class="container">
+  <div class="row">
+
+    <!-- SIDEBAR -->
+    <%- include('../layouts/sidebarM.ejs') %>
+
+
+    <!-- WISHLIST -->
+    <div class="col-sm-9" id="content">
+
+      <!-- FLASH MESSAGES -->
+      <%- include('../layouts/flashMessages.ejs') %>
+
+      <% if(typeof wishlist !== 'undefined') { %>
+        <!-- WISHLIST TABLE HEADER and BODY -->
+        <!-- <form enctype="multipart/form-data" method="post" action="#"> -->
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <td class="text-center">Image</td>
+                  <td class="text-left">Product Name</td>
+                  <td class="text-center">Price</td>
+                  <td class="text-center">Original Price</td>
+                  <td class="text-center">Remove</td>
+                  <td class="text-center">Add to Cart</td>
+                </tr>
+              </thead>
+              <tbody>
+                <% wishlist.forEach(item => { %>
+                  <tr>
+                    <td class="text-center"><a href="/products/<%= item.category %>/<%= item.slug %>"><img class="img-thumbnail" title="<%= item.title %>" alt="<%= item.title %>" src="<%= item.imagePath %>" style="height: 60px;"></a></td>
+                    <td class="text-left"><a href="/products/<%= item.category %>/<%= item.slug %>"><%= item.title %></a></td>
+                    <td class="text-center">$<%= parseFloat(item.price).toFixed(2) %></td>
+                    <td class="text-center">$<%= parseFloat(item.originalPrice).toFixed(2) %></td>
+                    <td class="text-center">
+                      <div style="max-width: 200px;" class="input-group btn-block">
+                        <span class="input-group-btn">
+                          <button  class="btn btn-danger" data-toggle="tooltip" data-original-title="Clear"><a href="/wishlist/remove/<%= item.slug %>"><i class="fa fa-times-circle"></i></a></button>
+                        </span>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <div style="max-width: 200px;" class="input-group btn-block">
+                        <span class="input-group-btn">
+                          <button class="btn btn-primary" data-toggle="tooltip" data-original-title="Add"><a href="/cart/add/<%= item.slug %>"><i class="fa fa-shopping-bag"></i></a></button>
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <!-- </form> -->
+        <!-- End of WISHLIST TABLE HEADER and BODY -->
+
+      <% } else { %>
+        <br>
+        <h2>Your Wishlist is empty.</h2>
+        <br>
+      <% } %>
+    
+      <br>    
+      <div class="buttons">
+        <div class="pull-left"><a class="btn btn-default" href="/">Continue Shopping</a></div>
+        <% if(typeof cart !== 'undefined') { %>
+          <div class="pull-right"><a class="btn btn-primary" href="/cart/checkout">Checkout</a></div>
+          <div class="pull-right">&nbsp;&nbsp;&nbsp;</div>
+          <div class="pull-right"><a class="btn btn-danger" href="/cart">View Cart</a></div>
+        <% } %>
+      </div>
+      
+    </div>
+    <!-- End of WISHLIST -->
+
+  </div>
+</div>
+<!-- End of BELOW BANNER CONTENT -->
+
+
+<%- include('../layouts/footerM.ejs') %>

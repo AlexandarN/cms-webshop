@@ -1,0 +1,82 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/navigationM.ejs') %>
+
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <div class="parallax"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="<%= page.banner %>"></div>
+  <h1><%= page.title %></h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/<%= page.slug %>"><%= page.title %></a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+<!-- BELLOW BANNER CONTENT -->
+<div class="container">
+
+  <div class="row">
+    <div class="wwd">
+
+      <!-- IMAGE 1 -->
+      <% if(page.image1) { %>
+      <div class="col-sm-5">
+        <img class="img-responsive" src="/images/pages/<%= page.firstSlug %>/<%= page.image1 %>" alt="<%= page.image1 %>">
+      </div>
+      <% } %>
+      <!-- End of IMAGE 1 -->
+
+      <!-- CONTENT 1 -->
+      <% if(page.content || page.subtitle1) { %>
+      <div <% if(page.image1) { %>class="col-sm-7"<% } %> >
+        <div class="column-inner ">
+          <div class="wrapper">
+            <h4 class="aboutus-title"><%= page.subtitle1 %></h4>
+            <p><%- page.content %></p>
+          </div>
+        </div>
+      </div>
+      <% } %>
+      <!-- End of CONTENT 1 -->
+    </div>
+  </div>
+
+  <div class="row team">
+    <!-- CONTENT 2 -->
+    <% if(page.subcontent || page.subtitle2) { %>
+    <h3 class="team-title"><%= page.subtitle2 %></h3>
+    <div class="col-sm-7">
+      <div class="desc">
+          <p><%- page.subcontent %></p>
+      </div>
+    </div>
+    <% } %>
+    <!-- End of CONTENT 2 -->
+
+    <!-- IMAGE 2 -->
+    <% if(page.image2) { %>
+    <div class="col-sm-5"> 
+      <img src="/images/pages/<%= page.firstSlug %>/<%= page.image2 %>" alt="<%= page.image2 %>">
+    </div>
+    <% } %>
+    <!-- End of IMAGE 2 -->
+  </div>
+
+</div>
+<!-- End of BELLOW BANNER CONTENT -->
+
+
+
+
+<script src="/javascriptM/DioProgress.js"></script> 
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<script src="/js/jQuery.js"></script> 
+<!-- Include all compiled plugins (below), or include individual files as needed --> 
+<script src="js/bootstrap.js"></script>
+
+
+
+
+<%- include('../layouts/footerM.ejs') %>

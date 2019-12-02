@@ -1,0 +1,54 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/navigationM.ejs') %>
+
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <% pages.forEach(page => {
+    if(page.firstSlug == 'shop') { %>
+      <div class="parallax"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="<%= page.banner %>"></div>
+    <% }
+  }); %>  
+  <h1><%= title %></h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/<%= infoPage.slug %>"><%= infoPage.title %></a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+<!-- BELLOW BANNER CONTENT -->
+<div class="container">
+
+  <div class="row">
+    <div class="wwd">
+      <div class="col-sm-12">
+
+      <!-- CONTENT -->
+        <div class="column-inner ">
+          <div class="wrapper">
+            <p><%- infoPage.content %></p>
+          </div>
+        </div>
+      <!-- End of CONTENT -->
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- End of BELLOW BANNER CONTENT -->
+
+
+
+
+<script src="/javascriptM/DioProgress.js"></script> 
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<script src="/js/jQuery.js"></script> 
+<!-- Include all compiled plugins (below), or include individual files as needed --> 
+<script src="js/bootstrap.js"></script>
+
+
+
+<%- include('../layouts/footerM.ejs') %>
