@@ -349,7 +349,7 @@ exports.getDashboardPage = async (req, res, next) => {
 
 exports.getResetPasswordPage = (req, res, next) => {
 	// Render view file and send data	
-	res.render('shop/forgetPasswordM', {
+	res.render('shop/reset-passwordM', {
 		title: 'Reset Password', 
           oldInput: {} 
      }); 
