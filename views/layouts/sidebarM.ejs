@@ -15,7 +15,8 @@
         <!-- Link -> Category -->
         <% categories.forEach(category => { %>
           <li><a href="/products/<%= category.slug %>" class="activSub"><%= category.title %></a>
-            <ul>
+            <!-- Subcategories -->
+            <!-- <ul>
               <li><a href="#">Subcategory 1</a></li>
               <li><a href="#" class="activSub">Subcategory 2</a>
                 <ul>
@@ -23,7 +24,7 @@
                   <li><a href="#">test 2</a></li>
                 </ul>
               </li>
-            </ul>
+            </ul> -->
           </li>
         <% }); %>
 

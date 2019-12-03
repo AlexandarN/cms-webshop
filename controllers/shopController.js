@@ -197,7 +197,7 @@ exports.getProduct = async (req, res, next) => {
                const catProducts = await Product.find({$and: [{category: category.slug}, {slug: {$ne: product.slug}}]})
                     .sort({sorting: 1})
                     .limit(4);
-               // Catch gallery images (IMPORTANT -> fsExtra.readdir() will also catch 'thumbs' folder (as an element of an array) inside gallery folder)	
+               // Catch gallery images (IMPORTANT -> fsExtra.readdir() will also catch 'thumbs' folder (as an element of an array) inside gallery folder -> and this is why we will in view file set following condition: if(gallImage != 'thumbs') )	
                const gallery = 'public/images/products/' + product.firstSlug + '/gallery';
                let galleryImages = null;
                const images = await fsExtra.readdir(gallery);

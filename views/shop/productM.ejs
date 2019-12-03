@@ -44,7 +44,7 @@
                 <% if(galImage != 'thumbs') { %>
                   <div class="item">
                     <div class="image-additional">
-                      <a class="thumbnail fancybox" href="/images/products/<%= product.firstSlug %>/gallery/<%= galImage %>" title="<%= galImage %>"> 
+                      <a data-fancybox="gallery" class="thumbnail fancybox" href="/images/products/<%= product.firstSlug %>/gallery/<%= galImage %>" title="<%= galImage %>"> 
                         <img src="/images/products/<%= product.firstSlug %>/gallery/thumbs/<%= galImage %>" title="<%= galImage %>" alt="<%= galImage %>">
                       </a>
                     </div>
