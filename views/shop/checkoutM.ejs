@@ -945,6 +945,39 @@
                 </table>
               </div>
 
+
+              <!-- BUTTONS -->
+              <!-- PRINT INVOICE BUTTON -->
+              <% if(user.billAddress.firstName === '' || 
+                user.billAddress.lastName === '' ||
+                user.billAddress.street === '' ||
+                user.billAddress.city === '' ||
+                user.billAddress.postCode === null ||
+                user.billAddress.country === '') { %>
+                  <div class="pull-left">
+                    <a class="btn btn-secondary" href="#" onclick="alert('Please fill out all required information in the Billing Details form!')">Print Invoice</a>
+                  </div>
+              <% } else if(user.shippAddress.firstName === '' || 
+                user.shippAddress.lastName === '' ||
+                user.shippAddress.street === '' ||
+                user.shippAddress.city === '' ||
+                user.shippAddress.postCode === null ||
+                user.shippAddress.country === '') { %>
+                  <div class="pull-left">
+                    <a class="btn btn-secondary" href="#" onclick="alert('Please fill out all required shipping information in the Delivery Details form!')">Print Invoice</a>
+                  </div>
+              <% } else if(!shipping) { %>
+                <div class="pull-left">
+                  <a class="btn btn-secondary" href="#" onclick="alert('Please choose a Delivery Method!')">Print Invoice</a>
+                </div>
+              <% } else { %>
+                <div class="pull-left">
+                  <a class="btn btn-secondary" href="/cart/invoice">Print Invoice</a>
+                </div>
+              <% } %>
+              <!-- End of PRINT INVOICE BUTTON -->
+
+
               <!-- CHECKOUT BUTTON -->
               <!-- Firstly, check if user has all required Billing data -->
               <% if(user.billAddress.firstName === '' || 
@@ -959,22 +992,22 @@
                     </div>
                   </div>
               <% } else if(user.shippAddress.firstName === '' || 
-              user.shippAddress.lastName === '' ||
-              user.shippAddress.street === '' ||
-              user.shippAddress.city === '' ||
-              user.shippAddress.postCode === null ||
-              user.shippAddress.country === '') { %>
-                <div class="buttons">
-                  <div class="pull-right">
-                    <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Please fill out all required shipping information in the Delivery Details form!')">
-                  </div>
-                </div>
-              <% } else if(!shipping) { %>
-                <div class="buttons">
+                user.shippAddress.lastName === '' ||
+                user.shippAddress.street === '' ||
+                user.shippAddress.city === '' ||
+                user.shippAddress.postCode === null ||
+                user.shippAddress.country === '') { %>
+                  <div class="buttons">
                     <div class="pull-right">
-                      <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Please choose a Delivery Method!')">
+                      <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Please fill out all required shipping information in the Delivery Details form!')">
                     </div>
                   </div>
+              <% } else if(!shipping) { %>
+                <div class="buttons">
+                  <div class="pull-right">
+                    <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Please choose a Delivery Method!')">
+                  </div>
+                </div>
               <% } else { %>
                 <!-- Calculate total amount - needed for stripe data-amount -->
                 <% let totalShipp = 0;

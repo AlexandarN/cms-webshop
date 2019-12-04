@@ -2,7 +2,6 @@
 const fsExtra = require('fs-extra');
 const path = require('path');
 const pdfkit = require('pdfkit');
-const { validationResult } = require('express-validator/check');	
 
 const Page = require('../models/Page');
 const Product = require('../models/Product');
@@ -613,92 +612,224 @@ exports.postPayWithStripe = async (req, res, next) => {
 }
 
 
-exports.getInvoice = (req, res, next) => {
-     // Create invoice name and the path where it will be stored on the server
-     const invoiceNumber = Date.now();
-     const invoiceName = 'Invoice-' + invoiceNumber + '.pdf';
-     const invoicePath = path.join('data', 'invoices', invoiceName);
-     // Setting file type of the invoice and download method
-     res.setHeader('Content-Type', 'application/pdf');
-     res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );  // inline (automatic download); attachment (prompt dialog box before download)
-     // CREATE PDF File with PDFKIT package 
-     const pdfDoc = new pdfkit();
-          // These fonts need to be downloaded from www.fontsquirrel.com, we download .ttf files and save them in the Public folder of the project
-     pdfDoc.registerFont('ClearSans-Medium', 'public/fonts/ClearSans-Medium.ttf'); // ClearSans font we need in order to display serbian fonts
-          // Create stream of the pdf file (invoice)
-     pdfDoc.pipe(fsExtra.createWriteStream(invoicePath));
-     pdfDoc.pipe(res);
 
-     // DESIGN the PDF file
-          // Set the coordinates of the document (x1 will be used as left margin of the doc, x2, x3, ... - will be used for the table columns' witdhs)
-     // x1 = pdfDoc.x; --> for default x margin
-     x1 = 50;
-     x2 = 190;
-     x3 = 280;
-     x4 = 380;
-     x5 = 480;
-          // Set the document title
-     pdfDoc.fontSize(23).font('Helvetica').text('Invoice - id: ' + invoiceNumber, x1, pdfDoc.y, {underline: true});
-          // Set the table header
-     pdfDoc.moveDown(1).fontSize(15).font('Helvetica-Bold').text('Product title', x1, pdfDoc.y, {indent: 5, align: 'left', width: 100})
-          .moveUp().text('Image', x2, pdfDoc.y)
-          .moveUp().text('Quantity', x3, pdfDoc.y)
-          .moveUp().text('Unit price', x4, pdfDoc.y)
-          .moveUp().text('Subtotal', x5, pdfDoc.y);
-          // Set the table body
-     req.session.cart.forEach(item => {
-          pdfDoc.moveDown(0.2).fontSize(13).font('ClearSans-Medium').text(item.title, x1, pdfDoc.y, {indent: 5, align: 'left', baseline: 'hanging', width: 190})
-               .moveUp().image('public/' + item.imagePath, x2, pdfDoc.y, {height: 30, align: 'center', valign: 'bottom'})
-               .moveUp().text(item.quantity, x3, pdfDoc.y, {align: 'center', baseline: 'middle', width: 60})
-               .moveUp().text('$' + parseFloat(item.price).toFixed(2), x4, pdfDoc.y, {align: 'center', baseline: 'middle', width: 60})
-               .moveUp().text('$' + parseFloat(item.subtotal).toFixed(2), x5, pdfDoc.y, {align: 'right', baseline: 'middle', width: 60});
-     });
-          // Set the table footer
-     pdfDoc.fontSize(10).font('Helvetica').text('---------------------------------------------------------------------------------------------------------------------------------------------------', x1);
-     
-     total = req.session.cart.reduce((total, item) => total + item.subtotal, 0);
-     pdfDoc
-          .moveDown(-0.2).fontSize(13).font('Helvetica-Bold').text('Total price:', {indent: 5})
-          .moveUp().text(' ', x2, pdfDoc.y, {align: 'center', width: 60})
-          .moveUp().text(' ', x3, pdfDoc.y, {align: 'center', width: 60})
-          .moveUp().text(' ', x4, pdfDoc.y, {align: 'center', width: 60})
-          .moveUp().text('$' + parseFloat(total).toFixed(2), x5, pdfDoc.y, {align: 'right', width: 60});
+exports.getInvoice = async (req, res, next) => {
+     try {
+          let total = req.session.cart.reduce((total, item) => total + item.subtotal, 0);
+          if(req.session.shipping) {
+               total += req.session.shipping.price; 
+          }
 
-     pdfDoc.moveDown(-0.4).fontSize(10).font('Helvetica').text('---------------------------------------------------------------------------------------------------------------------------------------------------', x1);
-          // Add new page (we can set its margin, instead of using x1 coordinate)
-     pdfDoc.addPage({margin: 30});
-     // Create columnized text
-     const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in suscipit purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus nec hendrerit felis. Morbi aliquam facilisis risus eu lacinia. Sed eu leo in turpis fringilla hendrerit. Ut nec accumsan nisl. Suspendisse rhoncus nisl posuere tortor tempus et dapibus elit porta. Cras leo neque, elementum a rhoncus ut, vestibulum non nibh. Phasellus pretium justo turpis. Etiam vulputate, odio vitae tincidunt ultricies, eros odio dapibus nisi, ut tincidunt lacus arcu eu elit. Aenean velit erat, vehicula eget lacinia ut, dignissim non tellus. Aliquam nec lacus mi, sed vestibulum nunc. Suspendisse potenti. Curabitur vitae sem turpis. Vestibulum sed neque eget dolor dapibus porttitor at sit amet sem. Fusce a turpis lorem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;';  
-     pdfDoc.fontSize(12).text(lorem, x1, pdfDoc.y, {columns: 3, columnGap: 15, height: 190, width: 465, align: 'justify'});
-          //  Create bulleted list
-     pdfDoc.moveDown(1.5).font('ClearSans-Medium').list(['jedan', 'dva', 'tri', 'četiri'], {bulletRadius: 1.5, indent: 20, textIndent: 15});
-          // Add some additional texts in one line
-     pdfDoc.moveDown(2).fontSize(13).font('Helvetica').text('The amount you need to pay for this order is', x1)
-          .moveUp().font('Helvetica-Bold').fillColor('red').text('$' + parseFloat(total).toFixed(2), 309)
-          .moveUp().font('Helvetica').fillColor('black').text('.', 345);
-          // Add some additional text and a hyperlink in one line
-     pdfDoc.moveDown(0.5).text('Visit our web presentation at ', x1)
-          .moveUp().fillColor('blue').text('www.cmswebshop.com', 219, pdfDoc.y, {link: 'www.cmswebshop.com', underline: true})
-          .moveUp().fillColor('black').text('.', 353);
-          //  Add some additional text
-     pdfDoc.moveDown(2).text('Sincerely yours,', x1);
-          // Add image
-     pdfDoc.image('data/Richard_M_Nixon_Signature.png', {width: 150});
-          // Close the document
-     pdfDoc.end();
-          // STREAMING OF FILE DATA - GOOD APPROACH FOR BIG FILES DOWNLOAD
-     // const file = fs.createReadStream(invoicePath);
-     // res.setHeader('Content-Type', 'application/pdf');
-     // res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );
-     // file.pipe(res);
-          // READING OF FILE DATA IN THE MEMORY - NOT GOOD APPROACH FOR BIG FILES
-     // fs.readFile(invoicePath, (err, data) => {
-     //      if(err) {
-     //           return next(err);
-     //      }
-     //      res.setHeader('Content-Type', 'application/pdf');
-     //      res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );
-     //      res.send(data);
-     //      console.log("You've opened a document!");
-     // });
+          const invoice = {
+               logoPath: 'public/images/info/' + req.app.locals.info.logo,
+               company: {
+                    name: req.app.locals.info.shopName,
+                    street: req.app.locals.info.contact.address.street,
+                    city: req.app.locals.info.contact.address.city,
+                    country: req.app.locals.info.contact.address.country,
+                    email: req.app.locals.info.contact.email1,
+                    phone: req.app.locals.info.contact.phone1
+               },
+               billing: {
+                    firstName: req.user.billAddress.firstName,
+                    lastName: req.user.billAddress.lastName,
+                    company: req.user.billAddress.company,
+                    street: req.user.billAddress.street,
+                    city: req.user.billAddress.city,
+                    postCode: req.user.billAddress.postCode,
+                    country: req.user.billAddress.country
+               },
+               items: req.session.cart,
+               shipping: {
+                    method: req.session.shipping.method,
+                    price: req.session.shipping.price
+               },
+               subtotal: total * 0.8,
+               VAT: total * 0.2,
+               number: Date.now()
+          };
+
+          // Create INVOICE NAME and the PATH where it will be stored on the server
+          const invoiceNumber = Date.now();
+          const invoiceName = 'Invoice-' + invoiceNumber + '.pdf';
+          const invoicePath = path.join('data', 'invoices', invoiceName);
+
+          // Setting FILE TYPE of the invoice and DOWNLOAD METHOD
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );  // inline (automatic download); attachment (prompt dialog box before download)
+
+
+          // CREATE PDF File with PDFKIT package 
+          const pdfDoc = new pdfkit({ size: 'A4', margin: 50});
+
+               // Import FONTS downloaded from www.fontsquirrel.com, we downloaded .ttf files and saved them in the Public folder of the project
+          pdfDoc.registerFont('ClearSans-Medium', 'public/fonts/ClearSans-Medium.ttf'); // ClearSans font we need in order to display Serbian fonts
+               // Create stream of the pdf file (invoice)
+          pdfDoc.pipe(fsExtra.createWriteStream(invoicePath));
+          pdfDoc.pipe(res);
+
+               // 1. INVOICE HEADER (Logo + Company Address)
+          pdfDoc
+               .image(invoice.logoPath, 50, 45, { width: 150 })
+               .fillColor("#122047")
+               .font("Helvetica-Bold")
+               .fontSize(11)
+               .text(invoice.company.name, 200, 50, { align: "right" })
+               .font("Helvetica")
+               .fontSize(10)
+               .text(invoice.company.street, 200, 65, { align: "right" })
+               .text(invoice.company.city, 200, 80, { align: "right" })
+               .text(invoice.company.country, 200, 95, { align: "right" })
+               .moveDown();
+
+               // 2. INVOICE TITLE
+          const invoiceStart = 140;
+          pdfDoc
+               .fontSize(20)
+               .text("INVOICE", 50, invoiceStart);
+
+          generateHr(pdfDoc, invoiceStart + 25);
+
+               // 3. INVOICE DATA and CUSTOMER INFORMATION
+          const customerInformationTop = invoiceStart + 35;
+          pdfDoc
+               // invoice data
+               .fontSize(10)
+               .text("Invoice Number:", 50, customerInformationTop)
+               .font("Helvetica-Bold")
+               .text(invoice.number, 150, customerInformationTop)
+               .font("Helvetica")
+               .text("Invoice Date:", 50, customerInformationTop + 15)
+               .text(formatDate(new Date()), 150, customerInformationTop + 15)
+               .text("Balance Due:", 50, customerInformationTop + 30)
+               .text(formatCurrency(total), 150, customerInformationTop + 30)
+               // customer info
+               .font("Helvetica-Bold")
+               .text(invoice.billing.firstName + ' ' + invoice.billing.lastName + ', ' + invoice.billing.company, 350, customerInformationTop)
+               .font("Helvetica")
+               .text(invoice.billing.street, 350, customerInformationTop + 15)
+               .text(invoice.billing.city + ", " + invoice.billing.postCode, 350, customerInformationTop + 30)
+               .text(invoice.billing.country, 350, customerInformationTop + 45)
+               .moveDown();
+          
+          generateHr(pdfDoc, customerInformationTop + 60);
+
+               // 4. TABLE HEADER
+          let i;
+          const invoiceTableTop = customerInformationTop + 120;
+
+          pdfDoc.font("Helvetica-Bold");
+          generateHeaderRow(pdfDoc, invoiceTableTop, "ITEM", "IMAGE", "UNIT COST", "QUANTITY", "LINE TOTAL");
+
+          generateHr(pdfDoc, invoiceTableTop + 19);
+          generateHr(pdfDoc, invoiceTableTop + 20);
+          
+               // 5. TABLE ROWS
+          pdfDoc.font("Helvetica");
+          for (i = 0; i < invoice.items.length; i++) {
+               const item = invoice.items[i];
+               const position = invoiceTableTop + (i + 1) * 30;
+               generateTableRow(pdfDoc, position, item.title, item.imagePath, formatCurrency(item.price), item.quantity, formatCurrency(item.subtotal));
+
+               generateHr(pdfDoc, position + 20);
+          }
+
+          const shippingPosition = invoiceTableTop + (invoice.items.length + 1) * 30;
+          if(req.session.shipping) {
+               generateHeaderRow(pdfDoc, shippingPosition, invoice.shipping.method + ' shipping rate', "", "", "", formatCurrency(invoice.shipping.price));
+          }
+          
+          generateHr(pdfDoc, shippingPosition + 19);
+          generateHr(pdfDoc, shippingPosition + 20);
+
+               // 6. TABLE FOOTER
+          const subtotalPosition = shippingPosition + 30;
+          generateHeaderRow(pdfDoc, subtotalPosition, "", "", "Subtotal", "", formatCurrency(invoice.subtotal));
+
+          const VATPosition = subtotalPosition + 20;
+          generateHeaderRow(pdfDoc, VATPosition, "", "", "VAT", "", formatCurrency(invoice.VAT));
+
+          const totalPosition = VATPosition + 20;
+          pdfDoc.font("Helvetica-Bold").fontSize(11);
+          generateHeaderRow(pdfDoc, totalPosition, "", "", "Total", "", formatCurrency(total));
+          pdfDoc.font("Helvetica");
+
+               // TEXT BELOW TABLE
+          pdfDoc
+               .fontSize(10)
+               .text("Payment is due within 15 days. Thank you for your business.", 50, totalPosition + 50, { align: "center", width: 500 });
+
+               // CLOSE THE DOCUMENT
+          pdfDoc.end();
+
+
+          // FUNCTIONS FOR PDF DESIGN
+          function formatDate(date) {
+               const day = date.getDate();
+               const month = date.getMonth() + 1;
+               const year = date.getFullYear();
+          
+               return year + "/" + month + "/" + day;
+          }
+
+          function formatCurrency(dollars) {
+               return "$" + parseFloat(dollars).toFixed(2);
+          }
+
+          function generateHr(doc, y) {
+               doc
+                    .strokeColor("#aaaaaa")
+                    .lineWidth(1)
+                    .moveTo(50, y)
+                    .lineTo(550, y)
+                    .stroke();
+          }
+
+          function generateHrDash(doc, y) {
+               doc
+                    .strokeColor("#aaaaaa")
+                    .lineWidth(1)
+                    .moveTo(50, y)
+                    .lineTo(550, y)
+                    .dash(3, {space: 2});
+          }
+
+          function generateHeaderRow(doc, y, item, image, unitCost, quantity, lineTotal) {
+               doc
+                    .fontSize(10)
+                    .text(item, 50, y)
+                    .text(image, 230, y)
+                    .text(unitCost, 280, y, { width: 90, align: "right" })
+                    .text(quantity, 370, y, { width: 90, align: "right" })
+                    .text(lineTotal, 0, y, { align: "right" });   
+          }
+
+          function generateTableRow(doc, y, item, image, unitCost, quantity, lineTotal) {
+               doc
+                    .fontSize(10)
+                    .text(item, 50, y)
+                    .image('public' + image, 230, y - 5, {height: 25, align: 'right', valign: 'top'})
+                    .text(unitCost, 280, y, { width: 90, align: "right" })
+                    .text(quantity, 370, y, { width: 90, align: "right" })
+                    .text(lineTotal, 0, y, { align: "right" });   
+          }
+          
+          //      STREAMING OF FILE DATA - GOOD APPROACH FOR BIG FILES DOWNLOAD
+          // const file = fs.createReadStream(invoicePath);
+          // res.setHeader('Content-Type', 'application/pdf');
+          // res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );
+          // file.pipe(res);
+          //      READING OF FILE DATA IN THE MEMORY - NOT GOOD APPROACH FOR BIG FILES
+          // fs.readFile(invoicePath, (err, data) => {
+          //      if(err) {
+          //           return next(err);
+          //      }
+          //      res.setHeader('Content-Type', 'application/pdf');
+          //      res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );
+          //      res.send(data);
+          //      console.log("You've opened a document!");
+          // });
+     } catch(err) {
+          console.log(err);
+     }
 }
