@@ -5,6 +5,7 @@ module.exports = {
      mongodbPassword: 'Peradetlic1',
      mongodbDefaultDB: 'shop2',
      // sendgridApiKey: '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' 
-     sendgridApiKey: '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',
+     // sendgridApiKey: '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',
+     sendgridApiKey: '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',
      sessionSecret: 'my secret'
 }

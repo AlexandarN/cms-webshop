@@ -34,6 +34,8 @@
       <%- include('../layouts/flashMessages.ejs') %>
 
       <% if(typeof cart !== 'undefined') { %>
+        <h2>Shopping Cart content:</h2>
+        <br>
         <!-- CART TABLE HEADER and BODY -->
         <!-- <form enctype="multipart/form-data" method="post" action="#"> -->
           <div class="table-responsive">
@@ -41,9 +43,9 @@
               <thead>
                 <tr>
                   <td class="text-center">Image</td>
-                  <td class="text-left">Product Name</td>
+                  <td class="text-center">Product Name</td>
                   <td class="text-center">Unit Price</td>
-                  <td class="text-left">Quantity</td>
+                  <td class="text-center">Quantity</td>
                   <td class="text-center">Total</td>
                 </tr>
               </thead>
@@ -57,7 +59,7 @@
                   <td class="text-center">$<%= parseFloat(item.price).toFixed(2) %></td>
                   <td class="text-left">
                     <div style="max-width: 200px;" class="input-group btn-block">
-                      <input type="text" class="form-control quantity" size="1" value="<%= item.quantity %>">
+                      <input type="text" class="form-control quantity" size="1" value="<%= item.quantity %>">&nbsp;
                       <!-- <span class="text-left"><%= item.quantity %></span> -->
                       <span class="input-group-btn">
                         <button class="btn btn-primary" data-toggle="tooltip" data-original-title="Add"><a href="/cart/update/<%= item.slug %>?action=add"><i class="fa fa-plus"></i></a></button>
@@ -537,6 +539,7 @@
         <br>
       <% } %>
 
+      <!-- BUTTONS -->
       <div class="buttons">
         <div class="pull-left"><a class="btn btn-default" href="/">Continue Shopping</a></div>
         <% if(typeof cart !== 'undefined') { %>

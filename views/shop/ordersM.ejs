@@ -1,0 +1,101 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/navigationM.ejs') %>
+
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <% pages.forEach(page => {
+    if(page.firstSlug == 'shop') { %>
+      <div class="parallax"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="<%= page.banner %>"></div>
+    <% }
+  }); %>
+  <h1><%= title %></h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/products">Products</a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+<!-- BELLOW BANNER CONTENT -->
+<div class="container">
+  <div class="row">
+
+    <!-- SIDEBAR -->
+    <%- include('../layouts/sidebarM.ejs') %>
+
+
+    <!-- ORDERS -->
+    <div class="col-sm-9" id="content">
+
+      <!-- FLASH MESSAGES -->
+      <%- include('../layouts/flashMessages.ejs') %>
+      
+      <!-- SHOW ORDERS LIST -->
+      <% if(orders) { %>
+        <h2>List of orders</h2>
+        <p>To see details of each order click on the order's number.</p>
+
+        <!-- ORDER TABLE HEADER and BODY -->
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <td class="text-center">Order no.</td>
+                  <td class="text-center">Date created</td>
+                  <td class="text-center">No. of purchased items</td>
+                  <td class="text-center">Line Total</td>
+                  <td class="text-center">Download</td>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% orders.forEach(order => { %>
+                  <tr>
+                    <td class="text-center">
+                      <a href="/orders/<%= order._id %>"><%= order.orderNo %></a>
+                    </td>
+                    <td class="text-center">
+                        <%= order.createdAt %>
+                    </td>
+                    <td class="text-center">
+                        <%= order.items.length %>
+                    </td>
+                    <td class="text-center">
+                      $<%= parseFloat(order.total).toFixed(2) %>
+                    </td>
+                    <td class="text-center">
+                      <a class="btn btn-sm btn-primary" href="/orders/invoice/<%= order._id %>">Invoice</a>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+
+              <tfoot>
+                <tr>
+                  <td colspan="3" class="text-right"><strong>Total sum of all your Orders:</strong></td>
+                  <td class="text-center"><strong>$<%= parseFloat(userTotal).toFixed(2) %></strong></td>
+                </tr>
+              </tfoot>
+
+            </table>
+          </div>
+        <!-- </form> -->
+        <!-- End of CART TABLE HEADER and BODY -->
+
+      <% } else { %>
+        <br>
+        <h2>Your do not have any orders.</h2>
+        <br>
+      <% } %>
+      
+    </div>
+    <!-- End of ORDERS LIST -->
+
+  </div>
+</div>
+<!-- End of BELOW BANNER CONTENT -->
+
+
+<%- include('../layouts/footerM.ejs') %>

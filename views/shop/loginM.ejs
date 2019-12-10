@@ -48,13 +48,16 @@
         <!-- End of NEW CUSTOMER FORM -->
 
 
+
         <!-- RETURNING CUSTOMER FORM -->
         <div class="col-sm-6">
-          <h2>Returning Customer</h2>
-          <p>I am a returning customer</p>
 
           <!-- FLASH MESSAGES -->
           <%- include('../layouts/flashMessages.ejs') %>
+
+          <h2>Returning Customer</h2>
+          <p>I am a returning customer</p>
+
           
           <form name="form" method="POST" action="/login">
             <div class="form-group">

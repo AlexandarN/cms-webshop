@@ -7,6 +7,7 @@ const Page = require('../models/Page');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 const InfoPage = require('../models/InfoPage');
+const Order = require('../models/Order');
 const env = require('../config/env/env');
 
 
@@ -290,9 +291,7 @@ exports.getRemoveFromWishlist = async (req, res, next) => {
      try {
           // Find product in the Wishlist
           if(typeof req.session.wishlist !== 'undefined') {
-               console.log(req.session.wishlist.length);
                for(let i = 0; i < req.session.wishlist.length; i++ ) {
-                    console.log(req.session.wishlist.length);
                     if(req.session.wishlist[i].slug == slug) {
                          // Remove product from Wishlist array located at index 'i'
                          await req.session.wishlist.splice(i, 1);
@@ -319,7 +318,7 @@ exports.getAddToCart = async (req, res, next) => {
      try {
           const product = await Product.findOne({slug: slug});
           // Check if the product to be added to Cart also exists in the Wishlist - then needs to be removed from the Wishlist
-          if( typeof req.session.wishlist !== 'undefined') {
+          if(typeof req.session.wishlist !== 'undefined') {
                for(i = 0; i < req.session.wishlist.length; i++) {
                     if(req.session.wishlist[i].slug == slug) {
                          await req.session.wishlist.splice(i, 1);
@@ -377,12 +376,13 @@ exports.getAddToCart = async (req, res, next) => {
 
 exports.getCartPage = async (req, res, next) => {
      try {
-          if(!res.locals.user) {
+          // Check if user is logged in
+          if(!req.user) {
                await req.flash('message-danger', 'You are not logged in, please log in!');
-               res.status(404).redirect('/cart');
+               res.status(404).redirect('back');
+               return
           }
-          console.log(res.locals.user);
-          // Find all special products in DB (needed for sidebar)
+          // Find all special products in DB (needed for the sidebar)
           const specialProds = await Product.find({special: true}).sort({sorting: 1})
                .limit(3);
           // Check if cart exists and if it is maybe empty -> as in that case we don't want to display the empty checkout table
@@ -460,9 +460,11 @@ exports.getClearCart = async (req, res, next) => {   // this is when we press bu
 
 exports.getCheckoutPage = async (req, res, next) => {
      try {
-          if(!res.locals.user) {
+          // Check if user is logged in
+          if(!req.user) {
                await req.flash('message-danger', 'You are not logged in, please log in!');
-               res.status(404).redirect('/cart/checkout');
+               res.status(404).redirect('back');
+               return
           }
           // Find logged in user
           const user = res.locals.user;
@@ -513,10 +515,13 @@ exports.getCheckoutPage = async (req, res, next) => {
 
 exports.postShippingMethod = async (req, res, next) => {
      const shippingMethod = req.body.shippingMethod;
-     // Find logged in user
-     const user = res.locals.user;
-     req.session.shipping = {};
      try {
+          if(!shippingMethod || (shippingMethod !== 'economy' && shippingMethod !== 'standard' && shippingMethod !== 'express')) {
+               await req.flash('message-danger', 'Please select one of the given shipping methods!');
+               res.status(404).redirect('/cart/checkout');
+               return
+          }
+          req.session.shipping = {};
           if(shippingMethod === 'economy') {
                req.session.shipping.method = 'Economy';
                req.session.shipping.price = 0;
@@ -526,14 +531,7 @@ exports.postShippingMethod = async (req, res, next) => {
           } else if(shippingMethod === 'express') {
                req.session.shipping.method = 'Express';
                req.session.shipping.price = 10; 
-          } else {
-               await req.flash('message-danger', 'Please select one of the given shipping methods!');
-               res.status(404).redirect('/cart/checkout');
-          }
-          // Find all special products in DB (needed for sidebar)
-          const specialProds = await Product.find({special: true})
-               .sort({sorting: 1})
-               .limit(3);
+          } 
           // Render view file and send data
           await req.flash('message-success', 'Shipping method saved successfully. Please proceed to checkout!');
           res.status(200).redirect('/cart/checkout'); 
@@ -545,28 +543,33 @@ exports.postShippingMethod = async (req, res, next) => {
 
 exports.postPayWithStripe = async (req, res, next) => {
      try {
-          // Find user to check if user's billing and shipping addresses are saved in DB
-          const user = res.locals.user;
-          if(user.billAddress.firstName === '' || 
-               user.billAddress.lastName === '' ||
-               user.billAddress.street === '' ||
-               user.billAddress.city === '' ||
-               user.billAddress.postCode === null ||
-               user.billAddress.country === '') {
+          // Check if cart is empty
+          if(typeof req.session.cart == 'undefined' || req.session.cart.length < 1) {
+               await req.flash('message-danger', 'Your cart is empty, add products to your cart before checkout!')
+               res.status(404).redirect('/cart/checkout');
+               return
+          }
+          if(req.user.billAddress.firstName === '' || 
+               req.user.billAddress.lastName === '' ||
+               req.user.billAddress.street === '' ||
+               req.user.billAddress.city === '' ||
+               req.user.billAddress.postCode === null ||
+               req.user.billAddress.country === '') {
                     await req.flash('message-danger', 'Please fill out the Billing Details form!')
                     res.status(404).redirect('/cart/checkout');
-          } else if(user.shippAddress.firstName === '' || 
-               user.shippAddress.lastName === '' ||
-               user.shippAddress.street === '' ||
-               user.shippAddress.city === '' ||
-               user.shippAddress.postCode === null ||
-               user.shippAddress.country === '') {
+          } else if(req.user.shippAddress.firstName === '' || 
+               req.user.shippAddress.lastName === '' ||
+               req.user.shippAddress.street === '' ||
+               req.user.shippAddress.city === '' ||
+               req.user.shippAddress.postCode === null ||
+               req.user.shippAddress.country === '') {
                     await req.flash('message-danger', 'Please fill out the Delivery Details form!')
                     res.status(404).redirect('/cart/checkout');
           // Check if 'shipping' variable exists in the session, i.e. if user has selected one of the Delivery methods
-          } else if(!res.locals.shipping) {
+          } else if(typeof req.session.shipping == 'undefined') {
                await req.flash('message-danger', 'Please choose a Delivery Method!')
                res.status(404).redirect('/cart/checkout');
+               return
           } else {
                // Set your secret key: remember to change this to your live secret key in production
                // See your Stripe keys here: https://dashboard.stripe.com/account/apikeys
@@ -576,7 +579,7 @@ exports.postPayWithStripe = async (req, res, next) => {
                req.session.cart.forEach(item => {
                     total += item.subtotal; 
                });
-               if(res.locals.shipping) {
+               if(req.session.shipping) {
                     total += req.session.shipping.price;
                }
                // Find all special products in DB (needed for sidebar)
@@ -595,11 +598,32 @@ exports.postPayWithStripe = async (req, res, next) => {
                     description: 'Payment',
                     customer: customer.id
                }); 
+               // Find all user's orders - in order to calculate new order's number
+               const number = await Order.find({userId: req.user._id}).countDocuments() + 1;
+               // Format date function
+               function formatDate(date) {
+                    const day = date.getDate();
+                    const month = date.getMonth() + 1;
+                    const year = date.getFullYear();
+                    return year + "/" + (month <= 9 ? '0' + month : month) + "/" + (day <= 9 ? '0' + day : day);
+               }
+               const year = new Date().getFullYear();
+               // Create ORDER    
+               const order = new Order({
+                    items: req.session.cart,
+                    shipping: req.session.shipping,
+                    billAddress: req.user.billAddress, 
+                    orderNo: number <= 9 ? year + '00' + number : 10 >= number <=99 ? year + '0' + number : year + number,
+                    total: total,
+                    userId: req.user._id,
+                    createdAt: formatDate(new Date())
+               });
+               await order.save();
                // Check if cart still exists and if it is maybe empty
                if(req.session.cart) {
                     // Clear session
                     delete req.session.cart; 
-               }		    
+               }
                // Render view file and send data
                res.render('shop/payment-successM', {
                     title: 'Successful Payment',
@@ -612,8 +636,290 @@ exports.postPayWithStripe = async (req, res, next) => {
 }
 
 
+exports.getOrdersPage = async (req, res, next) => {
+     try {
+          // Check if user is logged in
+          if(!res.locals.user) {
+               await req.flash('message-danger', 'You are not logged in, please log in!');
+               res.status(404).redirect('/cart');
+          }
+          // Find all user's orders
+          const orders = await Order.find({userId: req.user._id});
+          let userTotal = 0;
+          orders.forEach(order => {
+               userTotal += order.total;               
+          });
+          // Find all special products in DB (needed for sidebar)
+          const specialProds = await Product.find({special: true}).sort({sorting: 1})
+               .limit(3);
+          res.render('shop/ordersM', {
+               title: 'Order History',
+               specialProds: specialProds,
+               orders: orders, 
+               userTotal: userTotal
+          });
+     } catch(err) {
+          console.log(err);
+     }
+}
+
+
+exports.getOrder = async (req, res, next) => {
+     // Catch order's id
+     const orderId = req.params.id;
+     try {
+          // Find order
+          const order = await Order.findById(orderId);
+          if(!order) {
+               await req.flash('message-danger', 'There was an error! Order you requested does not exist')
+               res.status(404).redirect('/orders');
+               return
+          }
+          // Find all special products in DB (needed for sidebar)
+          const specialProds = await Product.find({special: true}).sort({sorting: 1})
+               .limit(3);
+          res.render('shop/orderM', {
+               title: 'Order no. ' + order.orderNo,
+               specialProds: specialProds,
+               order: order
+          });
+     } catch(err) {
+          console.log(err);
+     }
+}
+
 
 exports.getInvoice = async (req, res, next) => {
+     // Catch order's id
+     const orderId = req.params.id;
+     try {
+          // Find order
+          const order = await Order.findById(orderId);
+          if(!order) {
+               await req.flash('message-danger', 'There was an error! Order you requested does not exist')
+               res.status(404).redirect('/orders');
+               return
+          }
+          // Create invoice variable that contains data to be used below for invoice creation
+          const invoice = {
+               logoPath: 'public/images/info/' + req.app.locals.info.logo,
+               company: {
+                    name: req.app.locals.info.shopName,
+                    street: req.app.locals.info.contact.address.street,
+                    city: req.app.locals.info.contact.address.city,
+                    country: req.app.locals.info.contact.address.country,
+                    email: req.app.locals.info.contact.email1,
+                    phone: req.app.locals.info.contact.phone1
+               },
+               billing: {
+                    firstName: order.billAddress.firstName,
+                    lastName: order.billAddress.lastName,
+                    company: order.billAddress.company,
+                    street: order.billAddress.street,
+                    city: order.billAddress.city,
+                    postCode: order.billAddress.postCode,
+                    country: order.billAddress.country
+               },
+               items: order.items,
+               shipping: {
+                    method: order.shipping.method,
+                    price: order.shipping.price
+               },
+               total: order.total,
+               number: order.orderNo,
+               date: order.createAt
+          };
+
+          // Create INVOICE NAME and the PATH where it will be stored on the server
+          const invoiceName = 'Invoice-' + invoice.number + '.pdf';
+          const invoicePath = path.join('data', 'invoices', invoiceName);
+
+          // Setting FILE TYPE of the invoice and DOWNLOAD METHOD
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );  // inline (automatic download); attachment (prompt dialog box before download)
+
+
+          // CREATE PDF FILE with PDFKIT package 
+          const pdfDoc = new pdfkit({ size: 'A4', margin: 50});
+
+               // Import FONTS downloaded from www.fontsquirrel.com, we downloaded .ttf files and saved them in the Public folder of the project
+          pdfDoc.registerFont('ClearSans-Medium', 'public/fonts/ClearSans-Medium.ttf'); // ClearSans font we need in order to display Serbian fonts
+               // Create stream of the pdf file (invoice)
+          pdfDoc.pipe(fsExtra.createWriteStream(invoicePath));
+          pdfDoc.pipe(res);
+
+               // 1. INVOICE HEADER (Logo + Company Address)
+          pdfDoc
+               .image(invoice.logoPath, 50, 45, { width: 150 })
+               .fillColor("#122047")
+               .font("Helvetica-Bold")
+               .fontSize(11)
+               .text(invoice.company.name, 200, 50, { align: "right" })
+               .font("Helvetica")
+               .fontSize(10)
+               .text(invoice.company.street, 200, 65, { align: "right" })
+               .text(invoice.company.city, 200, 80, { align: "right" })
+               .text(invoice.company.country, 200, 95, { align: "right" })
+               .moveDown();
+
+               // 2. INVOICE TITLE
+          const invoiceStart = 140;
+          pdfDoc
+               .fontSize(20)
+               .text("INVOICE", 50, invoiceStart);
+
+          generateHr(pdfDoc, invoiceStart + 25);
+
+               // 3. INVOICE DATA and CUSTOMER INFORMATION
+          const customerInformationTop = invoiceStart + 35;
+          pdfDoc
+               // invoice data
+               .fontSize(10)
+               .text("Invoice Number:", 50, customerInformationTop)
+               .font("Helvetica-Bold")
+               .text(invoice.number, 150, customerInformationTop)
+               .font("Helvetica")
+               .text("Invoice Date:", 50, customerInformationTop + 15)
+               .text(invoice.date, 150, customerInformationTop + 15)
+               .text("Balance Due:", 50, customerInformationTop + 30)
+               .text(formatCurrency(invoice.total), 150, customerInformationTop + 30)
+               // customer info
+               .text("Billed to:", 300, customerInformationTop)
+               .font("Helvetica-Bold")
+               .text(invoice.billing.firstName + ' ' + invoice.billing.lastName + ', ' + invoice.billing.company, 400, customerInformationTop)
+               .font("Helvetica")
+               .text("Street address:", 300, customerInformationTop + 15)
+               .text(invoice.billing.street, 400, customerInformationTop + 15)
+               .text("City, ZIP Code:", 300, customerInformationTop + 30)
+               .text(invoice.billing.city + ", " + invoice.billing.postCode, 400, customerInformationTop + 30)
+               .text("Country:", 300, customerInformationTop + 45)
+               .text(invoice.billing.country, 400, customerInformationTop + 45)
+               .moveDown();
+          
+          generateHr(pdfDoc, customerInformationTop + 60);
+
+               // 4. TABLE HEADER
+          let i;
+          const invoiceTableTop = customerInformationTop + 120;
+
+          pdfDoc.font("Helvetica-Bold");
+          generateHeaderRow(pdfDoc, invoiceTableTop, "ITEM", "IMAGE", "UNIT COST", "QUANTITY", "LINE TOTAL");
+
+          generateHr(pdfDoc, invoiceTableTop + 19);
+          generateHr(pdfDoc, invoiceTableTop + 20);
+          
+               // 5. TABLE ROWS
+          pdfDoc.font("Helvetica");
+          for (i = 0; i < invoice.items.length; i++) {
+               const item = invoice.items[i];
+               const position = invoiceTableTop + (i + 1) * 30;
+               generateTableRow(pdfDoc, position, item.title, item.imagePath, formatCurrency(item.price), item.quantity, formatCurrency(item.subtotal));
+
+               generateHr(pdfDoc, position + 20);
+          }
+
+          const shippingPosition = invoiceTableTop + (invoice.items.length + 1) * 30;
+          if(invoice.shipping) {
+               generateHeaderRow(pdfDoc, shippingPosition, invoice.shipping.method + ' shipping rate', "", "", "", formatCurrency(invoice.shipping.price));
+          }
+          
+          generateHr(pdfDoc, shippingPosition + 19);
+          generateHr(pdfDoc, shippingPosition + 20);
+
+               // 6. TABLE FOOTER
+          const subtotalPosition = shippingPosition + 30;
+          generateHeaderRow(pdfDoc, subtotalPosition, "", "", "Subtotal", "", formatCurrency(invoice.total * 0.8));
+
+          const VATPosition = subtotalPosition + 20;
+          generateHeaderRow(pdfDoc, VATPosition, "", "", "VAT", "", formatCurrency(invoice.total * 0.2));
+
+          const totalPosition = VATPosition + 20;
+          pdfDoc.font("Helvetica-Bold").fontSize(11);
+          generateHeaderRow(pdfDoc, totalPosition, "", "", "Total", "", formatCurrency(invoice.total));
+          pdfDoc.font("Helvetica");
+
+               // TEXT BELOW TABLE
+          pdfDoc
+               .fontSize(10)
+               .text("Payment is due within 15 days. Thank you for your business.", 50, totalPosition + 50, { align: "center", width: 500 });
+
+               // CLOSE THE DOCUMENT
+          pdfDoc.end();
+
+
+          // FUNCTIONS FOR PDF DESIGN
+          function formatDate(date) {
+               const day = date.getDate();
+               const month = date.getMonth() + 1;
+               const year = date.getFullYear();
+          
+               return year + "/" + month + "/" + day;
+          }
+
+          function formatCurrency(dollars) {
+               return "$" + parseFloat(dollars).toFixed(2);
+          }
+
+          function generateHr(doc, y) {
+               doc
+                    .strokeColor("#aaaaaa")
+                    .lineWidth(1)
+                    .moveTo(50, y)
+                    .lineTo(550, y)
+                    .stroke();
+          }
+
+          function generateHrDash(doc, y) {
+               doc
+                    .strokeColor("#aaaaaa")
+                    .lineWidth(1)
+                    .moveTo(50, y)
+                    .lineTo(550, y)
+                    .dash(3, {space: 2});
+          }
+
+          function generateHeaderRow(doc, y, item, image, unitCost, quantity, lineTotal) {
+               doc
+                    .fontSize(10)
+                    .text(item, 50, y)
+                    .text(image, 230, y)
+                    .text(unitCost, 280, y, { width: 90, align: "right" })
+                    .text(quantity, 370, y, { width: 90, align: "right" })
+                    .text(lineTotal, 0, y, { align: "right" });   
+          }
+
+          function generateTableRow(doc, y, item, image, unitCost, quantity, lineTotal) {
+               doc
+                    .fontSize(10)
+                    .text(item, 50, y)
+                    .image('public' + image, 230, y - 5, {height: 25, align: 'right', valign: 'top'})
+                    .text(unitCost, 280, y, { width: 90, align: "right" })
+                    .text(quantity, 370, y, { width: 90, align: "right" })
+                    .text(lineTotal, 0, y, { align: "right" });   
+          }
+          
+          //      STREAMING OF FILE DATA - GOOD APPROACH FOR BIG FILES DOWNLOAD
+          // const file = fs.createReadStream(invoicePath);
+          // res.setHeader('Content-Type', 'application/pdf');
+          // res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );
+          // file.pipe(res);
+          //      READING OF FILE DATA IN THE MEMORY - NOT GOOD APPROACH FOR BIG FILES
+          // fs.readFile(invoicePath, (err, data) => {
+          //      if(err) {
+          //           return next(err);
+          //      }
+          //      res.setHeader('Content-Type', 'application/pdf');
+          //      res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );
+          //      res.send(data);
+          //      console.log("You've opened a document!");
+          // });
+     } catch(err) {
+          console.log(err);
+     }
+}
+
+
+exports.getCartInvoice = async (req, res, next) => {
      try {
           let total = req.session.cart.reduce((total, item) => total + item.subtotal, 0);
           if(req.session.shipping) {
@@ -833,3 +1139,10 @@ exports.getInvoice = async (req, res, next) => {
           console.log(err);
      }
 }
+
+
+
+
+
+
+     

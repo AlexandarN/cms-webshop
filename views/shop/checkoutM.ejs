@@ -890,6 +890,7 @@
           <div class="panel-heading">
             <h4 class="panel-title"><a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse" href="#collapse-checkout-confirm" aria-expanded="true">Step 4: Confirm Order <i class="fa fa-caret-down"></i></a></h4>
           </div>
+
           <!-- CHECKOUT TABLE -->
           <div id="collapse-checkout-confirm" role="heading" class="panel-collapse collapse in" aria-expanded="true" style="">
             <div class="panel-body">
@@ -897,28 +898,30 @@
                 <table class="table table-bordered table-hover">
                   <thead>
                     <tr>
-                      <td class="text-left">Product Name</td>
-                      <td class="text-right">Quantity</td>
-                      <td class="text-right">Unit Price</td>
-                      <td class="text-right">Total</td>
+                      <td class="text-center">Product Name</td>
+                      <td class="text-center">Quantity</td>
+                      <td class="text-center">Unit Price</td>
+                      <td class="text-right">Line Total</td>
                     </tr>
                   </thead>
-                    <tbody>
-                  <% if(cart) {
-                    cart.forEach(item => { %>
-                      <tr>
-                        <td class="text-left"><a href="/products/<%= item.category %>/<%+ item.slug %>"><%= item.title %></a></td>
-                        <td class="text-right"><%= item.quantity %></td>
-                        <td class="text-right">$<%= parseFloat(item.price).toFixed(2) %></td>
-                        <td class="text-right">$<%= parseFloat(item.subtotal).toFixed(2) %></td>
-                      </tr>
-                    <% }); 
-                  } %>
-                    </tbody>
-                  <% if(cart) {
-                    let total = 0; 
-                    cart.forEach(item => {
-                      total += item.subtotal;
+                  <tbody>
+                    <!-- If cart exists draw the table body -->
+                    <% if(cart) {
+                      cart.forEach(item => { %>
+                        <tr>
+                          <td class="text-left"><a href="/products/<%= item.category %>/<%+ item.slug %>"><%= item.title %></a></td>
+                          <td class="text-center"><%= item.quantity %></td>
+                          <td class="text-center">$<%= parseFloat(item.price).toFixed(2) %></td>
+                          <td class="text-right">$<%= parseFloat(item.subtotal).toFixed(2) %></td>
+                        </tr>
+                      <% }); 
+                    } %>
+                  </tbody>
+                  <% let total = 0; 
+                    <!-- If cart exists draw the following table footer -->
+                    if(cart) {
+                      cart.forEach(item => {
+                        total += item.subtotal;
                     }); %>
                     <tfoot>
                       <tr>
@@ -935,10 +938,15 @@
                       </tr>
                     </tfoot>
                   <% } else { %>
+                    <!-- If cart does not exist draw the following table footer -->
                     <tfoot>
                       <tr>
+                        <td class="text-right" colspan="3"><strong><% if(shipping) { %><%= shipping.method %><% } %> Shipping Rate:</strong></td>
+                        <td class="text-right">$<% if(shipping) { %><%= parseFloat(shipping.price).toFixed(2) %><% } else { %>0.00<% } %></td>
+                      </tr>
+                      <tr>
                         <td class="text-right" colspan="3"><strong>Total:</strong></td>
-                        <td class="text-right">$0.00</td>
+                        <td class="text-right">$<% if(shipping) { %><%= parseFloat(total + shipping.price).toFixed(2) %><% } else { %><%= parseFloat(total + 0).toFixed(2) %><% } %></td>
                       </tr>
                     </tfoot>
                   <% } %>
@@ -947,50 +955,26 @@
 
 
               <!-- BUTTONS -->
-              <!-- PRINT INVOICE BUTTON -->
-              <% if(user.billAddress.firstName === '' || 
-                user.billAddress.lastName === '' ||
-                user.billAddress.street === '' ||
-                user.billAddress.city === '' ||
-                user.billAddress.postCode === null ||
-                user.billAddress.country === '') { %>
-                  <div class="pull-left">
-                    <a class="btn btn-secondary" href="#" onclick="alert('Please fill out all required information in the Billing Details form!')">Print Invoice</a>
-                  </div>
-              <% } else if(user.shippAddress.firstName === '' || 
-                user.shippAddress.lastName === '' ||
-                user.shippAddress.street === '' ||
-                user.shippAddress.city === '' ||
-                user.shippAddress.postCode === null ||
-                user.shippAddress.country === '') { %>
-                  <div class="pull-left">
-                    <a class="btn btn-secondary" href="#" onclick="alert('Please fill out all required shipping information in the Delivery Details form!')">Print Invoice</a>
-                  </div>
-              <% } else if(!shipping) { %>
-                <div class="pull-left">
-                  <a class="btn btn-secondary" href="#" onclick="alert('Please choose a Delivery Method!')">Print Invoice</a>
-                </div>
-              <% } else { %>
-                <div class="pull-left">
-                  <a class="btn btn-secondary" href="/cart/invoice">Print Invoice</a>
-                </div>
-              <% } %>
-              <!-- End of PRINT INVOICE BUTTON -->
-
-
+          
               <!-- CHECKOUT BUTTON -->
               <!-- Firstly, check if user has all required Billing data -->
-              <% if(user.billAddress.firstName === '' || 
+              <% if(!cart || cart.length <= 0) { %>
+                <div class="buttons">
+                    <div class="pull-right">
+                      <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Your cart is empty, add products to cart before checkout!')">
+                    </div>
+                  </div>
+              <%} else if(user.billAddress.firstName === '' || 
                 user.billAddress.lastName === '' ||
                 user.billAddress.street === '' ||
                 user.billAddress.city === '' ||
                 user.billAddress.postCode === null ||
                 user.billAddress.country === '') { %>
-                  <div class="buttons">
-                    <div class="pull-right">
-                      <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Please fill out all required information in the Billing Details form!')">
-                    </div>
+                <div class="buttons">
+                  <div class="pull-right">
+                    <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Please fill out all required information in the Billing Details form!')">
                   </div>
+                </div>
               <% } else if(user.shippAddress.firstName === '' || 
                 user.shippAddress.lastName === '' ||
                 user.shippAddress.street === '' ||
@@ -1052,6 +1036,7 @@
             </div>
           </div>
           <!-- End of CHECKOUT TABLE -->
+
         </div>
         <!-- End of CONFIRM ORDER -->
 

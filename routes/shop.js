@@ -19,6 +19,10 @@ router.get('/wishlist', shopController.getWishlistPage);
 router.get('/wishlist/add/:slug', shopController.getAddToWishlist);
 router.get('/wishlist/remove/:slug', shopController.getRemoveFromWishlist);
 
+router.get('/orders', isAuth.isUser, shopController.getOrdersPage);
+router.get('/orders/:id', isAuth.isUser, shopController.getOrder);
+router.get('/orders/invoice/:id', isAuth.isUser, shopController.getInvoice);
+
 router.get('/', shopController.getHomePage);
 router.get('/:slug', shopController.getIndexPage);
 router.get('/info/:slug', shopController.getInfoPage);
