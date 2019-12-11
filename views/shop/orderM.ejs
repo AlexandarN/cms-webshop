@@ -32,70 +32,71 @@
       <!-- FLASH MESSAGES -->
       <%- include('../layouts/flashMessages.ejs') %>
 
-        <h2>Order no. <%= order.orderNo %></h2>
-        <p>Date created: <%= order.createdAt %></p>
-        <!-- ORDER TABLE -->
-          <div class="table-responsive">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <td class="text-center">Product Name</td>
-                  <td class="text-center">Image</td>
-                  <td class="text-center">Unit Cost</td>
-                  <td class="text-center">Quantity</td>
-                  <td class="text-right">Line Total</td>
-                </tr>
-              </thead>
+      <h2>Order no. <%= order.orderNo %></h2>
+      <p>Date created: <%= order.createdAt %></p>
 
-              <tbody>
-                <% order.items.forEach(item => { %>
-                  <tr>
-                    <td class="text-left">
-                      <a href="/products/<%= item.category %>/<%= item.slug %>"><%= item.title %></a>
-                    </td>
-                    <td class="text-center">
-                      <a href="/products/<%= item.category %>/<%= item.slug %>">
-                        <img class="img-thumbnail" title="<%= item.title %>" alt="<%= item.title %>" src="<%= item.imagePath %>" style="height: 60px;">
-                      </a>
-                    </td>
-                    <td class="text-center">
-                      $<%= parseFloat(item.price).toFixed(2) %>
-                    </td>
-                    <td class="text-center">
-                        <%= item.quantity %>
-                    </td>
-                    <td class="text-right">
-                      $<%= parseFloat(item.subtotal).toFixed(2) %>
-                    </td>
-                  </tr>
-                <% }); %>
-                <tr>
-                  <td class="text-left" colspan="4">
-                    <%= order.shipping.method %> shipping rate
-                  </td>
-                  <td class="text-right">
-                    <%= parseFloat(order.shipping.price).toFixed(2) %>
-                  </td>
-                </tr>
-              </tbody>
+      <!-- ORDER TABLE -->
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <td class="text-center">PRODUCT NAME</td>
+              <td class="text-center">IMAGE</td>
+              <td class="text-center">UNIT COST</td>
+              <td class="text-center">QUANTITY</td>
+              <td class="text-right">LINE TOTAL</td>
+            </tr>
+          </thead>
 
-              <tfoot>
-                <tr>
-                  <td class="text-right" colspan="4"><strong>Subtotal:</strong></td>
-                  <td class="text-right">$<%= parseFloat(order.total * 0.8).toFixed(2) %></td>
-                </tr>
-                <tr>
-                  <td class="text-right" colspan="4"><strong>VAT:</strong></td>
-                  <td class="text-right">$<%= parseFloat(order.total * 0.3).toFixed(2) %></td>
-                </tr>
-                <tr>
-                  <td class="text-right" colspan="4"><strong>Total:</strong></td>
-                  <td class="text-right"><%= parseFloat(order.total).toFixed(2) %></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        <!-- End of ORDER TABLE -->
+          <tbody>
+            <% order.items.forEach(item => { %>
+              <tr>
+                <td class="text-left">
+                  <a href="/products/<%= item.category %>/<%= item.slug %>"><%= item.title %></a>
+                </td>
+                <td class="text-center">
+                  <a href="/products/<%= item.category %>/<%= item.slug %>">
+                    <img class="img-thumbnail" title="<%= item.title %>" alt="<%= item.title %>" src="<%= item.imagePath %>" style="height: 60px;">
+                  </a>
+                </td>
+                <td class="text-center">
+                  $<%= parseFloat(item.price).toFixed(2) %>
+                </td>
+                <td class="text-center">
+                    <%= item.quantity %>
+                </td>
+                <td class="text-right">
+                  $<%= parseFloat(item.subtotal).toFixed(2) %>
+                </td>
+              </tr>
+            <% }); %>
+            <tr>
+              <td class="text-left" colspan="4">
+                <%= order.shipping.method %> shipping rate
+              </td>
+              <td class="text-right">
+                <%= parseFloat(order.shipping.price).toFixed(2) %>
+              </td>
+            </tr>
+          </tbody>
+
+          <tfoot>
+            <tr>
+              <td class="text-right" colspan="4"><strong>Subtotal:</strong></td>
+              <td class="text-right">$<%= parseFloat(order.total * 0.8).toFixed(2) %></td>
+            </tr>
+            <tr>
+              <td class="text-right" colspan="4"><strong>VAT:</strong></td>
+              <td class="text-right">$<%= parseFloat(order.total * 0.3).toFixed(2) %></td>
+            </tr>
+            <tr>
+              <td class="text-right" colspan="4"><strong>Total:</strong></td>
+              <td class="text-right"><%= parseFloat(order.total).toFixed(2) %></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <!-- End of ORDER TABLE -->
 
       <!-- BUTTONS -->
       <div class="buttons">
