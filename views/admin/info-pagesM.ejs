@@ -42,17 +42,17 @@
         <table class="table table-striped sorting">
           <thead>
             <tr class="home">
-              <th>TITLE</th>
-              <th>EDIT</th>
-              <th>DELETE</th>
+              <th class="text-center">TITLE</th>
+              <th class="text-center">EDIT</th>
+              <th class="text-center">DELETE</th>
             </tr>
           </thead>
           <tbody class="reorder">
             <% infoPages.forEach(page => { %>
               <tr id="id_<%= page._id %>" class="<%= page.slug %>">
                 <td><a href="/<%= page.slug %>"><%= page.title %></a></td>
-                <td><a href="/admin/edit-info-page/<%= page.slug %>">Edit</a></td>
-                <td><a href="/admin/delete-info-page/<%= page.slug %>" onclick="return confirm('Are you sure you want to delete this page?')">Delete</a></td>
+                <td class="text-center"><a href="/admin/edit-info-page/<%= page.slug %>">Edit</a></td>
+                <td class="text-center"><a href="/admin/delete-info-page/<%= page.slug %>" onclick="return confirm('Are you sure you want to delete this page?')">Delete</a></td>
               </tr>
             <% }) %>
           </tbody>

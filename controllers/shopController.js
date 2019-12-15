@@ -22,19 +22,24 @@ exports.getHomePage = async (req, res, next) => {
           const numOfProducts = await Product.find().countDocuments();
           numProducts = numOfProducts;
           // Find all POPULAR products in DB that belong to the specified current page
-          const popularProds = await Product.find({popular: true}).sort({sorting: 1})
+          const popularProds = await Product.find({popular: true}).populate('category')
+               .sort({sorting: 1})
                .skip((currentPage - 1) * ITEMS_PER_PAGE)
                .limit(ITEMS_PER_PAGE); 
-          const bestSellProds = await Product.find({bestSell: true}).sort({sorting: 1})
+          const bestSellProds = await Product.find({bestSell: true}).populate('category')
+               .sort({sorting: 1})
                .skip((currentPage - 1) * ITEMS_PER_PAGE)
                .limit(ITEMS_PER_PAGE); 
-          const specialProds = await Product.find({special: true}).sort({sorting: 1})
+          const specialProds = await Product.find({special: true}).populate('category')
+               .sort({sorting: 1})
                .skip((currentPage - 1) * ITEMS_PER_PAGE)
                .limit(ITEMS_PER_PAGE); 
-          const newProds = await Product.find({newProd: true}).sort({sorting: 1})
+          const newProds = await Product.find({newProd: true}).populate('category')
+               .sort({sorting: 1})
                .skip((currentPage - 1) * ITEMS_PER_PAGE)
                .limit(ITEMS_PER_PAGE); 
-          const featuredProds = await Product.find({featured: true}).sort({sorting: 1})
+          const featuredProds = await Product.find({featured: true}).populate('category')
+               .sort({sorting: 1})
                .skip((currentPage - 1) * ITEMS_PER_PAGE)
                .limit(ITEMS_PER_PAGE); 
           // Render view file and send data	
@@ -57,6 +62,7 @@ exports.getHomePage = async (req, res, next) => {
      }
 }
 
+
 exports.getIndexPage = async (req, res, next) => {
      const slug = req.params.slug;
      try {
@@ -74,6 +80,7 @@ exports.getIndexPage = async (req, res, next) => {
           console.log(err);
      }
 }
+
 
 exports.getInfoPage = async (req, res, next) => {
      const slug = req.params.slug;
@@ -106,7 +113,8 @@ exports.getAllProducts = async (req, res, next) => {
           const numOfProducts = await Product.find().countDocuments();
           numProducts = numOfProducts;
           // Find all products in DB that belong to the specified category
-          const products = await Product.find().sort({sorting: 1})
+          const products = await Product.find().populate('category')
+               .sort({sorting: 1})
                .skip((currentPage - 1) * ITEMS_PER_PAGE)
                .limit(ITEMS_PER_PAGE); 
           // Find all special products in DB and shuffle them
@@ -124,7 +132,8 @@ exports.getAllProducts = async (req, res, next) => {
                //      }
                //      return array;
                // }
-          const specialProds = await Product.find({special: true}).sort({sorting: 1})
+          const specialProds = await Product.find({special: true}).populate('category')
+               .sort({sorting: 1})
                .limit(3);
           // Render view file and send data	
           res.render('shop/categoryM', {
@@ -148,20 +157,22 @@ exports.getProductsByCategory = async (req, res, next) => {
      const ITEMS_PER_PAGE = 9;
      // Pagination 1st part - parse current page number
      const currentPage = +req.query.page || 1;
+     let numProducts;
      try {
-          let numProducts;
           // Find requested category in DB	
           const slug = req.params.categorySlug;
           const category = await Category.findOne({slug: slug});
           // Pagination 2nd part - Find total no. of products for the requested category
-          const numOfProducts = await Product.find({category: slug}).countDocuments();
+          const numOfProducts = await Product.find({category: category._id}).countDocuments();
           numProducts = numOfProducts;
           // Pagination 3rd part - Find all products in DB for the requested category and belong to the specified current page
-          const products = await Product.find({category: slug}).sort({sorting: 1})
+          const products = await Product.find({category: category._id}).populate('category')
+               .sort({sorting: 1})
                .skip((currentPage - 1) * ITEMS_PER_PAGE)
                .limit(ITEMS_PER_PAGE);
           // Find all special products in DB
-          const specialProds = await Product.find({special: true}).sort({sorting: 1})
+          const specialProds = await Product.find({special: true}).populate('category')
+               .sort({sorting: 1})
                .limit(3);
           // Render view file and send data	
           res.render('shop/categoryM', {
@@ -186,15 +197,18 @@ exports.getProduct = async (req, res, next) => {
      const slug = req.params.prodSlug;
      try {
           // Find product in DB	
-          const product = await Product.findOne({slug: slug});
+          const product = await Product.findOne({slug: slug}).populate('category', 'title slug').populate('brand');
           if(!product) {					
                req.flash('message-danger', 'Product not found!');	 
                return res.status(404).redirect('/products'); 
           } else {
                // Find product's category in DB - (next 2 lines I added for the purpose of catching the category, which we need for Breadcrumb links in the parallax banner)
-               const category = await Category.findOne({slug: product.category});
+               const category = await Category.findOne({_id: product.category._id});
                // Find all products that belong to the same category as the chosen product (we need this for displaying Related products)
-               const catProducts = await Product.find({$and: [{category: category.slug}, {slug: {$ne: product.slug}}]})
+               // const relatedProducts = await Product.find({$and: [{category: product.category._id}, {slug: {$ne: product.slug}}]})
+               //      .sort({sorting: 1})
+               //      .limit(4);
+               const relatedProducts = await Product.find({category: category._id})
                     .sort({sorting: 1})
                     .limit(4);
                // Catch gallery images (IMPORTANT -> fsExtra.readdir() will also catch 'thumbs' folder (as an element of an array) inside gallery folder -> and this is why we will in view file set following condition: if(gallImage != 'thumbs') )	
@@ -205,7 +219,7 @@ exports.getProduct = async (req, res, next) => {
                res.render('shop/productM', {	
                     product: product,
                     category: category,
-                    catProducts: catProducts,
+                    relatedProducts: relatedProducts,
                     title: product.title,
                     galleryImages: images 
                }); 
@@ -918,227 +932,6 @@ exports.getInvoice = async (req, res, next) => {
      }
 }
 
-
-exports.getCartInvoice = async (req, res, next) => {
-     try {
-          let total = req.session.cart.reduce((total, item) => total + item.subtotal, 0);
-          if(req.session.shipping) {
-               total += req.session.shipping.price; 
-          }
-
-          const invoice = {
-               logoPath: 'public/images/info/' + req.app.locals.info.logo,
-               company: {
-                    name: req.app.locals.info.shopName,
-                    street: req.app.locals.info.contact.address.street,
-                    city: req.app.locals.info.contact.address.city,
-                    country: req.app.locals.info.contact.address.country,
-                    email: req.app.locals.info.contact.email1,
-                    phone: req.app.locals.info.contact.phone1
-               },
-               billing: {
-                    firstName: req.user.billAddress.firstName,
-                    lastName: req.user.billAddress.lastName,
-                    company: req.user.billAddress.company,
-                    street: req.user.billAddress.street,
-                    city: req.user.billAddress.city,
-                    postCode: req.user.billAddress.postCode,
-                    country: req.user.billAddress.country
-               },
-               items: req.session.cart,
-               shipping: {
-                    method: req.session.shipping.method,
-                    price: req.session.shipping.price
-               },
-               subtotal: total * 0.8,
-               VAT: total * 0.2,
-               number: Date.now()
-          };
-
-          // Create INVOICE NAME and the PATH where it will be stored on the server
-          const invoiceNumber = Date.now();
-          const invoiceName = 'Invoice-' + invoiceNumber + '.pdf';
-          const invoicePath = path.join('data', 'invoices', invoiceName);
-
-          // Setting FILE TYPE of the invoice and DOWNLOAD METHOD
-          res.setHeader('Content-Type', 'application/pdf');
-          res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );  // inline (automatic download); attachment (prompt dialog box before download)
-
-
-          // CREATE PDF File with PDFKIT package 
-          const pdfDoc = new pdfkit({ size: 'A4', margin: 50});
-
-               // Import FONTS downloaded from www.fontsquirrel.com, we downloaded .ttf files and saved them in the Public folder of the project
-          pdfDoc.registerFont('ClearSans-Medium', 'public/fonts/ClearSans-Medium.ttf'); // ClearSans font we need in order to display Serbian fonts
-               // Create stream of the pdf file (invoice)
-          pdfDoc.pipe(fsExtra.createWriteStream(invoicePath));
-          pdfDoc.pipe(res);
-
-               // 1. INVOICE HEADER (Logo + Company Address)
-          pdfDoc
-               .image(invoice.logoPath, 50, 45, { width: 150 })
-               .fillColor("#122047")
-               .font("Helvetica-Bold")
-               .fontSize(11)
-               .text(invoice.company.name, 200, 50, { align: "right" })
-               .font("Helvetica")
-               .fontSize(10)
-               .text(invoice.company.street, 200, 65, { align: "right" })
-               .text(invoice.company.city, 200, 80, { align: "right" })
-               .text(invoice.company.country, 200, 95, { align: "right" })
-               .moveDown();
-
-               // 2. INVOICE TITLE
-          const invoiceStart = 140;
-          pdfDoc
-               .fontSize(20)
-               .text("INVOICE", 50, invoiceStart);
-
-          generateHr(pdfDoc, invoiceStart + 25);
-
-               // 3. INVOICE DATA and CUSTOMER INFORMATION
-          const customerInformationTop = invoiceStart + 35;
-          pdfDoc
-               // invoice data
-               .fontSize(10)
-               .text("Invoice Number:", 50, customerInformationTop)
-               .font("Helvetica-Bold")
-               .text(invoice.number, 150, customerInformationTop)
-               .font("Helvetica")
-               .text("Invoice Date:", 50, customerInformationTop + 15)
-               .text(formatDate(new Date()), 150, customerInformationTop + 15)
-               .text("Balance Due:", 50, customerInformationTop + 30)
-               .text(formatCurrency(total), 150, customerInformationTop + 30)
-               // customer info
-               .font("Helvetica-Bold")
-               .text(invoice.billing.firstName + ' ' + invoice.billing.lastName + ', ' + invoice.billing.company, 350, customerInformationTop)
-               .font("Helvetica")
-               .text(invoice.billing.street, 350, customerInformationTop + 15)
-               .text(invoice.billing.city + ", " + invoice.billing.postCode, 350, customerInformationTop + 30)
-               .text(invoice.billing.country, 350, customerInformationTop + 45)
-               .moveDown();
-          
-          generateHr(pdfDoc, customerInformationTop + 60);
-
-               // 4. TABLE HEADER
-          let i;
-          const invoiceTableTop = customerInformationTop + 120;
-
-          pdfDoc.font("Helvetica-Bold");
-          generateHeaderRow(pdfDoc, invoiceTableTop, "ITEM", "IMAGE", "UNIT COST", "QUANTITY", "LINE TOTAL");
-
-          generateHr(pdfDoc, invoiceTableTop + 19);
-          generateHr(pdfDoc, invoiceTableTop + 20);
-          
-               // 5. TABLE ROWS
-          pdfDoc.font("Helvetica");
-          for (i = 0; i < invoice.items.length; i++) {
-               const item = invoice.items[i];
-               const position = invoiceTableTop + (i + 1) * 30;
-               generateTableRow(pdfDoc, position, item.title, item.imagePath, formatCurrency(item.price), item.quantity, formatCurrency(item.subtotal));
-
-               generateHr(pdfDoc, position + 20);
-          }
-
-          const shippingPosition = invoiceTableTop + (invoice.items.length + 1) * 30;
-          if(req.session.shipping) {
-               generateHeaderRow(pdfDoc, shippingPosition, invoice.shipping.method + ' shipping rate', "", "", "", formatCurrency(invoice.shipping.price));
-          }
-          
-          generateHr(pdfDoc, shippingPosition + 19);
-          generateHr(pdfDoc, shippingPosition + 20);
-
-               // 6. TABLE FOOTER
-          const subtotalPosition = shippingPosition + 30;
-          generateHeaderRow(pdfDoc, subtotalPosition, "", "", "Subtotal", "", formatCurrency(invoice.subtotal));
-
-          const VATPosition = subtotalPosition + 20;
-          generateHeaderRow(pdfDoc, VATPosition, "", "", "VAT", "", formatCurrency(invoice.VAT));
-
-          const totalPosition = VATPosition + 20;
-          pdfDoc.font("Helvetica-Bold").fontSize(11);
-          generateHeaderRow(pdfDoc, totalPosition, "", "", "Total", "", formatCurrency(total));
-          pdfDoc.font("Helvetica");
-
-               // TEXT BELOW TABLE
-          pdfDoc
-               .fontSize(10)
-               .text("Payment is due within 15 days. Thank you for your business.", 50, totalPosition + 50, { align: "center", width: 500 });
-
-               // CLOSE THE DOCUMENT
-          pdfDoc.end();
-
-
-          // FUNCTIONS FOR PDF DESIGN
-          function formatDate(date) {
-               const day = date.getDate();
-               const month = date.getMonth() + 1;
-               const year = date.getFullYear();
-          
-               return year + "/" + month + "/" + day;
-          }
-
-          function formatCurrency(dollars) {
-               return "$" + parseFloat(dollars).toFixed(2);
-          }
-
-          function generateHr(doc, y) {
-               doc
-                    .strokeColor("#aaaaaa")
-                    .lineWidth(1)
-                    .moveTo(50, y)
-                    .lineTo(550, y)
-                    .stroke();
-          }
-
-          function generateHrDash(doc, y) {
-               doc
-                    .strokeColor("#aaaaaa")
-                    .lineWidth(1)
-                    .moveTo(50, y)
-                    .lineTo(550, y)
-                    .dash(3, {space: 2});
-          }
-
-          function generateHeaderRow(doc, y, item, image, unitCost, quantity, lineTotal) {
-               doc
-                    .fontSize(10)
-                    .text(item, 50, y)
-                    .text(image, 230, y)
-                    .text(unitCost, 280, y, { width: 90, align: "right" })
-                    .text(quantity, 370, y, { width: 90, align: "right" })
-                    .text(lineTotal, 0, y, { align: "right" });   
-          }
-
-          function generateTableRow(doc, y, item, image, unitCost, quantity, lineTotal) {
-               doc
-                    .fontSize(10)
-                    .text(item, 50, y)
-                    .image('public' + image, 230, y - 5, {height: 25, align: 'right', valign: 'top'})
-                    .text(unitCost, 280, y, { width: 90, align: "right" })
-                    .text(quantity, 370, y, { width: 90, align: "right" })
-                    .text(lineTotal, 0, y, { align: "right" });   
-          }
-          
-          //      STREAMING OF FILE DATA - GOOD APPROACH FOR BIG FILES DOWNLOAD
-          // const file = fs.createReadStream(invoicePath);
-          // res.setHeader('Content-Type', 'application/pdf');
-          // res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );
-          // file.pipe(res);
-          //      READING OF FILE DATA IN THE MEMORY - NOT GOOD APPROACH FOR BIG FILES
-          // fs.readFile(invoicePath, (err, data) => {
-          //      if(err) {
-          //           return next(err);
-          //      }
-          //      res.setHeader('Content-Type', 'application/pdf');
-          //      res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"' );
-          //      res.send(data);
-          //      console.log("You've opened a document!");
-          // });
-     } catch(err) {
-          console.log(err);
-     }
-}
 
 
 

@@ -6,10 +6,11 @@ const { validationResult } = require('express-validator/check');
 
 const Product = require('../../models/Product');
 const Category = require('../../models/Category');
+const Brand = require('../../models/Brand');
 
 exports.getProductsListPage = async (req, res, next) => {
      try {
-          const products = await Product.find().sort({sorting: 1});
+          const products = await Product.find().populate('brand', 'title').populate('category', 'title slug').sort({sorting: 1});
           // .then(prods => {
           //      console.log(prods);
           //      const products = prods.map(product => {
@@ -62,19 +63,23 @@ exports.postReorderProducts = async (req, res, next) => {
 
 exports.getAddProductPage = async (req, res, next) => {
      try {
-          // Catch all categories that could be asigned to newly added product	
+          // Catch all categories that could be assigned to newly added product	
           const categories = await Category.find().sort({sorting: 1});
+          // Catch all brands that could be assigned to newly added product	
+          const brands = await Brand.find().sort({title: 1});
           // Render view file and send data
           res.render('admin/add-productM', {
                title: 'Add Product',
                oldInput: {},
                categories: categories,
+               brands: brands,
                valErrors: []
           });
      } catch (err) {
           console.log(err);
      }
 }
+
 
 exports.postAddProduct = async (req, res, next) => {
      // Parsing of text input data
@@ -107,9 +112,11 @@ exports.postAddProduct = async (req, res, next) => {
                req.files.image.mimetype !== 'image/jpg' && 
                req.files.image.mimetype !== 'image/png'
                )) {
-               req.flash('message-danger', 'The attached file is not an image!');
-               // Catch all categories that could be asigned to newly added product
+               // Catch all categories that could be assigned to newly added product
                const categories = await Category.find().sort({sorting: 1});
+               // Catch all brands that could be assigned to newly added product	
+               const brands = await Brand.find().sort({title: 1});
+               await req.flash('message-danger', 'The attached file is not an image!');
                res.status(422).render('admin/add-productM', {
                     title: 'Add Product',
                     oldInput: {
@@ -130,6 +137,7 @@ exports.postAddProduct = async (req, res, next) => {
                          newProd: newProd
                     },
                     categories: categories,
+                    brands: brands,
                     valErrors: [],
                     messageDang: req.flash('message-danger')
                });
@@ -137,9 +145,10 @@ exports.postAddProduct = async (req, res, next) => {
                //Catching and displaying validation errors
                const valErrors = validationResult(req);
                if(!valErrors.isEmpty()) {
-                    // Catch all categories that could be asigned to newly added product
+                    // Catch all categories that could be assigned to newly added product
                     const categories = await Category.find().sort({sorting: 1});
-                    console.log('errors: ' + valErrors.array());
+                    // Catch all brands that could be assigned to newly added product	
+                    const brands = await Brand.find().sort({title: 1});
                     res.status(422).render('admin/add-productM', {
                          title: 'Add Product',
                          oldInput: {
@@ -160,45 +169,18 @@ exports.postAddProduct = async (req, res, next) => {
                               newProd: newProd
                          },
                          categories: categories,
+                         brands: brands,
                          valErrors: valErrors.array()
                     });
-               }
-               // Check if product with this name already exists in DB
-               const product = await Product.findOne({title: title});
-               if(product) {
-                    req.flash('message-danger', 'Product with this name already exists!');
-                    // Catch all categories that could be asigned to newly added product
-                    const categories = await Category.find().sort({sorting: 1});
-                    return res.status(422).render('admin/add-productM', {
-                         title: 'Add Product',
-                         oldInput: {
-                              title: title,
-                              slug: req.body.slug,
-                              price: price,
-                              category: category,
-                              description: description,
-                              features: features,
-                              originalPrice: originalPrice,
-                              brand: brand,
-                              productCode: productCode,
-                              availability: availability,
-                              featured: featured,
-                              popular: popular,
-                              bestSell: bestSell,
-                              special: special,
-                              newProd: newProd
-                         },
-                         categories: categories,
-                         valErrors: [],
-                         messageDang: req.flash('message-danger')
-                    });
                } else {
-                    // Check if product with this slug already exists in DB
-                    const product = await Product.findOne({slug: slug});
+                    // Check if product with this name already exists in DB
+                    const product = await Product.findOne({title: title});
                     if(product) {
-                         req.flash('message-danger', 'Product with this slug already exists!');
-                         // Catch all categories that could be asigned to newly added product
+                         // Catch all categories that could be assigned to newly added product
                          const categories = await Category.find().sort({sorting: 1});
+                         // Catch all brands that could be assigned to newly added product	
+                         const brands = await Brand.find().sort({title: 1});
+                         await req.flash('message-danger', 'Product with this name already exists!');
                          return res.status(422).render('admin/add-productM', {
                               title: 'Add Product',
                               oldInput: {
@@ -219,16 +201,19 @@ exports.postAddProduct = async (req, res, next) => {
                                    newProd: newProd
                               },
                               categories: categories,
+                              brands: brands,
                               valErrors: [],
                               messageDang: req.flash('message-danger')
                          });
                     } else {
-                         // Check if product with this firstSlug already exists in DB
-                         const product = await Product.findOne({firstSlug: slug});
+                         // Check if product with this slug already exists in DB
+                         const product = await Product.findOne({slug: slug});
                          if(product) {
-                              req.flash('message-danger', 'Product with this firstSlug already exists!');
-                              // Catch all categories that could be asigned to newly added product
+                              // Catch all categories that could be assigned to newly added product
                               const categories = await Category.find().sort({sorting: 1});
+                              // Catch all brands that could be assigned to newly added product	
+                              const brands = await Brand.find().sort({title: 1});
+                              await req.flash('message-danger', 'Product with this slug already exists!');
                               return res.status(422).render('admin/add-productM', {
                                    title: 'Add Product',
                                    oldInput: {
@@ -249,52 +234,87 @@ exports.postAddProduct = async (req, res, next) => {
                                         newProd: newProd
                                    },
                                    categories: categories,
+                                   brands: brands,
                                    valErrors: [],
                                    messageDang: req.flash('message-danger')
                               });
                          } else {
-                              // Catch the name of the sent image and set the imageName variable
-                              let imageName;
-                              if(req.files) {
-                                   imageName = req.files.image.name;
+                              // Check if product with this firstSlug already exists in DB
+                              const product = await Product.findOne({firstSlug: slug});
+                              if(product) {
+                                   // Catch all categories that could be assigned to newly added product
+                                   const categories = await Category.find().sort({sorting: 1});
+                                   // Catch all brands that could be assigned to newly added product	
+                                   const brands = await Brand.find().sort({title: 1});
+                                   await req.flash('message-danger', 'Product with this firstSlug already exists!');
+                                   return res.status(422).render('admin/add-productM', {
+                                        title: 'Add Product',
+                                        oldInput: {
+                                             title: title,
+                                             slug: req.body.slug,
+                                             price: price,
+                                             category: category,
+                                             description: description,
+                                             features: features,
+                                             originalPrice: originalPrice,
+                                             brand: brand,
+                                             productCode: productCode,
+                                             availability: availability,
+                                             featured: featured,
+                                             popular: popular,
+                                             bestSell: bestSell,
+                                             special: special,
+                                             newProd: newProd
+                                        },
+                                        categories: categories,
+                                        brands: brands,
+                                        valErrors: [],
+                                        messageDang: req.flash('message-danger')
+                                   });
                               } else {
-                                   imageName = "";
+                                   // Catch the name of the sent image and set the imageName variable
+                                   let imageName;
+                                   if(req.files) {
+                                        imageName = req.files.image.name;
+                                   } else {
+                                        imageName = "";
+                                   }
+                                   // Create new product in DB
+                                   const newProduct = new Product({
+                                        title: title,
+                                        slug: slug,
+                                        firstSlug: slug,  // firstSlug - nedded in order to have always the same image path, as slug is the part of path
+                                        price: price,
+                                        category: category,
+                                        image: imageName,
+                                        description: description,
+                                        features: features,
+                                        originalPrice: originalPrice,
+                                        brand: brand,
+                                        productCode: productCode,
+                                        availability: availability,
+                                        featured: featured,
+                                        popular: popular,
+                                        bestSell: bestSell,
+                                        special: special,
+                                        newProd: newProd,
+                                        sorting: 500
+                                   });
+                                   newProduct.save();
+                                   // Create folders on the server to save the image (regardless of whether it is sent or not)
+                                   await mkdirp('public/images/products/' + newProduct.firstSlug);
+                                   await mkdirp('public/images/products/' + newProduct.firstSlug + '/gallery');
+                                   await mkdirp('public/images/products/' + newProduct.firstSlug + '/gallery/thumbs');
+                                   // If sent -> save the image on the server
+                                   if(imageName != "") {
+                                        const image = req.files.image;
+                                        const path = 'public/images/products/' + newProduct.firstSlug + '/' + imageName;
+                                        // Move file to the specified place on the server using req.files.file.mv() method
+                                        await image.mv(path);
+                                   }
+                                   await req.flash('message-success', 'New product added successfully!');
+                                   res.status(201).redirect('/admin/products');
                               }
-                              // Create new product in DB
-                              const newProduct = new Product({
-                                   title: title,
-                                   slug: slug,
-                                   firstSlug: slug,  // firstSlug - nedded in order to have always the same image path, as slug is the part of path
-                                   price: price,
-                                   category: category,
-                                   image: imageName,
-                                   description: description,
-                                   features: features,
-                                   originalPrice: originalPrice,
-                                   brand: brand,
-                                   productCode: productCode,
-                                   availability: availability,
-                                   featured: featured,
-                                   popular: popular,
-                                   bestSell: bestSell,
-                                   special: special,
-                                   newProd: newProd,
-                                   sorting: 500
-                              });
-                              newProduct.save();
-                              // Create folders on the server to save the image (regardless of whether it is sent or not)
-                              await mkdirp('public/images/products/' + newProduct.firstSlug);
-                              await mkdirp('public/images/products/' + newProduct.firstSlug + '/gallery');
-                              await mkdirp('public/images/products/' + newProduct.firstSlug + '/gallery/thumbs');
-                              // If sent -> save the image on the server
-                              if(imageName != "") {
-                                   const image = req.files.image;
-                                   const path = 'public/images/products/' + newProduct.firstSlug + '/' + imageName;
-                                   // Move file to the specified place on the server using req.files.file.mv() method
-                                   await image.mv(path);
-                              }
-                              await req.flash('message-success', 'New product added successfully!');
-                              res.status(201).redirect('/admin/products');
                          }
                     }
                }
@@ -305,57 +325,54 @@ exports.postAddProduct = async (req, res, next) => {
 }
 
 
-exports.getEditProductPage = (req, res, next) => {
+exports.getEditProductPage = async (req, res, next) => {
      const slug = req.params.slug;
-     // Find the poroduct in DB
-     Product.findOne({slug: slug})
-          .then(product => {
-               if(!product) {
-                    req.flash('message-danger', 'Product not found!');
-                    return res.status(404).redirect('/admin/products');
-               }
-               // Catch gallery images (if any)
-               const gallery = 'public/images/products/' + product.firstSlug + '/gallery';
-               let galleryImages = null;
-               fsExtra.readdir(gallery)
-                    .then(images => {
-                         galleryImages = images;
-                         //Catch all categories that could be asigned to newly edited product
-                         Category.find().sort({sorting: 1})
-                              .then(categories => {
-                                   // Render view file and send data
-                                   res.render('admin/edit-productM', {
-                                        title: 'Edit Product',
-                                        oldInput: {
-                                             title: product.title,
-                                             slug: product.slug,
-                                             firstSlug: product.firstSlug,
-                                             price: parseFloat(product.price).toFixed(2),
-                                             category: product.category,
-                                             description: product.description,
-                                             features: product.features,
-                                             image: product.image,
-                                             originalPrice: parseFloat(product.originalPrice).toFixed(2),
-                                             brand: product.brand,
-                                             productCode: product.productCode,
-                                             availability: product.availability,
-                                             featured: product.featured,
-                                             popular: product.popular,
-                                             bestSell: product.bestSell,
-                                             special: product.special,
-                                             newProd: product.newProd,
-                                             id: product._id
-                                        },
-                                        categories: categories,
-                                        galleryImages: galleryImages,
-                                        valErrors: []
-                                   });
-                              })
-                              .catch(err => console.log(err));
-                    })
-                    .catch(err => console.log(err));
-          })
-          .catch(err => console.log(err));
+     try {
+          // Find the poroduct in DB
+          const product = await Product.findOne({slug: slug});
+          if(!product) {
+               await req.flash('message-danger', 'Product not found!');
+               return res.status(404).redirect('/admin/products');
+          }
+          // Catch gallery images (if any)
+          const gallery = 'public/images/products/' + product.firstSlug + '/gallery';
+          let galleryImages = null;
+          galleryImages = await fsExtra.readdir(gallery);
+          // Catch all categories that could be assigned to newly edited product
+          const categories = await Category.find().sort({sorting: 1});
+          // Catch all brands that could be assigned to newly edited product	
+          const brands = await Brand.find().sort({title: 1});
+          // Render view file and send data
+          res.render('admin/edit-productM', {
+               title: 'Edit Product',
+               oldInput: {
+                    title: product.title,
+                    slug: product.slug,
+                    firstSlug: product.firstSlug,
+                    price: parseFloat(product.price).toFixed(2),
+                    category: product.category,
+                    description: product.description,
+                    features: product.features,
+                    image: product.image,
+                    originalPrice: parseFloat(product.originalPrice).toFixed(2),
+                    brand: product.brand,
+                    productCode: product.productCode,
+                    availability: product.availability,
+                    featured: product.featured,
+                    popular: product.popular,
+                    bestSell: product.bestSell,
+                    special: product.special,
+                    newProd: product.newProd,
+                    id: product._id
+               },
+               categories: categories,
+               brands: brands,
+               galleryImages: galleryImages,
+               valErrors: []
+          });
+     } catch(err) {
+          console.log(err);
+     }
 }
 
 exports.postEditProduct = async (req, res, next) => {
@@ -396,9 +413,11 @@ exports.postEditProduct = async (req, res, next) => {
                req.files.image.mimetype !== 'image/jpeg' && 
                req.files.image.mimetype !== 'image/png'
                )) {
-               req.flash('message-danger', 'The attached file is not an image!');
-               // Catch all categories that could be given to newly edited product
-               const categories = Category.find().sort({sorting: 1});
+               await req.flash('message-danger', 'The attached file is not an image!');
+               // Catch all categories that could be assigned to newly edited product
+               const categories = await Category.find().sort({sorting: 1});
+               // Catch all brands that could be assigned to newly edited product	
+               const brands = await Brand.find().sort({title: 1});
                res.status(422).render('admin/edit-productM', {
                     title: 'Edit Product',
                     oldInput: {
@@ -422,6 +441,7 @@ exports.postEditProduct = async (req, res, next) => {
                          id: productId
                     },
                     categories: categories,
+                    brands: brands,
                     valErrors: [],
                     galleryImages: galleryImages,
                     messageDang: req.flash('message-danger')
@@ -430,8 +450,10 @@ exports.postEditProduct = async (req, res, next) => {
                // Catching and displaying validation errors
                const valErrors = validationResult(req);
                if(!valErrors.isEmpty()) {
-                    // Catch all categories that could be given to newly edited product
+                    // Catch all categories that could be assigned to newly edited product
                     const categories = await Category.find().sort({sorting: 1});
+                    // Catch all brands that could be assigned to newly edited product	
+                    const brands = await Brand.find().sort({title: 1});
                     res.status(422).render('admin/edit-productM', {
                          title: 'Edit Product',
                          oldInput: {
@@ -455,6 +477,7 @@ exports.postEditProduct = async (req, res, next) => {
                               id: productId
                          },
                          categories: categories,
+                         brands: brands,
                          galleryImages: galleryImages,
                          valErrors: valErrors.array()
                     });
@@ -462,9 +485,11 @@ exports.postEditProduct = async (req, res, next) => {
                     // Check if other product with the same name already exists in DB (it must be unique)
                     const product = await Product.findOne({title: title, _id: {$ne: productId}});
                     if(product) {
-                         req.flash('message-danger', 'Product with this name already exists!');
+                         await req.flash('message-danger', 'Product with this name already exists!');
                          // Catch all categories that could be given to newly edited product
                          const categories = await Category.find().sort({sorting: 1});
+                         // Catch all brands that could be assigned to newly edited product	
+                         const brands = await Brand.find().sort({title: 1});
                          res.status(422).render('admin/edit-productM', {
                               title: 'Edit Product',
                               oldInput: {
@@ -488,6 +513,7 @@ exports.postEditProduct = async (req, res, next) => {
                                    id: productId
                               },
                               categories: categories,
+                              brands: brands,
                               valErrors: [],
                               galleryImages: galleryImages,
                               messageDang: req.flash('message-danger')
@@ -496,9 +522,11 @@ exports.postEditProduct = async (req, res, next) => {
                          // Check if product with this slug already exists in DB
                          const product = await Product.findOne({slug: slug, _id: {$ne: productId}});
                          if(product) {
-                              req.flash('message-danger', 'Product with this slug already exists!');
+                              await req.flash('message-danger', 'Product with this slug already exists!');
                               // Catch all categories that could be given to newly edited product
                               const categories = await Category.find().sort({sorting: 1});
+                              // Catch all brands that could be assigned to newly added product	
+                              const brands = await Brand.find().sort({title: 1});
                               res.status(422).render('admin/edit-productM', {
                                    title: 'Edit Product',
                                    oldInput: {
@@ -522,6 +550,7 @@ exports.postEditProduct = async (req, res, next) => {
                                         id: productId
                                    },
                                    categories: categories,
+                                   brands: brands,
                                    valErrors: [],
                                    galleryImages: galleryImages,
                                    messageDang: req.flash('message-danger')
@@ -530,7 +559,7 @@ exports.postEditProduct = async (req, res, next) => {
                               // Find existing product in DB that should be edited
                               const product = await Product.findById(productId);
                               if(!product) {
-                                   req.flash('message-danger', 'Product not found!');
+                                   await req.flash('message-danger', 'Product not found!');
                                    return res.status(404).redirect('/admin/products');
                               }
                               // Catch the name of the sent image and set the imageName variable
@@ -581,7 +610,8 @@ exports.postEditProduct = async (req, res, next) => {
      }
 }
 
-exports.postDropImagesToGallery =(req, res, next) => {
+
+exports.postDropImagesToGallery = (req, res, next) => {
      console.log(req.files);
      // Catch images dropped to Dropzone on 'edit-page.ejs' (one image by one)
      const droppedImage = req.files.file;
@@ -604,6 +634,7 @@ exports.postDropImagesToGallery =(req, res, next) => {
      // Send response status (we must do that in order that Dropzone Ajax code works)
      res.sendStatus(200);
 }
+
 
 exports.getDeleteImage = (req, res, next) => {
      // Catch the image to be deleted

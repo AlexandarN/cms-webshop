@@ -59,6 +59,19 @@ router.get('/delete-galimage/:firstSlug', isAuth.isAdmin, productsController.get
 router.get('/delete-product/:slug', isAuth.isAdmin, productsController.getDeleteProduct);
 
 
+const brandsController = require('../controllers/admin/brandsController');
+router.get('/brands', isAuth.isAdmin, brandsController.getBrandsListPage);
+
+router.get('/add-brand', isAuth.isAdmin, brandsController.getAddBrandPage);
+router.post('/add-brand', isAuth.isAdmin, isValid.checkBrandValues, brandsController.postAddBrand);
+
+router.get('/edit-brand/:slug', isAuth.isAdmin, brandsController.getEditBrandPage);
+router.post('/edit-brand', isAuth.isAdmin, isValid.checkBrandValues, brandsController.postEditBrand);
+router.get('/delete-image/brand/:firstSlug', isAuth.isAdmin, brandsController.getDeleteImage);
+
+router.get('/delete-brand/:slug', isAuth.isAdmin, brandsController.getDeleteBrand);
+
+
 const infoController = require('../controllers/admin/infoController');
 router.get('/edit-info', isAuth.isAdmin, infoController.getEditInfoPage);
 router.post('/edit-info', isAuth.isAdmin, infoController.postEditInfo);

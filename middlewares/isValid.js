@@ -125,6 +125,30 @@ exports.checkProductValues = [
 ];
 
 
+exports.checkBrandValues = [
+     body('title')
+          .isString()
+          .trim()
+          .not().matches('[/#%?]')
+          .withMessage('Title must not contain "/ # % ?" characters!')
+		.isLength({min: 2})
+		.withMessage('Title must be at least 2 characters long!')
+		.isLength({max: 25})
+          .withMessage('Title must be maximum 25 characters long!'),
+     body('slug')
+          .optional({checkFalsy: true})
+          .isString()
+          .trim()
+          .not().matches('[/#%?]')
+          .withMessage('Slug must not contain "/ # % ?" characters!')
+		.isLength({max: 25})
+          .withMessage('Slug must be maximum 25 characters long!'),
+     (req, res, next) => {
+          next();
+     }
+];
+
+
 exports.checkInfoPageValues = [
      body('title')
           .isString()

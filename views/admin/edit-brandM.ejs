@@ -1,0 +1,148 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/admin-navigationM.ejs') %>
+
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <% pages.forEach(page => {
+    if(page.firstSlug == 'shop') { %>
+      <div class="parallax"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="<%= page.banner %>"></div>
+    <% }
+  }); %>
+  <h1 class="category-title"><%= title %></h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/admin/brands">All Brands</a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+
+<!-- BELLOW BANNER CONTENT -->
+<main class="container">
+  <div class="row">
+
+    <div class="col-sm-9" id="content">
+
+      <!-- FLASH MESSAGES -->
+      <%- include('../layouts/flashMessages.ejs') %>
+
+      <!-- HEADLINE -->
+      <h1>Edit '<%= oldInput.title %>' brand</h1>
+      <p>Please enter all required information and click the submit button below in order to save the changes.</p>
+      <br>
+      <a class="btn btn-primary" href="/admin/brands">Back to all brands</a>
+      <br><br><br>
+
+
+      <!-- FORM -->
+      <form name="form" method="POST" class="form-horizontal" action="/admin/edit-brand" enctype="multipart/form-data" onsubmit="return checkCheckBox(this);">
+        <!-- VALIDATION ERROR MESSAGES ALL TOGETHER
+        <% if(valErrors) {
+              valErrors.forEach(err => { %>
+                <div class="alert alert-danger"><%= err.msg %></div>
+             <% });
+        } %> -->
+
+        <!-- BRAND DATA -->
+        <fieldset id="data">
+          <legend>Brand Data</legend>
+
+          <!-- Name -->
+          <% if(valErrors.find(err => err.param === 'title')) { 
+            const index = valErrors.findIndex(err => err.param === 'title'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-title" class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-title" placeholder="Name" value="<%= oldInput.title %>" name="title">
+            </div>
+          </div>
+
+          <!-- Slug -->
+          <% if(valErrors.find(err => err.param === 'slug')) { 
+            const index = valErrors.findIndex(err => err.param === 'slug'); %>
+            <div class="alert alert-danger"><%= valErrors[index].msg %></div>
+          <% } %>
+          <div class="form-group required">
+            <label for="input-slug" class="col-sm-2 control-label">Slug</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="input-slug" placeholder="Slug" value="<%= oldInput.slug %>" name="slug">
+            </div>
+          </div>
+
+          <!-- Current image -->
+          <div class="form-group">
+            <label for="input-image" class="col-sm-2 control-label">Current image</label>
+            <div class="custom-file col-sm-10">
+              <% if(oldInput.image == "") { %>
+                <img style="height: 100px;" src="/images/brands/noimage.png">
+              <% } else { %>
+                <img style="height: 100px; max-width: 600px;" src="/images/brands/<%= oldInput.firstSlug %>/<%= oldInput.image %>"> &nbsp;
+                <a class="confirmDeletion" href="/admin/delete-image/brand/<%= oldInput.firstSlug %>?name=<%= oldInput.image %>&type=image" onclick="return confirm('Are you sure you want to delete this image?')">Delete image</a>  
+              <% } %>
+            </div>
+         </div>
+
+          <!-- New image -->
+          <div class="form-group">
+            <label for="input-image" class="col-sm-2 control-label">Upload new image</label>
+            <div class="custom-file col-sm-10">
+              <!--  JS ONCHANGE EVENT for showing the preview of an uploaded image  -->      
+              <input class="custom-file-input form-control" type="file" name="image" placeholder="Browse" onchange="document.getElementById('imgPreview').style.display = 'block'; document.getElementById('imgPreview').src = window.URL.createObjectURL(this.files[0]); document.getElementById('imgPreview').height = 100">
+            </div>
+            <br><br><br>
+            <label for="input-image" class="col-sm-2 control-label"></label>
+            <div class="custom-file col-sm-10">
+              <img src="#" id="imgPreview" style="display: none;">
+            </div>
+          </div>
+
+        </fieldset>
+        <!-- End of BRAND DATA -->
+
+        <!-- BRAND CATEGORIZATION -->
+        <fieldset id="categorization">
+          <legend>Brand Categorization</legend>
+
+          <!-- Favourite brand -->
+          <div class="form-group">
+            <label for="input-checkbox" class="col-sm-2 control-label">Favourite brand</label>
+            <div class="col-sm-10">
+              <input type="checkbox" class="form-control" id="input-checkbox" value="yes" name="favourite" <% if(oldInput.favourite === true) { %>checked<% } %> >
+              <label class="form-check-label">Yes</label>
+            </div>
+          </div>
+
+        </fieldset>
+        <!-- End of BRAND CATEGORIZATION -->
+          
+        <!-- BUTTON -->
+        <div class="buttons">
+          <div class="pull-left">
+            <!-- CSRF and other HIDDEN BUTTONS -->
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden" name="firstSlug" value="<%= oldInput.firstSlug %>">
+            <input type="hidden" name="oldImage" value="<%= oldInput.image %>">
+            <input type="hidden" name="brandId" value="<%= oldInput.id%>">
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary">Submit changes</button>
+          </div>
+        </div>
+        <!-- End of BUTTON -->
+
+      </form>
+      <!-- End of FORM -->
+
+
+    </div>
+
+  </div>
+</main>
+<!-- End of BELOW BANNER CONTENT -->
+
+
+<%- include('../layouts/footerM.ejs') %>

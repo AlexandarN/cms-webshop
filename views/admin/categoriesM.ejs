@@ -40,25 +40,25 @@
         <table class="table table-striped sorting">
           <thead>
             <tr class="home">
-              <th>TITLE</th>
-              <th>IMAGE</th>
-              <th>EDIT</th>
-              <th>DELETE</th>
+              <th class="text-center">TITLE</th>
+              <th class="text-center">IMAGE</th>
+              <th class="text-center">EDIT</th>
+              <th class="text-center">DELETE</th>
             </tr>
           </thead>
           <tbody class="reorder">
             <% categories.forEach(category => { %>
               <tr id="id_<%= category._id %>" class="<%= category.slug %>">
                 <td><a href="/products/<%= category.slug %>"><%= category.title %></a></td>
-                <td>
+                <td class="text-center">
                   <% if(!category.image) { %>
                     <img src="/images/categories/noimage.png" style="height: 50px;">
                   <% } else { %>
                     <img src="/images/categories/<%= category.firstSlug %>/<%= category.image %>" style="height: 50px;">
                   <% } %>
                 </td>
-                <td><a href="/admin/edit-category/<%= category.slug %>">Edit</a></td>
-                <td><a href="/admin/delete-category/<%= category.slug %>" onclick="return confirm('Are you sure you want to delete this category?')">Delete</a></td>
+                <td class="text-center"><a href="/admin/edit-category/<%= category.slug %>">Edit</a></td>
+                <td class="text-center"><a href="/admin/delete-category/<%= category.slug %>" onclick="return confirm('Are you sure you want to delete this category?')">Delete</a></td>
               </tr>
             <% }) %>
           </tbody>

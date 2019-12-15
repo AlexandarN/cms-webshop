@@ -92,7 +92,7 @@
             <!-- PRODUCT IMAGE -->
             <div class="image product-imageblock">
               <!-- Image -->
-              <a href="/products/<%=product.category %>/<%= product.slug %>">
+              <a href="/products/<%=product.category.slug %>/<%= product.slug %>">
                 <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive">
                 <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive">
               </a>
@@ -105,7 +105,7 @@
                   <button type="button" class="compare" data-toggle="tooltip" data-placement="top" title="Compare this Product"><i class="fa fa-exchange"></i></button>
                 </li> -->
                 <li>
-                  <button type="button" class="quick-view" data-toggle="tooltip" data-placement="top" title="Quick View"><a href="/products/<%= product.category %>/<%= product.slug %>"><i class="fa fa-eye"></i></a></button>
+                  <button type="button" class="quick-view" data-toggle="tooltip" data-placement="top" title="Quick View"><a href="/products/<%= product.category.slug %>/<%= product.slug %>"><i class="fa fa-eye"></i></a></button>
                 </li>
                 <li>
                   <% if(user) { %>
@@ -128,7 +128,7 @@
                 <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> 
               </div>
               <!-- PRODUCT TITLE -->
-              <h4 class="product-name"><a href="/products/<%=product.category %>/<%= product.slug %>" title="<%= product.title %>"><%= product.title %></a></h4>
+              <h4 class="product-name"><a href="/products/<%=product.category.slug %>/<%= product.slug %>" title="<%= product.title %>"><%= product.title %></a></h4>
               <!-- PRODUCT PRICE -->
               <p class="price product-price">
                 $<%= parseFloat(product.price).toFixed(2) %>
@@ -149,7 +149,7 @@
                   <button type="button" class="compare" data-toggle="tooltip" data-placement="top" title="Compare this Product"><i class="fa fa-exchange"></i></button>
                 </li> -->
                 <li>
-                  <a href="/products/<%= product.category %>/<%= product.slug %>">
+                  <a href="/products/<%= product.category.slug %>/<%= product.slug %>">
                     <button type="button" class="quick-view" data-toggle="tooltip" data-placement="top" title="Quick View"><i class="fa fa-eye"></i></button>
                   </a>
                 </li>

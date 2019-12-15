@@ -1,0 +1,79 @@
+<%- include('../layouts/headerM.ejs') %>
+<%- include('../layouts/admin-navigationM.ejs') %>
+
+
+<!-- PARALLAX BANNER -->
+<div class="breadcrumb parallax-container">
+  <% pages.forEach(page => {
+    if(page.firstSlug == 'shop') { %>
+      <div class="parallax"><img src="/images/pages/<%= page.firstSlug %>/<%= page.banner %>" alt="<%= page.banner %>"></div>
+    <% }
+  }); %>
+  <h1 class="category-title"><%= title %></h1>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/admin/brands">All Brands</a></li>
+  </ul>
+</div>
+<!-- End of PARALLAX BANNER -->
+
+
+
+<!-- BELLOW BANNER CONTENT -->
+<main class="container">
+  <div class="row">
+
+    <div class="content col-sm-12">
+
+      <!-- FLASH MESSAGES -->
+      <%- include('../layouts/flashMessages.ejs') %>
+
+      <h1>All brands</h1>
+      <br>
+
+      <a class="btn btn-primary" href="/admin/add-brand">Add new brand</a>
+      <br><br><br>
+
+      <% if(brands.length > 0) { %>
+        <!--  TABLE  -->
+        <table class="table table-striped sorting">
+          <thead>
+            <tr class="home">
+              <th class="text-center">NAME</th>
+              <th class="text-center">IMAGE</th>
+              <th class="text-center">EDIT</th>
+              <th class="text-center">DELETE</th>
+            </tr>
+          </thead>
+          <tbody class="reorder">
+            <% brands.forEach(brand => { %>
+              <tr id="id_<%= brand._id %>" class="<%= brand.slug %>">
+                <td><a href="/products/<%= brand.slug %>"><%= brand.title %></a></td>
+                <td class="text-center">
+                  <% if(!brand.image) { %>
+                    <img src="/images/brands/noimage.png" style="height: 35px;">
+                  <% } else { %>
+                    <img src="/images/brands/<%= brand.firstSlug %>/<%= brand.image %>" style="height: 35px;">
+                  <% } %>
+                </td>
+                <td class="text-center"><a href="/admin/edit-brand/<%= brand.slug %>">Edit</a></td>
+                <td class="text-center"><a href="/admin/delete-brand/<%= brand.slug %>" onclick="return confirm('Are you sure you want to delete this brand?')">Delete</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <!--  End of TABLE  -->
+
+      <% } else { %>
+        <br>
+        <h3 class="category-title">No brands found</h3>
+      <% } %>
+
+    </div>
+  </div>
+</main>
+<!-- End of BELOW BANNER CONTENT -->
+
+
+<%- include('../layouts/footerM.ejs') %>

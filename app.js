@@ -88,6 +88,13 @@ InfoPage.find().sort({sorting: 1})
      })   
      .catch(err => console.log(err));
 
+const Brand = require('./models/Brand');
+Brand.find({favourite: true}).sort({title: 1})
+     .then(brands => {
+          app.locals.brands = brands;
+     })   
+     .catch(err => console.log(err));
+
      // GLOBAL VARIABLES MIDDLEWARE - using SESSION and FLASH - we can then use these variables in all views (responses)
 app.use((req, res, next) => {
      res.locals.messageDang = req.flash('message-danger');

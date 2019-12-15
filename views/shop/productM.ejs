@@ -9,8 +9,8 @@
   <ul>
     <li><a href="/">Home</a></li>
     <li><a href="/products">Products</a></li>
-    <li><a href="/products/<%= product.category %>"><%= category.title %></a></li>
-    <li><a href="/products/<%= product.category %>/<%= product.slug %>"><%= product.title %></a></li>
+    <li><a href="/products/<%= category.slug %>"><%= category.title %></a></li>
+    <li><a href="/products/<%= category.slug %>/<%= product.slug %>"><%= product.title %></a></li>
   </ul>
 </div>
 <!-- End of PARALLAX BANNER -->
@@ -80,7 +80,7 @@
           <ul class="list-unstyled productinfo-details-top">
             <li><h2 class="productpage-price">$<%= parseFloat(product.price).toFixed(2) %></h2></li>
             <% if (product.originalPrice !== product.price) { %>
-              <li><h2 class="productpage-price less">$<%= parseFloat(product.originalPrice).toFixed(2) %></h2></li>
+              <li><h2 class="productpage-price-less less">$<%= parseFloat(product.originalPrice).toFixed(2) %></h2></li>
             <% } %> 
             <li><span class="productinfo-tax">Ex Tax: $<%= parseFloat(product.price * 0.8).toFixed(2) %></span></li>
           </ul>
@@ -89,8 +89,9 @@
           <!-- Brand and data -->
           <ul class="list-unstyled product_info">
             <li>
-              <label>Brand:</label>
-              <span> <a href="#"><b><%= product.brand %></b></a></span>
+              <label>Brand: &nbsp; </label>
+              <!-- <span> <a href="#"><b><%= product.brand.title %></b></a></span> -->
+              <span> <a href="#"><img src="/images/brands/<%= product.brand.firstSlug %>/<%= product.brand.image %>" style="max-height: 25px"></img></a></span>
             </li>
             <li>
               <label>Product Code:</label>
@@ -108,18 +109,18 @@
             <div class="form-group">
 
               <!-- Filters Menu -->
-              <div class="row">
+              <!-- <div class="row"> -->
                 <!-- Sort By filter -->
-                <div class="Sort-by col-md-6">
+                <!-- <div class="Sort-by col-md-6">
                   <label>Sort by</label>
                   <select id="select-by-size" class="selectpicker form-control">
                     <option value="#" selected="selected">Small</option>
                     <option value="#">Medium</option>
                     <option value="#">Large</option>
                   </select>
-                </div>
+                </div> -->
                 <!-- Color filter -->
-                <div class="Color col-md-6">
+                <!-- <div class="Color col-md-6">
                   <label>Color</label>
                   <select id="select-by-color" class="selectpicker form-control">
                     <option value="#" selected="selected">Blue</option>
@@ -128,15 +129,15 @@
                     <option value="#">White</option>
                   </select>
                 </div>
-              </div>
+              </div> -->
               <!-- Enf of Filters Menu -->
 
               <!-- ACTION BUTTONS -->
               <div class="qty">
-                <label>Qty</label>
-                <input id="qty" placeholder="1" type="number">
+                <!-- Enter quantity button -->
+                <!-- <label>Qty</label>
+                <input id="qty" placeholder="1" type="number"> -->
                 <ul class="button-group list-btn">
-                  <!-- Enter quantity button -->
                   <li>
                     <button type="button" class="wishlist" data-toggle="tooltip" data-placement="top" title="Add to Wish List"><a href="/wishlist/add/<%= product.slug %>"><i class="fa fa-heart-o"></i></a></button>
                   </li>
@@ -225,19 +226,19 @@
       <!-- End of PRODUCT DESCRIPTION and REVIEW -->
 
       <!-- RELATED PRODUCTS -->
-      <% if(catProducts.length > 0) { %>
+      <% if(relatedProducts.length > 0) { %>
       <h3 class="productblock-title">Related Products</h3>
       <h4 class="title-subline">What’s so special? Check it out!</h4>
       <div class="box">
         <div id="related-slidertab" class="row owl-carousel product-slider">
 
           <!-- Related Product -->
-          <% catProducts.forEach(product => { %>
+          <% relatedProducts.forEach(product => { %>
             <div class="item">
               <div class="product-thumb transition">
                 <!-- Product image -->
                 <div class="image product-imageblock"> 
-                  <a href="product.html">
+                  <a href="/products/<%= category.slug %>/<%= product.slug %>">
                     <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive">
                     <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" alt="<%= product.image %>" title="<%= product.title %>" class="img-responsive">
                   </a>
@@ -249,7 +250,7 @@
                       <button title="" data-placement="top" data-toggle="tooltip" class="compare" type="button" data-original-title="Compare this Product"><i class="fa fa-exchange"></i></button>
                     </li> -->
                     <li>
-                      <button title="" data-placement="top" data-toggle="tooltip" class="quick-view" type="button" data-original-title="Quick View"><a href="/products/<%= product.category %>/<%= product.slug %>"><i class="fa fa-eye"></i></a></button>
+                      <button title="" data-placement="top" data-toggle="tooltip" class="quick-view" type="button" data-original-title="Quick View"><a href="/products/<%= category.slug %>/<%= product.slug %>"><i class="fa fa-eye"></i></a></button>
                     </li>
                     <li>
                       <% if(user) { %>
@@ -270,7 +271,7 @@
                     <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> 
                   </div>
                   <h4 class="product-name">
-                    <a href="/products/<%= product.category %>/<%= product.slug %>" title="<%= product.title %>"><%= product.title %></a>
+                    <a href="/products/<%= category.slug %>/<%= product.slug %>" title="<%= product.title %>"><%= product.title %></a>
                   </h4>
                   <p class="price product-price">
                     $<%= parseFloat(product.price).toFixed(2) %>

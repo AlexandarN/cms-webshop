@@ -1,6 +1,7 @@
 <!-- SIDEBAR -->
 <div id="column-left" class="col-sm-3 hidden-xs column-left">
 
+
   <!-- CATEGORIES MENU -->
   <div class="Categories left-sidebar-widget">
     <div class="columnblock-title">Top Categories</div>
@@ -35,58 +36,66 @@
   </div>
   <!-- End of CATEGORIES MENU -->
 
+
   <% if(title !== 'Cart' && title !== 'Checkout' && title !== 'Successful Payment' && title !== 'Wishlist') { %>
     <!-- REFINE SEARCH MENU -->
     <div class="filter left-sidebar-widget">
       <div class="columnblock-title">Refine Search</div>
-      <div class="filter-block">
-        <div class="list-group">
-          <p class="list-group-item">Color</p>
-          <div class="list-group-item">
-            <div id="filter-group1">
-              <label class="checkbox">
-                <input name="filter[]" type="checkbox" value="1" />
-                Black (7)</label>
-              <label class="checkbox">
-                <input name="filter[]" type="checkbox" value="2" />
-                Blue (6)</label>
-              <label class="checkbox">
-                <input name="filter[]" type="checkbox" value="3" />
-                Red (6)</label>
+      <!-- FORM -->
+      <form method="POST" action="/products">
+        <div class="filter-block">
+          <div class="list-group">
+
+            <!-- AVAILABILITY -->
+            <p class="list-group-item">Availability</p>
+            <div class="list-group-item">
+              <div id="filter-group1">
+                <label class="checkbox">
+                  <input name="filter[]" type="checkbox" value="inStock">
+                  In Stock
+                </label>
+                <label class="checkbox">
+                  <input name="filter[]" type="checkbox" value="outOfStock">
+                  Out of Stock
+                </label>
+              </div>
+            </div>
+            <br>
+
+            <!-- PRICE RANGE -->
+            <p class="list-group-item">Price</p>
+            <div class="list-group-item">
+              <div id="filter-group2">
+                <label class="checkbox">
+                  <input name="filter[]" type="checkbox" value="low">
+                  $0-$100 (6)
+                </label>
+                <label class="checkbox">
+                  <input name="filter[]" type="checkbox" value="medium">
+                  $100-$300 (6)
+                </label>
+                <label class="checkbox">
+                  <input name="filter[]" type="checkbox" value="high">
+                  $300-$1000 (6)
+                </label>
+              </div>
             </div>
           </div>
-          <p class="list-group-item">Price</p>
-          <div class="list-group-item">
-            <div id="filter-group2">
-              <label class="checkbox">
-                <input name="filter[]" type="checkbox" value="4" />
-                $100-$300 (6)</label>
-              <label class="checkbox">
-                <input name="filter[]" type="checkbox" value="5" />
-                $301-$1000 (6)</label>
-            </div>
+
+          <!-- SUBMIT BUTTON -->
+          <div class="panel-footer">
+            <button type="button" id="button-filter" class="btn btn-primary">
+              Refine Search
+            </button>
           </div>
-          <p class="list-group-item">Size</p>
-          <div class="list-group-item">
-            <div id="filter-group3">
-              <label class="checkbox">
-                <input name="filter[]" type="checkbox" value="6" />
-                Big (3)</label>
-              <label class="checkbox">
-                <input name="filter[]" type="checkbox" value="7" />
-                Medium (3)</label>
-              <label class="checkbox">
-                <input name="filter[]" type="checkbox" value="8" />
-                Small (1)</label>
-            </div>
-          </div>
+
         </div>
-        <div class="panel-footer">
-          <button type="button" id="button-filter" class="btn btn-primary">Refine Search</button>
-        </div>
-      </div>
+      </form>
+      <!-- End of FORM -->
+
     </div>
     <!-- End of REFINE SEARCH MENU -->
+
 
     <!-- COMMERCIAL BANNER -->
     <div class="banner left-sidebar-widget"> 
@@ -114,7 +123,7 @@
           <div class="product-list col-xs-4">
             <div class="product-thumb">
               <div class="image product-imageblock">
-                <a href="/products/<%= product.category %>/<%= product.slug %>">
+                <a href="/products/<%= product.category.slug %>/<%= product.slug %>">
                   <img class="img-responsive" title="<%= product.title %>" alt="<%= product.image %>" src="/images/products/<%= product.firstSlug %>/<%= product.image %>">
                   <img class="img-responsive" title="<%= product.title %>" alt="<%= product.image %>" src="/images/products/<%= product.firstSlug %>/<%= product.image %>">
                 </a>
@@ -125,7 +134,7 @@
           <div class="col-xs-8">
             <div class="caption product-detail">
               <h4 class="product-name">
-                <a title="<%= product.title %>" href="/products/<%= product.category %>/<%= product.slug %>"><%= product.title %></a>
+                <a title="<%= product.title %>" href="/products/<%= product.category.slug %>/<%= product.slug %>"><%= product.title %></a>
               </h4>
               <p class="price product-price"> 
                 <span class="price-new">$<%= parseFloat(product.price).toFixed(2) %></span> 

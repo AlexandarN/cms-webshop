@@ -31,7 +31,7 @@
       <%- include('../layouts/flashMessages.ejs') %>
 
       <h1>All products</h1>
-      <p>Drag and drop products in the table in order to rearrange their visual appearance at the Home, S.</p>
+      <p>Drag and drop products in the table in order to rearrange their visual order at Home and Shop pages of the website.</p>
       <br>
       <a class="btn btn-primary" href="/admin/add-product">Add new product</a>
       <br><br><br>
@@ -41,29 +41,31 @@
         <table class="table table-striped sorting">
           <thead>
             <tr class="home">
-              <th>TITLE</th>
-              <th>PRICE</th>
-              <th>CATEGORY</th>
-              <th>IMAGE</th>
-              <th>EDIT</th>
-              <th>DELETE</th>
+              <th class="text-center">NAME</th>
+              <th class="text-center">IMAGE</th>
+              <th class="text-center">PRICE</th>
+              <th class="text-center">CATEGORY</th>
+              <th class="text-center">BRAND</th>
+              <th class="text-center">EDIT</th>
+              <th class="text-center">DELETE</th>
             </tr>
           </thead>
           <tbody class="reorder">
             <% products.forEach(product => { %>
               <tr id="id_<%= product._id %>" class="<%= product.slug %>">
-                <td><a href="/products/<%= product.category %>/<%= product.slug %>"><%= product.title %></a></td>
-                <td>$ <%= parseFloat(product.price).toFixed(2) %></td>
-                <td><%= product.category %></td>
-                <td>
+                <td><a href="/products/<%= product.category.slug %>/<%= product.slug %>"><%= product.title %></a></td>
+                <td class="text-center">
                   <% if(!product.image) { %>
                     <img src="/images/products/noimage.png" style="height: 40px;">
                   <% } else { %>
                     <img src="/images/products/<%= product.firstSlug %>/<%= product.image %>" style="height: 40px;">
                   <% } %>
                 </td>
-                <td><a href="/admin/edit-product/<%= product.slug %>">Edit</a></td>
-                <td><a href="/admin/delete-product/<%= product.slug %>" onclick="return confirm('Are you sure you want to delete this product?')">Delete</a></td>
+                <td class="text-center">$ <%= parseFloat(product.price).toFixed(2) %></td>
+                <td class="text-center"><%= product.category.title %></td>
+                <td class="text-center" style="max-width: 100px"><%= product.brand.title %></td>
+                <td class="text-center"><a href="/admin/edit-product/<%= product.slug %>">Edit</a></td>
+                <td class="text-center"><a href="/admin/delete-product/<%= product.slug %>" onclick="return confirm('Are you sure you want to delete this product?')">Delete</a></td>
               </tr>
             <% }) %>
           </tbody>

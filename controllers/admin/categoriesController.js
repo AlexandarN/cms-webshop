@@ -380,7 +380,6 @@ exports.getDeleteImage = (req, res, next) => {
      const type = req.query.type;
      // Find the image locations
      const path = 'public/images/categories/' + categorySlug + '/' + image;
-     console.log('path: ' + path);
      // Remove the image
      fsExtra.remove(path)
           .then(result => {

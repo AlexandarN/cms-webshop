@@ -1968,6 +1968,12 @@ span.review-count, span.review-edit {
 	font-weight: bold;
 	margin: 10px 0;
 }
+.productpage-price-less {
+	font-size: 18px;
+	color: #3ab54a;
+	margin: 10px 0;
+	font-weight: bold;
+}
 .brand-block {
 	margin: 0 0 20px;
 }
