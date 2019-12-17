@@ -1850,6 +1850,9 @@ p.list-group-item {
 }
 .brand-logo.owl-carousel .img-responsive {
 	display: inline-block;
+	height:30px;
+	max-width: 165px;
+	vertical-align: middle; 
 }
 #product .addtocart {
 	margin: 0 10px;
@@ -2020,6 +2023,7 @@ button.btn.btn-default.btn-lg span {
 	text-indent: -9999px;
 	cursor: pointer;
 	z-index: 9999;
+	margin:
 }
 /* CSS for Footer-Top CMS start */
 .footer-top-cms {
@@ -2687,22 +2691,22 @@ video {
 	cursor: default;
 }
 .brand-logo.owl-carousel .owl-buttons div {
-	background: url("../image/sprite.png") no-repeat 0 0;
+	background: url("../imageM/sprite.png") no-repeat 0 0;
 	font-size: 0;
-	top: 40%;
+	top: 0%;
 	height: 43px;
 	width: 43px;
 }
 .brand-logo.owl-carousel .owl-buttons .owl-prev {
 	background-position: -3px -47px;
-	left: -50px;
+	left: -30px;
 }
 .brand-logo.owl-carousel .owl-buttons .owl-prev:hover {
 	background-position: -3px -104px;
 }
 .brand-logo.owl-carousel .owl-buttons .owl-next {
 	background-position: -3px -160px;
-	right: -50px;
+	right: -30px;
 }
 .brand-logo.owl-carousel .owl-buttons .owl-next:hover {
 	background-position: -3px -217px;
@@ -2720,7 +2724,7 @@ video {
 	border-left: 1px solid #b9b9b9;
 }
 .complaint .tf, .email .tf, .time .tf {
-	background: rgba(0, 0, 0, 0) url("../image/about-icon.png") no-repeat scroll center 0;
+	background: rgba(0, 0, 0, 0) url("../imageM/about-icon.png") no-repeat scroll center 0;
 	padding: 38px 0 0;
 }
 .email .tf {

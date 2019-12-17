@@ -8,6 +8,9 @@ router.get('/products', shopController.getAllProducts);
 router.get('/products/:categorySlug', shopController.getProductsByCategory);
 router.get('/products/:categorySlug/:prodSlug', shopController.getProduct);
 
+router.get('/brands', shopController.getAllBrands);
+router.get('/brands/:brandSlug', shopController.getProductsByBrand);
+
 router.get('/cart', isAuth.isUser, shopController.getCartPage);
 router.get('/cart/add/:slug', isAuth.isUser, shopController.getAddToCart);
 router.get('/cart/checkout', isAuth.isUser, shopController.getCheckoutPage);

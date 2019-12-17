@@ -8,6 +8,7 @@ const Product = require('../models/Product');
 const Category = require('../models/Category');
 const InfoPage = require('../models/InfoPage');
 const Order = require('../models/Order');
+const Brand = require('../models/Brand');
 const env = require('../config/env/env');
 
 
@@ -17,10 +18,10 @@ exports.getHomePage = async (req, res, next) => {
           const page = await Page.findOne({firstSlug: 'home'});
           // Pagination - parse current page number
           const currentPage = +req.query.page || 1;
-          let numProducts;
+          let numItems;
           // Find total no. of products in DB
           const numOfProducts = await Product.find().countDocuments();
-          numProducts = numOfProducts;
+          numItems = numOfProducts;
           // Find all POPULAR products in DB that belong to the specified current page
           const popularProds = await Product.find({popular: true}).populate('category')
                .sort({sorting: 1})
@@ -55,7 +56,7 @@ exports.getHomePage = async (req, res, next) => {
                currentPage: currentPage,
                nextPage: currentPage + 1,
                prevPage: currentPage - 1,
-               lastPage: Math.ceil(numProducts / ITEMS_PER_PAGE) 
+               lastPage: Math.ceil(numItems / ITEMS_PER_PAGE) 
           });
      } catch(err) {
           console.log(err);
@@ -108,10 +109,10 @@ exports.getAllProducts = async (req, res, next) => {
      // Pagination - parse current page number
      const currentPage = +req.query.page || 1;
      try {
-          let numProducts;
+          let numItems;
           // Find total no. of products in DB
           const numOfProducts = await Product.find().countDocuments();
-          numProducts = numOfProducts;
+          numItems = numOfProducts;
           // Find all products in DB that belong to the specified category
           const products = await Product.find().populate('category')
                .sort({sorting: 1})
@@ -144,9 +145,10 @@ exports.getAllProducts = async (req, res, next) => {
                currentPage: currentPage,
                nextPage: currentPage + 1,
                prevPage: currentPage - 1,
-               lastPage: Math.ceil(numProducts / ITEMS_PER_PAGE),
-               numProducts: numProducts,
-               perPage: ITEMS_PER_PAGE
+               lastPage: Math.ceil(numItems / ITEMS_PER_PAGE),
+               numItems: numItems,
+               perPage: ITEMS_PER_PAGE,
+               items: 'products'  // this is used in pagination.ejs to switch the word between 'products' and 'brands'
           }); 
      } catch(err) {
           console.log(err);
@@ -157,14 +159,14 @@ exports.getProductsByCategory = async (req, res, next) => {
      const ITEMS_PER_PAGE = 9;
      // Pagination 1st part - parse current page number
      const currentPage = +req.query.page || 1;
-     let numProducts;
+     let numItems;
      try {
           // Find requested category in DB	
           const slug = req.params.categorySlug;
           const category = await Category.findOne({slug: slug});
           // Pagination 2nd part - Find total no. of products for the requested category
           const numOfProducts = await Product.find({category: category._id}).countDocuments();
-          numProducts = numOfProducts;
+          numItems = numOfProducts;
           // Pagination 3rd part - Find all products in DB for the requested category and belong to the specified current page
           const products = await Product.find({category: category._id}).populate('category')
                .sort({sorting: 1})
@@ -183,9 +185,92 @@ exports.getProductsByCategory = async (req, res, next) => {
                currentPage: currentPage,
                nextPage: currentPage + 1,
                prevPage: currentPage - 1,
-               lastPage: Math.ceil(numProducts / ITEMS_PER_PAGE),
-               numProducts: numProducts,
-               perPage: ITEMS_PER_PAGE
+               lastPage: Math.ceil(numItems / ITEMS_PER_PAGE),
+               numItems: numItems,
+               perPage: ITEMS_PER_PAGE,
+               items: 'products'  // this is used in pagination.ejs to switch the word between 'products' and 'brands'
+          }); 
+     } catch(err) {
+          console.log(err);
+     }      
+}
+
+
+exports.getProductsByBrand = async (req, res, next) => {
+     const ITEMS_PER_PAGE = 9;
+     // Pagination 1st part - parse current page number
+     const currentPage = +req.query.page || 1;
+     let numItems;
+     try {
+          // Find requested Brand in DB	
+          const slug = req.params.brandSlug;
+          const brand = await Brand.findOne({slug: slug});
+          // Pagination 2nd part - Find total no. of products for the requested brand
+          const numOfProducts = await Product.find({brand: brand._id}).countDocuments();
+          numItems = numOfProducts;
+          // Pagination 3rd part - Find all products in DB for the requested brand that belong to the specified current page
+          const products = await Product.find({brand: brand._id}).populate('category')
+               .sort({title: 1})
+               .skip((currentPage - 1) * ITEMS_PER_PAGE)
+               .limit(ITEMS_PER_PAGE);
+          // Find all special products in DB
+          const specialProds = await Product.find({special: true}).populate('category')
+               .sort({sorting: 1})
+               .limit(3);
+          // Render view file and send data	
+          res.render('shop/brandM', {
+               products: products, 
+               specialProds: specialProds,
+               title: brand.title,
+               brand: brand,
+               currentPage: currentPage,
+               nextPage: currentPage + 1,
+               prevPage: currentPage - 1,
+               lastPage: Math.ceil(numItems / ITEMS_PER_PAGE),
+               numItems: numItems,
+               perPage: ITEMS_PER_PAGE,
+               items: 'products'   // this is used in pagination.ejs to switch the word between 'products' and 'brands'
+          }); 
+     } catch(err) {
+          console.log(err);
+     }      
+}
+
+
+exports.getAllBrands = async (req, res, next) => {
+     const ITEMS_PER_PAGE = 20;
+     // Pagination 1st part - parse current page number
+     const currentPage = +req.query.page || 1;
+     let numItems;
+     try {
+          // Pagination 2nd part - Find total no. of products for the requested brand
+          const numOfBrands = await Brand.find().countDocuments();
+          numItems = numOfBrands;
+          // Find all brands in DB	
+          const brands = await Brand.find()
+               .sort({title: 1})
+               .skip((currentPage - 1) * ITEMS_PER_PAGE)
+               .limit(ITEMS_PER_PAGE);
+          // Find number of products for each brand
+          brands.forEach(async brand => {
+               brand.numOfProds = await Product.find({brand: brand._id}).countDocuments();
+          });
+          // Find all special products in DB
+          const specialProds = await Product.find({special: true}).populate('category')
+               .sort({sorting: 1})
+               .limit(3);
+          // Render view file and send data	
+          res.render('shop/brandsM', {
+               brands: brands, 
+               specialProds: specialProds,
+               title: "Brands",
+               currentPage: currentPage,
+               nextPage: currentPage + 1,
+               prevPage: currentPage - 1,
+               lastPage: Math.ceil(numItems / ITEMS_PER_PAGE),
+               numItems: numItems,
+               perPage: ITEMS_PER_PAGE,
+               items: 'brands'   // this is used in pagination.ejs to switch the word between 'products' and 'brands'
           }); 
      } catch(err) {
           console.log(err);
@@ -613,7 +698,7 @@ exports.postPayWithStripe = async (req, res, next) => {
                     customer: customer.id
                }); 
                // Find all user's orders - in order to calculate new order's number
-               const number = await Order.find({userId: req.user._id}).countDocuments() + 1;
+               const number = await Order.find().countDocuments() + 1;
                // Format date function
                function formatDate(date) {
                     const day = date.getDate();

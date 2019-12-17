@@ -28,7 +28,7 @@
 
 @media (max-width: 1300px) {
 .owl-carousel .owl-buttons {
-	display: none;
+	/* display: none; */
 }
 }
 
@@ -322,7 +322,7 @@ div#banner1, div#banner2 {
 	width: 49%;
 }
 .owl-carousel .owl-buttons {
-	display: none;
+	/* display: none; */
 }
 /* CMS banner block */	
 .cms-banner-left, .cms-banner-right {
@@ -478,7 +478,7 @@ footer .ul-wrapper {
 	width: 50%
 }
 .owl-carousel .owl-buttons {
-	display: none;
+	/* display: none; */
 }
 /* Content */
 #content .product-slider .product-thumb .product-imageblock .button-group, #content .product-grid .product-thumb .product-imageblock .button-group, #content .product-thumb:hover .product-imageblock .button-group {

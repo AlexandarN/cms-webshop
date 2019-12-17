@@ -144,8 +144,8 @@ exports.postAddBrand = async (req, res, next) => {
                                    await image.mv(path);
                               }
                               // Catch all brands and put them in request locals, so that they could be caught in shop views in the first next http request - this is done for the purpose of immediately refreshing links (for brands in the footer) -> as now one more brand link should be added
-                              const brands = await Brand.find({favourite: true}).sort({title: 1});
-                              req.app.locals.brands = brands;
+                              const favBrands = await Brand.find({favourite: true}).sort({title: 1});
+                              req.app.locals.favBrands = favBrands;
                               // Redirect
                               await req.flash('message-success', 'New brand added successfully!');
                               res.status(201).redirect('/admin/brands');
@@ -305,8 +305,8 @@ exports.postEditBrand = async (req, res, next) => {
                               await newImage.mv(path);
                          }
                          // Catch all brands and put them in request locals, so that they could be caught in shop views in the first next http request - this is done for the purpose of immediately refreshing brand links in the footer -> as one link might be edited (e.g it's title or image)
-                         const brands = await Brand.find({favourite: true}).sort({title: 1});
-                         req.app.locals.brands = brands;
+                         const favBrands = await Brand.find({favourite: true}).sort({title: 1});
+                         req.app.locals.favBrands = favBrands;
                          // Redirect
                          await req.flash('message-success', 'Brand updated successfully!');
                          res.status(200).redirect('/admin/brands');

@@ -1,5 +1,5 @@
 <%- include('../layouts/headerM.ejs') %>
-<%- include('../layouts/admin-navigationM.ejs') %>
+<%- include('../layouts/navigationM.ejs') %>
 
 
 <!-- PARALLAX BANNER -->
@@ -12,8 +12,8 @@
   <h1 class="category-title"><%= title %></h1>
   <ul>
     <li><a href="/">Home</a></li>
-    <li><a href="/dashboard">Dashboard</a></li>
-    <li><a href="/admin/brands">All Brands</a></li>
+    <li><a href="/products">Products</a></li>
+    <li><a href="/brands">All Brands</a></li>
   </ul>
 </div>
 <!-- End of PARALLAX BANNER -->
@@ -29,11 +29,9 @@
       <!-- FLASH MESSAGES -->
       <%- include('../layouts/flashMessages.ejs') %>
 
-      <h1>All brands</h1>
-      <br>
+      <h2>Search products by brand</h2>
 
-      <a class="btn btn-primary" href="/admin/add-brand">Add new brand</a>
-      <br><br><br>
+      <br>
 
       <% if(brands.length > 0) { %>
         <!--  TABLE  -->
@@ -42,28 +40,30 @@
             <tr class="home">
               <th class="text-center">NAME</th>
               <th class="text-center">IMAGE</th>
-              <th class="text-center">EDIT</th>
-              <th class="text-center">DELETE</th>
+              <th class="text-center">No. of PRODUCTS in SHOP</th>
             </tr>
           </thead>
           <tbody class="reorder">
             <% brands.forEach(brand => { %>
-              <tr id="id_<%= brand._id %>" class="<%= brand.slug %>">
+              <tr id="id_<%= brand._id %>" class="<%= brand.slug %>" style="font-size: 14px;">
                 <td><a href="/brands/<%= brand.slug %>"><%= brand.title %></a></td>
                 <td class="text-center">
                   <% if(!brand.image) { %>
-                    <img src="/images/brands/noimage.png" style="height: 35px; max-width: 200px;">
+                    <img src="/images/brands/noimage.png" style="max-height: 35px; max-width: 200px;">
                   <% } else { %>
-                    <a href="/brands/<%=brand.slug %>"><img src="/images/brands/<%= brand.firstSlug %>/<%= brand.image %>" style="height: 35px; max-width: 200px;"></a>
+                    <a href="/brands/<%=brand.slug %>"><img src="/images/brands/<%= brand.firstSlug %>/<%= brand.image %>" style="max-height: 35px; max-width: 200px;"></a>
                   <% } %>
                 </td>
-                <td class="text-center"><a href="/admin/edit-brand/<%= brand.slug %>">Edit</a></td>
-                <td class="text-center"><a href="/admin/delete-brand/<%= brand.slug %>" onclick="return confirm('Are you sure you want to delete this brand?')">Delete</a></td>
+                <td class="text-center"><%= brand.numOfProds %></td>
               </tr>
             <% }) %>
           </tbody>
         </table>
         <!--  End of TABLE  -->
+
+        <br><br>
+        <!-- PAGINATION -->
+			  <%- include('../layouts/paginationM.ejs') %>
 
       <% } else { %>
         <br>

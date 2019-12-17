@@ -1,14 +1,14 @@
 <!-- PAGINATION -->
 <div class="category-page-wrapper">
      <div class="result-inner">
-          Showing <%= (currentPage - 1) * perPage + 1  %> 
+          Showing <% if((typeof products !== 'undefined' && products.length > 0) || (typeof brands !== 'undefined' && brands.length > 0)) { %> <%= (currentPage - 1) * perPage + 1  %> <% } else { %> 0 <% } %>
            to 
-               <% if(numProducts >= (currentPage * perPage)) { %>
+               <% if(numItems >= (currentPage * perPage)) { %>
                     <%= currentPage * perPage %>
                <% } else { %>
-                    <%= numProducts %>
+                    <%= numItems %>
                <% } %> 
-           products of <%= numProducts %>
+           <%= items %> of <%= numItems %>
            (<%= lastPage %> Page<% if(lastPage > 1) { %>s<% } %>)
      </div>
      <div class="pagination-inner">
@@ -23,7 +23,7 @@
                <% } %>
                <!-- ... -->
                <% if(currentPage - 2 > 1) { %>
-                    <li><a href="#"></a>...</a></li>
+                    <li><a href="#">...</a></li>
                <% } %>
                <!-- previous page -->
                <% if(prevPage > 1) { %>

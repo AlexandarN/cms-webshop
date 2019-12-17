@@ -29,6 +29,21 @@
 </div>
 <!-- End of SIGN UP PARALLAX -->
 
+<!-- FAVOURITE BRANDS -->
+<div class="container">
+  <h3 class="client-title">Favourite Brands</h3>
+  <h4 class="title-subline">The High Quality Products</h4>
+  <div id="brand_carouse" class="owl-carousel brand-logo">
+    <% favBrands.forEach(brand => { %>
+      <div class="item text-center"> 
+        <a href="/brands/<%=brand.slug %>">
+          <img src="/images/brands/<%=brand.slug %>/<%=brand.image %>" alt="<%= brand.image %>" class="img-responsive">
+        </a> 
+      </div>
+    <% }); %>
+  </div>
+</div>
+<!-- End of FAVOURITE BRANDS -->
 
 <footer>
   <!-- UPPER FOOTER -->
@@ -104,11 +119,12 @@
 
       <!-- CATEGORIES LINKS -->
       <div class="col-sm-3 footer-block">
-        <h5 class="footer-title">Categories</h5>
+        <h5 class="footer-title">CATEGORIES</h5>
         <ul class="list-unstyled ul-wrapper">
           <% categories.forEach(category => { %>
             <li><a href="/products/<%= category.slug %>"><%= category.title %></a></li>
           <% }); %>
+          <li><a href="/brands">Brands</a></li>
         </ul>
       </div>
       <!-- End of CATEGORIES LINKS -->

@@ -91,7 +91,7 @@ InfoPage.find().sort({sorting: 1})
 const Brand = require('./models/Brand');
 Brand.find({favourite: true}).sort({title: 1})
      .then(brands => {
-          app.locals.brands = brands;
+          app.locals.favBrands = brands;
      })   
      .catch(err => console.log(err));
 
