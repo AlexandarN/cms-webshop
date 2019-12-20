@@ -17,7 +17,12 @@ const infoSchema = new mongoose.Schema({
           phone1: String,
           phone2: String,
           phone3: String
-     }
+     },
+     facebook: String,
+     linkedin: String,
+     twitter: String,
+     googleplus: String,
+     youtube: String
 });
 
 module.exports = mongoose.model('Info', infoSchema);

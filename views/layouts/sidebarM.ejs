@@ -37,8 +37,8 @@
   <!-- End of CATEGORIES MENU -->
 
 
+  <!-- REFINE SEARCH MENU -->
   <% if(title !== 'Cart' && title !== 'Checkout' && title !== 'Successful Payment' && title !== 'Wishlist') { %>
-    <!-- REFINE SEARCH MENU -->
     <div class="filter left-sidebar-widget">
       <div class="columnblock-title">Refine Search</div>
       <!-- FORM -->
@@ -51,12 +51,12 @@
             <div class="list-group-item">
               <div id="filter-group1">
                 <label class="checkbox">
-                  <input name="filter[]" type="checkbox" value="inStock">
-                  In Stock
+                  <input name="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&price=<%= price %>" type="checkbox" value="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=inStock&price=<%= price %>" onchange="if(this.checked) { window.location.href = this.value } else if(!this.checked) { window.location.href = this.name }" <% if(stock == 'inStock') { %> checked <% } %>>
+                  In Stock (<%= numItemsIn %>)
                 </label>
                 <label class="checkbox">
-                  <input name="filter[]" type="checkbox" value="outOfStock">
-                  Out of Stock
+                  <input name="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&price=<%= price %>" type="checkbox" value="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=outOfStock&price=<%= price %>" onchange="if(this.checked) { window.location.href = this.value } else if(!this.checked) { window.location.href = this.name }" <% if(stock == 'outOfStock') { %> checked <% } %>>
+                  Out of Stock (<%= numItemsOut %>)
                 </label>
               </div>
             </div>
@@ -67,27 +67,27 @@
             <div class="list-group-item">
               <div id="filter-group2">
                 <label class="checkbox">
-                  <input name="filter[]" type="checkbox" value="low">
-                  $0-$100 (6)
+                  <input name="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>" type="checkbox" value="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>&price=low" onchange="if(this.checked) { window.location.href = this.value } else if(!this.checked) { window.location.href = this.name }" <% if(price == 'low') { %> checked <% } %>>
+                  $<%= min %>-$<%= med1 %> (<%= numItemsLow %>)
                 </label>
                 <label class="checkbox">
-                  <input name="filter[]" type="checkbox" value="medium">
-                  $100-$300 (6)
+                  <input name="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>" type="checkbox" value="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>&price=medium" onchange="if(this.checked) { window.location.href = this.value } else if(!this.checked) { window.location.href = this.name }" <% if(price == 'medium') { %> checked <% } %>>
+                  $<%= med1 %>-$<%= med2 %> (<%= numItemsMedium %>)
                 </label>
                 <label class="checkbox">
-                  <input name="filter[]" type="checkbox" value="high">
-                  $300-$1000 (6)
+                  <input name="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>" type="checkbox" value="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>&price=high" onchange="if(this.checked) { window.location.href = this.value } else if(!this.checked) { window.location.href = this.name }" <% if(price == 'high') { %> checked <% } %>>
+                  $<%= med2 %>-$<%= max %> (<%= numItemsHigh %>)
                 </label>
               </div>
             </div>
           </div>
 
           <!-- SUBMIT BUTTON -->
-          <div class="panel-footer">
+          <!-- <div class="panel-footer">
             <button type="button" id="button-filter" class="btn btn-primary">
               Refine Search
             </button>
-          </div>
+          </div> -->
 
         </div>
       </form>

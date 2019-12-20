@@ -1,10 +1,10 @@
 <!-- PAGINATION -->
 <div class="category-page-wrapper">
      <div class="result-inner">
-          Showing <% if((typeof products !== 'undefined' && products.length > 0) || (typeof brands !== 'undefined' && brands.length > 0)) { %> <%= (currentPage - 1) * perPage + 1  %> <% } else { %> 0 <% } %>
+          Showing <% if((typeof products !== 'undefined' && products.length > 0) || (typeof brands !== 'undefined' && brands.length > 0)) { %> <%= (currentPage - 1) * limit + 1  %> <% } else { %> 0 <% } %>
            to 
-               <% if(numItems >= (currentPage * perPage)) { %>
-                    <%= currentPage * perPage %>
+               <% if(numItems >= (currentPage * limit)) { %>
+                    <%= currentPage * limit %>
                <% } else { %>
                     <%= numItems %>
                <% } %> 
@@ -15,11 +15,11 @@
           <ul class="pagination">
                <!-- arrow previous -->
                <% if(currentPage > 1) { %>
-                    <li><a href="?page=<%= prevPage %>">&lt;Prev</a></li>
+                    <li><a href="?page=<%= prevPage %>&dir=<%= dir %>&order=<%= order %>&limit<%= limit %>&stock=<%= stock %>&price=<%= price %>">&lt;Prev</a></li>
                <% } %>
                <!-- page 1 -->
                <% if(currentPage > 1) { %>
-                    <li><a href="?page=1"><span>1</span></a></li>
+                    <li><a href="?page=1&dir=<%= dir %>&order=<%= order %>&limit<%= limit %>&stock=<%= stock %>&price=<%= price %>"><span>1</span></a></li>
                <% } %>
                <!-- ... -->
                <% if(currentPage - 2 > 1) { %>
@@ -27,13 +27,13 @@
                <% } %>
                <!-- previous page -->
                <% if(prevPage > 1) { %>
-                    <li><a href="?page=<%= prevPage %>"><%= prevPage %></a></li>
+                    <li><a href="?page=<%= prevPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>&price=<%= price %>"><%= prevPage %></a></li>
                <% } %>
                <!-- current page -->
-                    <li class="active"><a href="?page=<%= currentPage %>"><%= currentPage %></a></li>
+                    <li class="active"><a href="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>&price=<%= price %>"><%= currentPage %></a></li>
                <!-- next page -->
                <% if(nextPage < lastPage) { %>
-                    <li><a href="?page=<%= nextPage %>"><%= nextPage %></a></li>
+                    <li><a href="?page=<%= nextPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>&price=<%= price %>"><%= nextPage %></a></li>
                <% } %>
                <!-- ... -->
                <% if(currentPage + 2 < lastPage) { %>
@@ -41,11 +41,11 @@
                <% } %>
                <!-- last page -->
                <% if(currentPage < lastPage) { %>
-                    <li><a href="?page=<%= lastPage %>"><%= lastPage %></a></li>
+                    <li><a href="?page=<%= lastPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>&price=<%= price %>"><%= lastPage %></a></li>
                <% } %>
                <!-- arrow next -->
                <% if(nextPage <= lastPage) { %>
-                    <li><a href="?page=<%= nextPage %>">Next&gt;</a></li>
+                    <li><a href="?page=<%= nextPage %>&dir=<%= dir %>&order=<%= order %>&limit=<%= limit %>&stock=<%= stock %>&price=<%= price %>">Next&gt;</a></li>
                <% } %>
           </ul>
      </div>

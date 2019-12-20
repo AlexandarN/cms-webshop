@@ -27,7 +27,12 @@ exports.getEditInfoPage = async (req, res, next) => {
                     email3: info.contact.email3,
                     phone1: info.contact.phone1,
                     phone2: info.contact.phone2,
-                    phone3: info.contact.phone3
+                    phone3: info.contact.phone3,
+                    facebook: info.facebook,
+                    linkedin: info.linkedin,
+                    twitter: info.twitter,
+                    googleplus: info.googleplus,
+                    youtube: info.youtube
                }
           });
      } catch (err) {
@@ -47,6 +52,11 @@ exports.postEditInfo = async (req, res, next) => {
      const phone1 = req.body.phone1;
      const phone2 = req.body.phone2;
      const phone3 = req.body.phone3;	
+     const facebook = req.body.facebook;
+     const linkedin = req.body.linkedin;
+     const twitter = req.body.twitter;
+     const googleplus = req.body.googleplus;
+     const youtube = req.body.youtube;
      const oldLogo = req.body.oldLogo;
      const oldFavicon = req.body.oldFavicon;	
      const oldFooterBanner = req.body.oldFooterBanner;	
@@ -81,7 +91,12 @@ exports.postEditInfo = async (req, res, next) => {
                          email3: email3,
                          phone1: phone1,
                          phone2: phone2,
-                         phone3: phone3
+                         phone3: phone3,
+                         facebook: facebook,
+                         linkedin: linkedin,
+                         twitter: twitter,
+                         googleplus: googleplus,
+                         youtube: youtube
                     },
                     messageDang: req.flash('message-danger')
                });
@@ -133,6 +148,11 @@ exports.postEditInfo = async (req, res, next) => {
           info.contact.phone1 = phone1;
           info.contact.phone2 = phone2;
           info.contact.phone3 = phone3;
+          info.facebook = facebook;
+          info.linkedin = linkedin;
+          info.twitter = twitter;
+          info.googleplus = googleplus;
+          info.youtube = youtube;
           await info.save()
           // If new images sent - remove the old ones from the server (if any)
           if(logoName != "") {
