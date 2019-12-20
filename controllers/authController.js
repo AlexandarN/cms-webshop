@@ -476,7 +476,7 @@ exports.postSubscribe = async (req, res, next) => {
                     to: email,
                     from: 'office@moonstore.com',
                     subject: 'Successful subscription!',
-                    html: `<h2>You have succesfully signed up for MoonStore discount offers!</h2><p>Dear ${ newSubscriber.email },</p> <p>With pleasure we inform you that you have successfully registered to the MoonStore online webstore. <br> We will regularly inform you about all our future discount offers for shopping at MoonStore.</p>Enjoy your shopping.</p><p><b>Your MoonStore</b></p>` 
+                    html: `<h2>You have succesfully signed up for MoonStore discount offers!</h2><p>Dear ${ newSubscriber.email },</p> <p>With pleasure we inform you that you have successfully registered to the MoonStore online store. <br> We will regularly inform you about all our future discount offers for shopping at at our webshop.</p>Enjoy your shopping.</p><p><b>Your MoonStore Team</b></p>` 
                }); 
           }
      } catch(err) {
