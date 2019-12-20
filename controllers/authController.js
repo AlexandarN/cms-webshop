@@ -7,10 +7,12 @@ const { validationResult } = require('express-validator/check');
 
 const User = require('../models/User');
 const Product = require('../models/Product');
+const Subscriber = require('../models/Subscriber');
 const env = require('../config/env/env');
 
 const transporter = nodemailer.createTransport(sendgrid({
-     auth: { api_key: env.sendgridApiKey} }) );    
+     auth: { api_key: env.sendgridApiKey} 
+}) );    
      
      
 exports.getRegisterPage = (req, res, next) => {
@@ -146,10 +148,10 @@ exports.postRegister = async (req, res, next) => {
                res.redirect('/login');
                return transporter.sendMail({
                     to: email,
-                    from: 'cmswebshop@shop.com',
+                    from: 'register@moonstore.com',
                     subject: 'Successful registration!',
-                    html: `<h2>Welcome to the CMS Webshop!</h2>
-                         <p>Dear ${ newUser.username } you have successfully registered to our shop.</p><b>Enjoy your shopping.</b>` 
+                    html: `<h2>Welcome to the MoonStore CMS Webshop!</h2>
+                         <p>Dear ${ newUser.username } you have successfully registered to our online shop.</p><b>Enjoy your shopping.</b>` 
                }); 
           }
      } catch(err) {
@@ -382,8 +384,8 @@ exports.postResetPassword = (req, res, next) => {
                               // Send the created token to user's email address               
 						return transporter.sendMail({
 							to: email,
-							from: 'cmswebshop@shop.com',
-							subject: 'Reset your password at CMS Webshop',
+							from: 'register@moonstore.com',
+							subject: 'Reset your password at MoonStore CMS Webshop',
 							html: `<p>Dear customer,</p> <p>You have requested a password reset.</p> <p>Please, click this <a href="https://cms-webshop.herokuapp.com/new-password/${ token }"><b>link</b></a> in order to proceed.</p>` //${ token } - za dinamičko embedovanje varijabli u kod
                                    }); 
                               })
@@ -447,3 +449,37 @@ exports.postNewPassword = (req, res, next) => {
 }	
 
 
+exports.postSubscribe = async (req, res, next) => {
+	// Parsing of text input data			              	    
+	const email = req.body.email;
+     try {
+          // Catching and displaying validation errors	
+          const valErrors = validationResult(req);       
+          if(!valErrors.isEmpty()) {
+               await req.flash('message-danger', 'Wrong email format!');
+               return res.status(422).redirect('back'); 
+          }         
+          // Check if Subscriber with this email already exists in DB
+          const subscriber = await Subscriber.findOne({ email: email });
+          if(subscriber) {			              
+               await req.flash('message-danger', 'Subscriber with this email already exists!');
+               return res.status(422).redirect('back'); 
+          } else {
+               // Create new subscriber
+               const newSubscriber = new Subscriber({
+                    email: email
+               });  
+               await newSubscriber.save(); 
+               await req.flash('message-success', 'You are now subscribed and will be regularly informed about our discount offers. Confirmation message has been sent to your email address!');
+               res.status(201).redirect('back');
+               return transporter.sendMail({
+                    to: email,
+                    from: 'office@moonstore.com',
+                    subject: 'Successful subscription!',
+                    html: `<h2>You have succesfully signed up for MoonStore discount offers!</h2><p>Dear ${ newSubscriber.email },</p> <p>With pleasure we inform you that you have successfully registered to the MoonStore online webstore. <br> We will regularly inform you about all our future discount offers for shopping at MoonStore.</p>Enjoy your shopping.</p><p><b>Your MoonStore</b></p>` 
+               }); 
+          }
+     } catch(err) {
+          console.log(err);
+     }
+}	

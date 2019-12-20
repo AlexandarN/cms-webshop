@@ -20,6 +20,8 @@ router.get('/dashboard', isAuth.isAdmin, authController.getDashboardPage);
 router.get('/reset-password', authController.getResetPasswordPage);
 router.post('/reset-password', authController.postResetPassword);
 router.get('/new-password/:token', authController.getNewPasswordPage);             
-router.post('/new-password', isValid.checkNewPassword,authController.postNewPassword);					  		       
+router.post('/new-password', isValid.checkNewPassword,authController.postNewPassword);
+
+router.post('/subscribe', isValid.checkSubscriber, authController.postSubscribe);
 
 module.exports = router;

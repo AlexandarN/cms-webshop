@@ -263,6 +263,22 @@ exports.checkRegisterUser = [
      }  
 ]		
 
+exports.checkSubscriber = [	    
+	body('email')			        
+		.isEmail()
+		.withMessage('Please enter a valid email!')
+		.custom((value, { req }) => {
+			if(value === 'test@test.com') {	                                   
+				throw new Error('This email is not allowed!');               
+               }
+               return true; 
+          })                                     
+          .normalizeEmail({ gmail_remove_dots: false }), 
+     (req, res, next) => {  
+          next(); 
+     }  
+]		
+
 exports.checkAddress = [	 
      body('firstName')
           .optional({checkFalsy: true})

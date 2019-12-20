@@ -468,17 +468,6 @@ exports.getProductsByBrand = async (req, res, next) => {
           // Find requested Brand in DB	
           const slug = req.params.brandSlug;
           const brand = await Brand.findOne({slug: slug});
-
-
-          // // Pagination 2nd part - Find total no. of products for the requested brand
-          // const numOfProducts = await Product.find({brand: brand._id}).countDocuments();
-          // numItems = numOfProducts;
-          // // Pagination 3rd part - Find all products in DB for the requested brand that belong to the specified current page
-          // const products = await Product.find({brand: brand._id}).populate('category')
-          //      .sort({title: 1})
-          //      .skip((currentPage - 1) * ITEMS_PER_PAGE)
-          //      .limit(ITEMS_PER_PAGE);
-
           // Catch all products in DB that belong to the specified category
           // Get total no. of products in DB that belong to the specified category
           let productss;

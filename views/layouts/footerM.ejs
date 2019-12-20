@@ -6,14 +6,18 @@
   <div class="container">
     <div class="row">
       <div class="newslatter">
-        <form>
+        <!-- FORM NEWSLETTER SIGNUP -->
+        <form action="/subscribe" method="POST">
           <h5>SIGN UP FOR OUR DISCOUNTS TODAY!</h5>
-          <h4 class="title-subline">Be sure to follow our blog and sign up for all of our mailing updates!</h4>
+          <h4 class="title-subline">Be sure to follow our news and sign up for all of our mailing updates!</h4>
           <div class="input-group">
-            <input type="text" class=" form-control" placeholder="Your-email@website.com">
-            <button type="submit" value="Sign up" class="btn btn-large btn-primary">Subscribe</button>
+              <input type="text" class="form-control" name="email" placeholder="<% if(typeof oldInput !== 'undefined') { %><%= oldInput.email %><% } else { %>Your-email@website.com<% } %>">
+              <!-- CSRF -->
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" value="<% if(typeof oldInput !== 'undefined') { %><%= oldInput.email %><% } %>" class="btn btn-large btn-primary">Subscribe</button>
           </div>
         </form>
+        <!-- Enf of FORM NEWSLETTER SIGNUP -->
       </div>
       <div class="footer-social">
         <ul>
