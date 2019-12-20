@@ -129,8 +129,8 @@ exports.getAllProducts = async (req, res, next) => {
      // Pagination - parse current page number
      const currentPage = +req.query.page || 1;
      try {
-          // Find all products in DB that belong to the specified category
-          // Find total no. of products in DB
+          // Catch all products in DB
+          // Get total no. of products in DB
           let products;
           let numItems;
           let numItemsIn;
@@ -138,75 +138,82 @@ exports.getAllProducts = async (req, res, next) => {
           let numItemsLow;
           let numItemsMedium;
           let numItemsHigh;
+          // 1. When 'stock' filter is selected and 'price' filter is not selected
           if((stock == 'inStock' || stock == 'outOfStock') && (price !== 'low' && price !== 'medium' && price !== 'high'))  {
-               products = await Product.find({'availability': stock})
+               products = await Product.find({availability: stock})
                     .populate('category')
                     .sort({[`${order}`]: dir})
                     .skip((currentPage - 1) * ITEMS_PER_PAGE)
                     .limit(ITEMS_PER_PAGE);           
-               numItems = await Product.find({'availability': stock}).countDocuments();
-               numItemsIn = await Product.find({'availability': 'inStock'}).countDocuments();
-               numItemsOut = await Product.find({'availability': 'outOfStock'}).countDocuments();
-               numItemsLow = await Product.find({$and:[{'availability': stock}, {$and: [{'price': {$gte: min}}, {'price': {$lt: med1}}] }] }).countDocuments();
-               numItemsMedium = await Product.find({$and:[{'availability': stock}, {$and: [{'price': {$gte: med1}}, {'price': {$lt: med2}}] }] }).countDocuments();
-               numItemsHigh = await Product.find({$and:[{'availability': stock}, {$and: [{'price': {$gte: med2}}, {'price': {$lt: max}}] }] }).countDocuments();
+               numItems = await Product.find({availability: stock}).countDocuments();
+               numItemsIn = await Product.find({availability: 'inStock'}).countDocuments();
+               numItemsOut = await Product.find({availability: 'outOfStock'}).countDocuments();
+               numItemsLow = await Product.find({$and:[{availability: stock}, {$and: [{price: {$gte: min}}, {price: {$lt: med1}}] }] }).countDocuments();
+               numItemsMedium = await Product.find({$and:[{availability: stock}, {$and: [{price: {$gte: med1}}, {price: {$lt: med2}}] }] }).countDocuments();
+               numItemsHigh = await Product.find({$and:[{availability: stock}, {$and: [{price: {$gte: med2}}, {price: {$lt: max}}] }] }).countDocuments();
 
-
+          // 2. When both 'stock' filter and 'price' filter are selected
           } else if((stock == 'inStock' || stock == 'outOfStock') && (price == 'low' || price == 'medium' || price == 'high')) {
-               products = await Product.find({$and:[{'availability': stock}, {$and: [{'price': {$gte: bottom}}, {'price': {$lt: top}}] }] })
+               products = await Product.find({$and:[{availability: stock}, {$and: [{price: {$gte: bottom}}, {price: {$lt: top}}] }] })
                     .populate('category')
                     .sort({[`${order}`]: dir})
                     .skip((currentPage - 1) * ITEMS_PER_PAGE)
                     .limit(ITEMS_PER_PAGE);           
-               numItems = await Product.find({$and:[{'availability': stock}, {$and: [{'price': {$gte: bottom}}, {'price': {$lt: top}}]}]})
+               numItems = await Product.find({$and:[{availability: stock}, {$and: [{price: {$gte: bottom}}, {price: {$lt: top}}]}]})
                     .countDocuments();
-
+               // 2.1 When 'inStock' is selected and any of the 'price' filters is selected
                if(stock == 'inStock' && (price == 'low' || price == 'medium' || price == 'high')) {
-                    numItemsLow = await Product.find({$and:[{'availability': 'inStock'}, {$and: [{'price': {$gte: min}}, {'price': {$lt: med1}}] }] }).countDocuments();
-                    numItemsMedium = await Product.find({$and:[{'availability': 'inStock'}, {$and: [{'price': {$gte: med1}}, {'price': {$lt: med2}}] }] }).countDocuments();
-                    numItemsHigh = await Product.find({$and:[{'availability': 'inStock'}, {$and: [{'price': {$gte: med2}}, {'price': {$lt: max}}] }] }).countDocuments();
+                    numItemsLow = await Product.find({$and:[{availability: 'inStock'}, {$and: [{price: {$gte: min}}, {price: {$lt: med1}}] }] }).countDocuments();
+                    numItemsMedium = await Product.find({$and:[{availability: 'inStock'}, {$and: [{'price': {$gte: med1}}, {'price': {$lt: med2}}] }] }).countDocuments();
+                    numItemsHigh = await Product.find({$and:[{availability: 'inStock'}, {$and: [{price: {$gte: med2}}, {price: {$lt: max}}] }] }).countDocuments();
+                    // 2.1.1 When 'inStock' is selected and 'low' is selected
                     if(stock == 'inStock' && price == 'low') {
-                         numItemsIn = await Product.find({$and:[{'availability': 'inStock'}, {$and: [{'price': {$gte: min}}, {'price': {$lt: med1}}] }] }).countDocuments();
-                         numItemsOut = await Product.find({$and:[{'availability': 'outOfStock'}, {$and: [{'price': {$gte: min}}, {'price': {$lt: med1}}] }] }).countDocuments();
+                         numItemsIn = await Product.find({$and:[{availability: 'inStock'}, {$and: [{price: {$gte: min}}, {price: {$lt: med1}}] }] }).countDocuments();
+                         numItemsOut = await Product.find({$and:[{availability: 'outOfStock'}, {$and: [{price: {$gte: min}}, {price: {$lt: med1}}] }] }).countDocuments();
+                    // 2.1.2 When 'inStock' is selected and 'medium' is selected
                     } else if(stock == 'inStock' && price == 'medium') {
-                         numItemsIn = await Product.find({$and:[{'availability': 'inStock'}, {$and: [{'price': {$gte: med1}}, {'price': {$lt: med2}}] }] }).countDocuments();
-                         numItemsOut = await Product.find({$and:[{'availability': 'outOfStock'}, {$and: [{'price': {$gte: med1}}, {'price': {$lt: med2}}] }] }).countDocuments();
+                         numItemsIn = await Product.find({$and:[{availability: 'inStock'}, {$and: [{price: {$gte: med1}}, {price: {$lt: med2}}] }] }).countDocuments();
+                         numItemsOut = await Product.find({$and:[{availability: 'outOfStock'}, {$and: [{price: {$gte: med1}}, {price: {$lt: med2}}] }] }).countDocuments();
+                    // 2.1.3 When 'inStock' is selected and 'high' is selected
                     } else if(stock == 'inStock' && price == 'high') {
-                         numItemsIn = await Product.find({$and:[{'availability': 'inStock'}, {$and: [{'price': {$gte: med2}}, {'price': {$lt: max}}] }] }).countDocuments();
-                         numItemsOut = await Product.find({$and:[{'availability': 'outOfStock'}, {$and: [{'price': {$gte: med2}}, {'price': {$lt: max}}] }] }).countDocuments();
+                         numItemsIn = await Product.find({$and:[{availability: 'inStock'}, {$and: [{price: {$gte: med2}}, {price: {$lt: max}}] }] }).countDocuments();
+                         numItemsOut = await Product.find({$and:[{availability: 'outOfStock'}, {$and: [{price: {$gte: med2}}, {price: {$lt: max}}] }] }).countDocuments();
                     }
-
+               // 2.2 When 'outOfStock' is selected and any of the 'price' filters is selected
                } else if(stock == 'outOfStock' && (price == 'low' || price == 'medium' || price == 'high')) {
-                    numItemsLow = await Product.find({$and:[{'availability': 'outOfStock'}, {$and: [{'price': {$gte: min}}, {'price': {$lt: med1}}] }] }).countDocuments();
-                    numItemsMedium = await Product.find({$and:[{'availability': 'outOfStock'}, {$and: [{'price': {$gte: med1}}, {'price': {$lt: med2}}] }] }).countDocuments();
-                    numItemsHigh = await Product.find({$and:[{'availability': 'outOfStock'}, {$and: [{'price': {$gte: med2}}, {'price': {$lt: max}}] }] }).countDocuments();
+                    numItemsLow = await Product.find({$and:[{availability: 'outOfStock'}, {$and: [{price: {$gte: min}}, {price: {$lt: med1}}] }] }).countDocuments();
+                    numItemsMedium = await Product.find({$and:[{availability: 'outOfStock'}, {$and: [{price: {$gte: med1}}, {price: {$lt: med2}}] }] }).countDocuments();
+                    numItemsHigh = await Product.find({$and:[{availability: 'outOfStock'}, {$and: [{price: {$gte: med2}}, {price: {$lt: max}}] }] }).countDocuments();
+                    // 2.2.1 When 'outOfStock' is selected and 'low' is selected
                     if(stock == 'outOfStock' && price == 'low') {
-                         numItemsIn = await Product.find({$and:[{'availability': 'inStock'}, {$and: [{'price': {$gte: min}}, {'price': {$lt: med1}}] }] }).countDocuments();
-                         numItemsOut = await Product.find({$and:[{'availability': 'outOfStock'}, {$and: [{'price': {$gte: min}}, {'price': {$lt: med1}}] }] }).countDocuments();
+                         numItemsIn = await Product.find({$and:[{availability: 'inStock'}, {$and: [{price: {$gte: min}}, {price: {$lt: med1}}] }] }).countDocuments();
+                         numItemsOut = await Product.find({$and:[{availability: 'outOfStock'}, {$and: [{price: {$gte: min}}, {price: {$lt: med1}}] }] }).countDocuments();
+                    // 2.2.2 When 'outOfStock' is selected and 'medium' is selected
                     } else if(stock == 'outOfStock' && price == 'medium') {
-                         numItemsIn = await Product.find({$and:[{'availability': 'inStock'}, {$and: [{'price': {$gte: med1}}, {'price': {$lt: med2}}] }] }).countDocuments();
-                         numItemsOut = await Product.find({$and:[{'availability': 'outOfStock'}, {$and: [{'price': {$gte: med1}}, {'price': {$lt: med2}}] }] }).countDocuments();
+                         numItemsIn = await Product.find({$and:[{availability: 'inStock'}, {$and: [{price: {$gte: med1}}, {price: {$lt: med2}}] }] }).countDocuments();
+                         numItemsOut = await Product.find({$and:[{availability: 'outOfStock'}, {$and: [{price: {$gte: med1}}, {price: {$lt: med2}}] }] }).countDocuments();
+                    // 2.2.3 When 'outOfStock' is selected and 'high' is selected
                     } else if(stock == 'outOfStock' && price == 'high') {
-                         numItemsIn = await Product.find({$and:[{'availability': 'inStock'}, {$and: [{'price': {$gte: med2}}, {'price': {$lt: max}}] }] }).countDocuments();
-                         numItemsOut = await Product.find({$and:[{'availability': 'outOfStock'}, {$and: [{'price': {$gte: med2}}, {'price': {$lt: max}}] }] }).countDocuments();
+                         numItemsIn = await Product.find({$and:[{availability: 'inStock'}, {$and: [{price: {$gte: med2}}, {price: {$lt: max}}] }] }).countDocuments();
+                         numItemsOut = await Product.find({$and:[{availability: 'outOfStock'}, {$and: [{price: {$gte: med2}}, {price: {$lt: max}}] }] }).countDocuments();
                     }
                }
                
-
+          // 3. When 'stock' filter is not selected and 'price' filter is selected
           } else if((stock !== 'inStock' && stock !== 'outOfStock') && (price == 'low' || price == 'medium' || price == 'high')) {
-               products = await Product.find({$and:[{'price': {$gte: bottom}}, {'price': {$lt: top}}] })
+               products = await Product.find({$and:[{price: {$gte: bottom}}, {price: {$lt: top}}] })
                     .populate('category')
                     .sort({[`${order}`]: dir})
                     .skip((currentPage - 1) * ITEMS_PER_PAGE)
                     .limit(ITEMS_PER_PAGE);           
-               numItems = await Product.find({$and: [{'price': {$gte: bottom}}, {'price': {$lt: top}}]}).countDocuments();
-               numItemsIn = await Product.find({$and:[{'availability': 'inStock'}, {$and: [{'price': {$gte: bottom}}, {'price': {$lt: top}}] }] }).countDocuments();
-               numItemsOut = await Product.find({$and:[{'availability': 'outOfStock'}, {$and: [{'price': {$gte: bottom}}, {'price': {$lt: top}}] }] }).countDocuments();
-               numItemsLow = await Product.find({$and: [{'price': {$gte: min}}, {'price': {$lt: med1}}]}).countDocuments();
-               numItemsMedium = await Product.find({$and: [{'price': {$gte: med1}}, {'price': {$lt: med2}}]}).countDocuments();
-               numItemsHigh = await Product.find({$and: [{'price': {$gte: med2}}, {'price': {$lt: max}}]}).countDocuments();
+               numItems = await Product.find({$and: [{price: {$gte: bottom}}, {price: {$lt: top}}]}).countDocuments();
+               numItemsIn = await Product.find({$and:[{availability: 'inStock'}, {$and: [{price: {$gte: bottom}}, {price: {$lt: top}}] }] }).countDocuments();
+               numItemsOut = await Product.find({$and:[{availability: 'outOfStock'}, {$and: [{price: {$gte: bottom}}, {price: {$lt: top}}] }] }).countDocuments();
+               numItemsLow = await Product.find({$and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+               numItemsMedium = await Product.find({$and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+               numItemsHigh = await Product.find({$and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
 
-
+          // 4. When neither 'stock' filter nor 'price' filter are not selected
           } else {
                products = await Product.find()
                     .populate('category')
@@ -214,11 +221,11 @@ exports.getAllProducts = async (req, res, next) => {
                     .skip((currentPage - 1) * ITEMS_PER_PAGE)
                     .limit(ITEMS_PER_PAGE); 
                numItems = await Product.find().countDocuments();
-               numItemsIn = await Product.find({'availability': 'inStock'}).countDocuments();
-               numItemsOut = await Product.find({'availability': 'outOfStock'}).countDocuments();
-               numItemsLow = await Product.find({$and: [{'price': {$gte: min}}, {'price': {$lt: med1}}]}).countDocuments();
-               numItemsMedium = await Product.find({$and: [{'price': {$gte: med1}}, {'price': {$lt: med2}}]}).countDocuments();
-               numItemsHigh = await Product.find({$and: [{'price': {$gte: med2}}, {'price': {$lt: max}}]}).countDocuments();
+               numItemsIn = await Product.find({availability: 'inStock'}).countDocuments();
+               numItemsOut = await Product.find({availability: 'outOfStock'}).countDocuments();
+               numItemsLow = await Product.find({$and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+               numItemsMedium = await Product.find({$and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+               numItemsHigh = await Product.find({$and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
           }
           // Find all special products in DB and shuffle them
                // function shuffle(array) {
@@ -271,22 +278,131 @@ exports.getAllProducts = async (req, res, next) => {
 }		
           
 exports.getProductsByCategory = async (req, res, next) => {
-     const ITEMS_PER_PAGE = 9;
-     // Pagination 1st part - parse current page number
+     // Parse filters:
+     const ITEMS_PER_PAGE = +req.query.limit || 12;
+     const dir = req.query.dir || 'asc';
+     const order = req.query.order || 'sorting';
+     const stock = req.query.stock || '';
+     const price = req.query.price || '';
+     // Set price levels
+     const min = 0;
+     const med1 = 100;
+     const med2 = 300;
+     const max = 10000;
+     if(price === 'low') {
+          bottom = min;
+          top = med1;
+     } else if(price === 'medium') {
+          bottom = med1;
+          top = med2;
+     } else if(price === 'high') {
+          bottom = med2;
+          top = max;
+     }
+     // Pagination - parse current page number
      const currentPage = +req.query.page || 1;
-     let numItems;
      try {
           // Find requested category in DB	
           const slug = req.params.categorySlug;
           const category = await Category.findOne({slug: slug});
-          // Pagination 2nd part - Find total no. of products for the requested category
-          const numOfProducts = await Product.find({category: category._id}).countDocuments();
-          numItems = numOfProducts;
-          // Pagination 3rd part - Find all products in DB for the requested category and belong to the specified current page
-          const products = await Product.find({category: category._id}).populate('category')
-               .sort({sorting: 1})
-               .skip((currentPage - 1) * ITEMS_PER_PAGE)
-               .limit(ITEMS_PER_PAGE);
+          // Catch all products in DB that belong to the specified category
+          // Get total no. of products in DB that belong to the specified category
+          let productss;
+          let numItems;
+          let numItemsIn;
+          let numItemsOut;
+          let numItemsLow;
+          let numItemsMedium;
+          let numItemsHigh;
+          // 1. When 'stock' filter is selected and 'price' filter is not selected
+          if((stock == 'inStock' || stock == 'outOfStock') && (price !== 'low' && price !== 'medium' && price !== 'high'))  {
+               products = await Product.find({category: category._id, availability: stock})
+                    .populate('category')
+                    .sort({[`${order}`]: dir})
+                    .skip((currentPage - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE);           
+               numItems = await Product.find({category: category._id, availability: stock}).countDocuments();
+               numItemsIn = await Product.find({category: category._id, availability: 'inStock'}).countDocuments();
+               numItemsOut = await Product.find({category: category._id, availability: 'outOfStock'}).countDocuments();
+               numItemsLow = await Product.find({category: category._id, availability: stock, $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+               numItemsMedium = await Product.find({category: category._id, availability: stock, $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+               numItemsHigh = await Product.find({category: category._id, availability: stock, $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+
+          // 2. When both 'stock' filter and 'price' filter are selected
+          } else if((stock == 'inStock' || stock == 'outOfStock') && (price == 'low' || price == 'medium' || price == 'high')) {
+               products = await Product.find({category: category._id, availability: stock, $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]})
+                    .populate('category')
+                    .sort({[`${order}`]: dir})
+                    .skip((currentPage - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE);           
+               numItems = await Product.find({category: category._id, availability: stock, $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]}).countDocuments();
+               // 2.1 When 'inStock' is selected and any of the 'price' filters is selected
+               if(stock == 'inStock' && (price == 'low' || price == 'medium' || price == 'high')) {
+                    numItemsLow = await Product.find({category: category._id, availability: 'inStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                    numItemsMedium = await Product.find({category: category._id, availability: 'inStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                    numItemsHigh = await Product.find({category: category._id, availability: 'inStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                    // 2.1.1 When 'inStock' is selected and 'low' is selected
+                    if(stock == 'inStock' && price == 'low') {
+                         numItemsIn = await Product.find({category: category._id, availability: 'inStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                         numItemsOut = await Product.find({category: category._id, availability: 'outOfStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                    // 2.1.2 When 'inStock' is selected and 'medium' is selected
+                    } else if(stock == 'inStock' && price == 'medium') {
+                         numItemsIn = await Product.find({category: category._id, availability: 'inStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                         numItemsOut = await Product.find({category: category._id, availability: 'outOfStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                    // 2.1.3 When 'inStock' is selected and 'high' is selected
+                    } else if(stock == 'inStock' && price == 'high') {
+                         numItemsIn = await Product.find({category: category._id, availability: 'inStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                         numItemsOut = await Product.find({category: category._id, availability: 'outOfStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                    }
+               // 2.2 When 'outOfStock' is selected and any of the 'price' filters is selected
+               } else if(stock == 'outOfStock' && (price == 'low' || price == 'medium' || price == 'high')) {
+                    numItemsLow = await Product.find({category: category._id, availability: 'outOfStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                    numItemsMedium = await Product.find({category: category._id, availability: 'outOfStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                    numItemsHigh = await Product.find({category: category._id, availability: 'outOfStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                    // 2.2.1 When 'outOfStock' is selected and 'low' is selected
+                    if(stock == 'outOfStock' && price == 'low') {
+                         numItemsIn = await Product.find({category: category._id, availability: 'inStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                         numItemsOut = await Product.find({category: category._id, availability: 'outOfStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                    // 2.2.2 When 'outOfStock' is selected and 'medium' is selected
+                    } else if(stock == 'outOfStock' && price == 'medium') {
+                         numItemsIn = await Product.find({category: category._id, availability: 'inStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                         numItemsOut = await Product.find({category: category._id, availability: 'outOfStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                    // 2.2.3 When 'outOfStock' is selected and 'high' is selected
+                    } else if(stock == 'outOfStock' && price == 'high') {
+                         numItemsIn = await Product.find({category: category._id, availability: 'inStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                         numItemsOut = await Product.find({category: category._id, availability: 'outOfStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                    }
+               }
+               
+          // 3. When 'stock' filter is not selected and 'price' filter is selected
+          } else if((stock !== 'inStock' && stock !== 'outOfStock') && (price == 'low' || price == 'medium' || price == 'high')) {
+               products = await Product.find({category: category._id, $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]})
+                    .populate('category')
+                    .sort({[`${order}`]: dir})
+                    .skip((currentPage - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE);           
+               numItems = await Product.find({category: category._id, $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]}).countDocuments();
+               numItemsIn = await Product.find({category: category._id, availability: 'inStock', $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]}).countDocuments();
+               numItemsOut = await Product.find({category: category._id, availability: 'outOfStock', $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]}).countDocuments();
+               numItemsLow = await Product.find({category: category._id, $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+               numItemsMedium = await Product.find({category: category._id, $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+               numItemsHigh = await Product.find({category: category._id, $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+
+          // 4. When neither 'stock' filter nor 'price' filter are not selected
+          } else {
+               products = await Product.find({category: category._id})
+                    .populate('category')
+                    .sort({[`${order}`]: dir})
+                    .skip((currentPage - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE); 
+               numItems = await Product.find({category: category._id}).countDocuments();
+               numItemsIn = await Product.find({category: category._id, availability: 'inStock'}).countDocuments();
+               numItemsOut = await Product.find({category: category._id, availability: 'outOfStock'}).countDocuments();
+               numItemsLow = await Product.find({category: category._id, $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+               numItemsMedium = await Product.find({category: category._id, $and: [{price: {$gte: med1}}, {price: {$lt: med2}} ]}).countDocuments();
+               numItemsHigh = await Product.find({category: category._id, $and: [{price: {$gte: med2}}, {price: {$lt: max}} ]}).countDocuments();
+          }
+
           // Find all special products in DB
           const specialProds = await Product.find({special: true}).populate('category')
                .sort({sorting: 1})
@@ -302,7 +418,20 @@ exports.getProductsByCategory = async (req, res, next) => {
                prevPage: currentPage - 1,
                lastPage: Math.ceil(numItems / ITEMS_PER_PAGE),
                numItems: numItems,
-               perPage: ITEMS_PER_PAGE,
+               min: min,
+               med1: med1,
+               med2: med2,
+               max: max,
+               numItemsIn: numItemsIn,
+               numItemsOut: numItemsOut,
+               numItemsLow: numItemsLow,
+               numItemsMedium: numItemsMedium,
+               numItemsHigh: numItemsHigh,
+               limit: ITEMS_PER_PAGE,
+               dir: dir,
+               order: order,
+               stock: stock,
+               price: price,
                items: 'products'  // this is used in pagination.ejs to switch the word between 'products' and 'brands'
           }); 
      } catch(err) {
@@ -312,22 +441,142 @@ exports.getProductsByCategory = async (req, res, next) => {
 
 
 exports.getProductsByBrand = async (req, res, next) => {
-     const ITEMS_PER_PAGE = 9;
-     // Pagination 1st part - parse current page number
+     // Parse filters:
+     const ITEMS_PER_PAGE = +req.query.limit || 12;
+     const dir = req.query.dir || 'asc';
+     const order = req.query.order || 'sorting';
+     const stock = req.query.stock || '';
+     const price = req.query.price || '';
+     // Set price levels
+     const min = 0;
+     const med1 = 100;
+     const med2 = 300;
+     const max = 10000;
+     if(price === 'low') {
+          bottom = min;
+          top = med1;
+     } else if(price === 'medium') {
+          bottom = med1;
+          top = med2;
+     } else if(price === 'high') {
+          bottom = med2;
+          top = max;
+     }
+     // Pagination - parse current page number
      const currentPage = +req.query.page || 1;
-     let numItems;
      try {
           // Find requested Brand in DB	
           const slug = req.params.brandSlug;
           const brand = await Brand.findOne({slug: slug});
-          // Pagination 2nd part - Find total no. of products for the requested brand
-          const numOfProducts = await Product.find({brand: brand._id}).countDocuments();
-          numItems = numOfProducts;
-          // Pagination 3rd part - Find all products in DB for the requested brand that belong to the specified current page
-          const products = await Product.find({brand: brand._id}).populate('category')
-               .sort({title: 1})
-               .skip((currentPage - 1) * ITEMS_PER_PAGE)
-               .limit(ITEMS_PER_PAGE);
+
+
+          // // Pagination 2nd part - Find total no. of products for the requested brand
+          // const numOfProducts = await Product.find({brand: brand._id}).countDocuments();
+          // numItems = numOfProducts;
+          // // Pagination 3rd part - Find all products in DB for the requested brand that belong to the specified current page
+          // const products = await Product.find({brand: brand._id}).populate('category')
+          //      .sort({title: 1})
+          //      .skip((currentPage - 1) * ITEMS_PER_PAGE)
+          //      .limit(ITEMS_PER_PAGE);
+
+          // Catch all products in DB that belong to the specified category
+          // Get total no. of products in DB that belong to the specified category
+          let productss;
+          let numItems;
+          let numItemsIn;
+          let numItemsOut;
+          let numItemsLow;
+          let numItemsMedium;
+          let numItemsHigh;
+          // 1. When 'stock' filter is selected and 'price' filter is not selected
+          if((stock == 'inStock' || stock == 'outOfStock') && (price !== 'low' && price !== 'medium' && price !== 'high'))  {
+               products = await Product.find({brand: brand._id, availability: stock})
+                    .populate('category')
+                    .sort({[`${order}`]: dir})
+                    .skip((currentPage - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE);           
+               numItems = await Product.find({brand: brand._id, availability: stock}).countDocuments();
+               numItemsIn = await Product.find({brand: brand._id, availability: 'inStock'}).countDocuments();
+               numItemsOut = await Product.find({brand: brand._id, availability: 'outOfStock'}).countDocuments();
+               numItemsLow = await Product.find({brand: brand._id, availability: stock, $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+               numItemsMedium = await Product.find({brand: brand._id, availability: stock, $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+               numItemsHigh = await Product.find({brand: brand._id, availability: stock, $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+
+          // 2. When both 'stock' filter and 'price' filter are selected
+          } else if((stock == 'inStock' || stock == 'outOfStock') && (price == 'low' || price == 'medium' || price == 'high')) {
+               products = await Product.find({brand: brand._id, availability: stock, $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]})
+                    .populate('category')
+                    .sort({[`${order}`]: dir})
+                    .skip((currentPage - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE);           
+               numItems = await Product.find({brand: brand._id, availability: stock, $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]}).countDocuments();
+               // 2.1 When 'inStock' is selected and any of the 'price' filters is selected
+               if(stock == 'inStock' && (price == 'low' || price == 'medium' || price == 'high')) {
+                    numItemsLow = await Product.find({brand: brand._id, availability: 'inStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                    numItemsMedium = await Product.find({brand: brand._id, availability: 'inStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                    numItemsHigh = await Product.find({brand: brand._id, availability: 'inStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                    // 2.1.1 When 'inStock' is selected and 'low' is selected
+                    if(stock == 'inStock' && price == 'low') {
+                         numItemsIn = await Product.find({brand: brand._id, availability: 'inStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                         numItemsOut = await Product.find({brand: brand._id, availability: 'outOfStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                    // 2.1.2 When 'inStock' is selected and 'medium' is selected
+                    } else if(stock == 'inStock' && price == 'medium') {
+                         numItemsIn = await Product.find({brand: brand._id, availability: 'inStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                         numItemsOut = await Product.find({brand: brand._id, availability: 'outOfStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                    // 2.1.3 When 'inStock' is selected and 'high' is selected
+                    } else if(stock == 'inStock' && price == 'high') {
+                         numItemsIn = await Product.find({brand: brand._id, availability: 'inStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                         numItemsOut = await Product.find({brand: brand._id, availability: 'outOfStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                    }
+               // 2.2 When 'outOfStock' is selected and any of the 'price' filters is selected
+               } else if(stock == 'outOfStock' && (price == 'low' || price == 'medium' || price == 'high')) {
+                    numItemsLow = await Product.find({brand: brand._id, availability: 'outOfStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                    numItemsMedium = await Product.find({brand: brand._id, availability: 'outOfStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                    numItemsHigh = await Product.find({brand: brand._id, availability: 'outOfStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                    // 2.2.1 When 'outOfStock' is selected and 'low' is selected
+                    if(stock == 'outOfStock' && price == 'low') {
+                         numItemsIn = await Product.find({brand: brand._id, availability: 'inStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                         numItemsOut = await Product.find({brand: brand._id, availability: 'outOfStock', $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+                    // 2.2.2 When 'outOfStock' is selected and 'medium' is selected
+                    } else if(stock == 'outOfStock' && price == 'medium') {
+                         numItemsIn = await Product.find({brand: brand._id, availability: 'inStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                         numItemsOut = await Product.find({brand: brand._id, availability: 'outOfStock', $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+                    // 2.2.3 When 'outOfStock' is selected and 'high' is selected
+                    } else if(stock == 'outOfStock' && price == 'high') {
+                         numItemsIn = await Product.find({brand: brand._id, availability: 'inStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                         numItemsOut = await Product.find({brand: brand._id, availability: 'outOfStock', $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+                    }
+               }
+               
+          // 3. When 'stock' filter is not selected and 'price' filter is selected
+          } else if((stock !== 'inStock' && stock !== 'outOfStock') && (price == 'low' || price == 'medium' || price == 'high')) {
+               products = await Product.find({brand: brand._id, $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]})
+                    .populate('category')
+                    .sort({[`${order}`]: dir})
+                    .skip((currentPage - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE);           
+               numItems = await Product.find({brand: brand._id, $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]}).countDocuments();
+               numItemsIn = await Product.find({brand: brand._id, availability: 'inStock', $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]}).countDocuments();
+               numItemsOut = await Product.find({brand: brand._id, availability: 'outOfStock', $and: [{price: {$gte: bottom}}, {price: {$lt: top}}]}).countDocuments();
+               numItemsLow = await Product.find({brand: brand._id, $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+               numItemsMedium = await Product.find({brand: brand._id, $and: [{price: {$gte: med1}}, {price: {$lt: med2}}]}).countDocuments();
+               numItemsHigh = await Product.find({brand: brand._id, $and: [{price: {$gte: med2}}, {price: {$lt: max}}]}).countDocuments();
+
+          // 4. When neither 'stock' filter nor 'price' filter are not selected
+          } else {
+               products = await Product.find({brand: brand._id})
+                    .populate('category')
+                    .sort({[`${order}`]: dir})
+                    .skip((currentPage - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE); 
+               numItems = await Product.find({brand: brand._id}).countDocuments();
+               numItemsIn = await Product.find({brand: brand._id, availability: 'inStock'}).countDocuments();
+               numItemsOut = await Product.find({brand: brand._id, availability: 'outOfStock'}).countDocuments();
+               numItemsLow = await Product.find({brand: brand._id, $and: [{price: {$gte: min}}, {price: {$lt: med1}}]}).countDocuments();
+               numItemsMedium = await Product.find({brand: brand._id, $and: [{price: {$gte: med1}}, {price: {$lt: med2}} ]}).countDocuments();
+               numItemsHigh = await Product.find({brand: brand._id, $and: [{price: {$gte: med2}}, {price: {$lt: max}} ]}).countDocuments();
+          }
+
           // Find all special products in DB
           const specialProds = await Product.find({special: true}).populate('category')
                .sort({sorting: 1})
@@ -343,7 +592,20 @@ exports.getProductsByBrand = async (req, res, next) => {
                prevPage: currentPage - 1,
                lastPage: Math.ceil(numItems / ITEMS_PER_PAGE),
                numItems: numItems,
-               perPage: ITEMS_PER_PAGE,
+                min: min,
+               med1: med1,
+               med2: med2,
+               max: max,
+               numItemsIn: numItemsIn,
+               numItemsOut: numItemsOut,
+               numItemsLow: numItemsLow,
+               numItemsMedium: numItemsMedium,
+               numItemsHigh: numItemsHigh,
+               limit: ITEMS_PER_PAGE,
+               dir: dir,
+               order: order,
+               stock: stock,
+               price: price,
                items: 'products'   // this is used in pagination.ejs to switch the word between 'products' and 'brands'
           }); 
      } catch(err) {
@@ -353,7 +615,11 @@ exports.getProductsByBrand = async (req, res, next) => {
 
 
 exports.getAllBrands = async (req, res, next) => {
-     const ITEMS_PER_PAGE = 20;
+     const ITEMS_PER_PAGE = +req.query.limit || 20;
+     const dir = req.query.dir || 'asc';
+     const order = req.query.order || 'sorting';
+     const stock = req.query.stock || '';
+     const price = req.query.price || '';
      // Pagination 1st part - parse current page number
      const currentPage = +req.query.page || 1;
      let numItems;
@@ -384,7 +650,11 @@ exports.getAllBrands = async (req, res, next) => {
                prevPage: currentPage - 1,
                lastPage: Math.ceil(numItems / ITEMS_PER_PAGE),
                numItems: numItems,
-               perPage: ITEMS_PER_PAGE,
+               limit: ITEMS_PER_PAGE,
+               dir: dir,
+               order: order,
+               stock: stock,
+               price: price,
                items: 'brands'   // this is used in pagination.ejs to switch the word between 'products' and 'brands'
           }); 
      } catch(err) {

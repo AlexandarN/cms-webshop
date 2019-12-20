@@ -41,7 +41,7 @@
       <div class="category-page-wrapper">
         <!-- Sort By -->
         <div class="col-md-9 text-right sort-wrapper">
-          <label class="control-label" for="input-sort">Sort By :</label>
+          <label class="control-label" for="input-sort">Sort By:</label>
           <div class="sort-inner">
             <select id="input-sort" class="form-control" onchange="if(this.value) window.location.href = this.value">
               <option value="?page=<%= currentPage %>&dir=asc&order=sorting&limit=<%= limit %>&stock=<%= stock %>&price=<%= price %>" <% if(dir == 'asc' && order == 'sorting') { %> selected <% } %>>Default</option>
@@ -58,7 +58,7 @@
         </div>
         <!-- Show : -->
         <div class="col-md-1 text-right page-wrapper">
-          <label class="control-label" for="input-limit">Show :</label>
+          <label class="control-label" for="input-limit">Show:</label>
           <div class="limit">
             <select id="input-limit" class="form-control" onchange="if(this.value) window.location.href = this.value">
               <option value="?page=<%= currentPage %>&dir=<%= dir %>&order=<%= order %>&limit=12&stock=<%= stock %>&price=<%= price %>" <% if(limit == 12) { %> selected <% } %>>12</option>

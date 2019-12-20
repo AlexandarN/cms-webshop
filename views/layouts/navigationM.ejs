@@ -32,9 +32,6 @@
           }) %>
           <!-- End of PAGES LINKS -->
 
-          <!-- Brands navigation link -->
-          <li><a href="/brands" class="parent">Brands</a></li>
-
           <!-- DASHBOARD Dropdown -->
           <% if(user && user.admin == 1) { %>
             <li><a href="/dashboard" class="parent">Admin Dashboard</a>
@@ -49,6 +46,9 @@
             </li>
           <% } %>  
           <!-- End of DASHBOARD Dropdown -->
+
+          <!-- Brands navigation link -->
+          <li><a href="/brands" class="parent">Brands</a></li>
 
         </ul>
       </div>
