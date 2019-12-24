@@ -2955,3 +2955,27 @@ div.dioprogress_size_l {
 	top: 40%;
 }
 /*about page end*/
+
+
+/* CSS for PAYPAL AJAX-LOADER.GIF */
+.ajax-bground {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background:  rgba(255, 255, 255, .8);
+	z-index: 2; 
+	display: none; /* to hide ajax-loader.gif which will only be activated after pressing the payment button */
+}
+.ajax-inner {
+	position: absolute;
+	left: 50%;
+	top: 32%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+}
+
+/* CSS to hide original PAYPAL BUTTON */
+.paypal {
+	position: absolute;
+	left: -3000px; 
+}

@@ -407,7 +407,7 @@
               </form>
               <!-- End of BILLING DATA FORM -->
 
-              <!-- BILLING DATA FORM JQUERY -->
+              <!-- BILLING DATA FORM JQUERY (MOONSTORE TEMPLATE code) -->
               <!-- <script type="text/javascript">
                 $('input[name=\'payment_address\']').on('change', function() {
                   if (this.value == 'new') {
@@ -814,7 +814,7 @@
               </form>
               <!-- End of SHIPPING DATA FORM -->
 
-              <!-- SHIPPING DATA FORM JQUERY -->
+              <!-- SHIPPING DATA FORM JQUERY (MOONSTORE TEMPLATE code) -->
               <script type="text/javascript">
                 $('input[name=\'shippingAddr\']').on('change', function() {
                   if (this.value == 'new') {
@@ -957,13 +957,20 @@
               <!-- BUTTONS -->
           
               <!-- CHECKOUT BUTTON -->
-              <!-- Firstly, check if user has all required Billing data -->
+              <!-- Firstly, check if cart is empty -->
               <% if(!cart || cart.length <= 0) { %>
+                <!-- Create custom button that will be used instead of Stripe button -->
                 <div class="buttons">
-                    <div class="pull-right">
-                      <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Your cart is empty, add products to cart before checkout!')">
-                    </div>
+                  <!-- Create custom button that will be used instead of PayPal button -->
+                  <div class="pull-left">
+                    <input type="submit" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Pay with Paypal" onclick="alert('Your cart is empty, add products to cart before checkout!')">
                   </div>
+                  <!-- Create custom button that will be used instead of Stripe button -->
+                  <div class="pull-right">
+                    <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Your cart is empty, add products to cart before checkout!')">
+                  </div>
+                </div>
+              <!-- Secondly, check if user has all required Billing data -->
               <%} else if(user.billAddress.firstName === '' || 
                 user.billAddress.lastName === '' ||
                 user.billAddress.street === '' ||
@@ -971,29 +978,47 @@
                 user.billAddress.postCode === null ||
                 user.billAddress.country === '') { %>
                 <div class="buttons">
+                  <!-- Create custom button that will be used instead of PayPal button -->
+                  <div class="pull-left">
+                    <input type="submit" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Pay with Paypal" onclick="alert('Please fill out all required information in the Billing Details form!')">
+                  </div>
+                  <!-- Create custom button that will be used instead of Stripe button -->
                   <div class="pull-right">
                     <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Please fill out all required information in the Billing Details form!')">
                   </div>
                 </div>
+              <!-- Thirdly, check if user has all required Shipping data -->
               <% } else if(user.shippAddress.firstName === '' || 
                 user.shippAddress.lastName === '' ||
                 user.shippAddress.street === '' ||
                 user.shippAddress.city === '' ||
                 user.shippAddress.postCode === null ||
                 user.shippAddress.country === '') { %>
-                  <div class="buttons">
-                    <div class="pull-right">
-                      <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Please fill out all required shipping information in the Delivery Details form!')">
-                    </div>
+                <div class="buttons">
+                  <!-- Create custom button that will be used instead of PayPal button -->
+                  <div class="pull-left">
+                    <input type="submit" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Pay with Paypal" onclick="alert('Please fill out all required shipping information in the Delivery Details form!')">
                   </div>
+                  <!-- Create custom button that will be used instead of Stripe button -->
+                  <div class="pull-right">
+                    <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Please fill out all required shipping information in the Delivery Details form!')">
+                  </div>
+                </div>
+              <!-- Fourthly, check if user has chosen Shipping method -->
               <% } else if(!shipping) { %>
                 <div class="buttons">
+                  <!-- Create custom button that will be used instead of PayPal button -->
+                  <div class="pull-left">
+                    <input type="submit" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Pay with Paypal" onclick="alert('Please choose a Delivery Method!')">
+                  </div>
+                  <!-- Create custom button that will be used instead of Stripe button -->
                   <div class="pull-right">
                     <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order"  onclick="alert('Please choose a Delivery Method!')">
                   </div>
                 </div>
+              <!-- Finally, if everything is OK, calculate total and create buttons -->
               <% } else { %>
-                <!-- Calculate total amount - needed for stripe data-amount -->
+                <!-- Calculate total amount - needed for Stripe 'data-amount' -->
                 <% let totalShipp = 0;
                 if(cart) {
                   cart.forEach(item => { 
@@ -1003,7 +1028,7 @@
                 if(shipping) {
                   totalShipp += shipping.price;
                 } %>
-                <!-- Stripe button for card payments -->
+                <!-- STRIPE BUTTON for card payments -->
                 <form action="/cart/checkout/pay" method="POST">
                   <script
                     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
@@ -1021,21 +1046,55 @@
                   </script>
                   <!-- CSRF -->
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <!-- Create custom button that will be used instead of Stripe button -->
+                  <!-- Create custom buttons that will be used instead of Stripe and Paypal payment buttons -->
                   <div class="buttons">
                     <div class="pull-right">
                       <input type="submit" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order">
                     </div>
                   </div>
                 </form>
+
+                <!-- Customized PAYPAL BUTTON -->
+                <div class="pull-left">
+                  <a href="#" class="btn btn-primary buynow">Pay with Paypal</a>
+                </div>
               <% } %>
-              <!-- End of Stripe button for card payments -->
+              <!-- End of STRIPE BUTTON for card payments -->
               
               <!-- End of CHECKOUT BUTTON -->
 
             </div>
           </div>
           <!-- End of CHECKOUT TABLE -->
+
+
+          <!-- PAYPAL PAYMENT FORM -->
+          <form class="paypal" action="https://www.sandbox.paypal.com/us/cgi-bin/webscr" method="POST" target="">
+            <input type="hidden" name="cmd" value="_cart">
+            <input type="hidden" name="upload" value="1"> 
+            <input type="hidden" name="business" value="al_nikolic-facilitator@yahoo.com">
+            <% let number = 0;  <!-- number variable is needed to specify each item in the shopping cart and also shipping costs (as another item) -->
+            <!-- Add cart items -->
+            if(cart) {
+              cart.forEach(item => {
+                number++; %>
+                <input type="hidden" name="item_name_<%= number %>" value="<%= item.title %>">
+                <input type="hidden" name="amount_<%= number %>" value="<%= item.price %>">
+                <input type="hidden" name="quantity_<%= number %>" value="<%= item.quantity %>">
+              <% }); 
+            } %>           
+            <!-- Add shipping costs -->
+            <% if(shipping) {
+              number++; %>
+              <input type="hidden" name="item_name_<%= number %>" value="<%= shipping.method %> shipping costs">
+              <input type="hidden" name="amount_<%= number %>" value="<%= shipping.price %>">
+            <% } %>
+            <!-- PayPal calculates total amount by default -->
+            <input type="hidden" name="currency_code" value="USD">
+            <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!" onclick="document.getElementsByClassName('ajax-bground')[0].style.display = 'block' ">
+          </form>
+          <!-- End of PAYPAL PAYMENT FORM -->
+
 
         </div>
         <!-- End of CONFIRM ORDER -->
@@ -1047,6 +1106,21 @@
   </div>
 </div>
 <!-- End of BELOW BANNER CONTENT -->
+
+
+<!-- JQUERY for switching the click action from PAYPAL button to our CUSTOM made button (if we use Paypal button we don't need this jQuery) -->
+<script>
+  $(function() {
+    $('a.buynow').on('click', function(e) {
+      e.preventDefault();
+      $.get('/cart/checkout/buynow', function() {
+        $('form.paypal input[type=image]').click();
+        $('.ajax-bground').show();
+      });
+    });
+  });
+</script>
+
 
 
 <%- include('../layouts/footerM.ejs') %>

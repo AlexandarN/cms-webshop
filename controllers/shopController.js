@@ -1022,6 +1022,7 @@ exports.postPayWithStripe = async (req, res, next) => {
                res.status(404).redirect('/cart/checkout');
                return
           }
+          // Check if user does not have billing address data
           if(req.user.billAddress.firstName === '' || 
                req.user.billAddress.lastName === '' ||
                req.user.billAddress.street === '' ||
@@ -1029,7 +1030,8 @@ exports.postPayWithStripe = async (req, res, next) => {
                req.user.billAddress.postCode === null ||
                req.user.billAddress.country === '') {
                     await req.flash('message-danger', 'Please fill out the Billing Details form!')
-                    res.status(404).redirect('/cart/checkout');
+                    return res.status(404).redirect('/cart/checkout');
+          // Check if user does not have shipping address data
           } else if(req.user.shippAddress.firstName === '' || 
                req.user.shippAddress.lastName === '' ||
                req.user.shippAddress.street === '' ||
@@ -1098,10 +1100,89 @@ exports.postPayWithStripe = async (req, res, next) => {
                     delete req.session.cart; 
                }
                // Render view file and send data
-               res.render('shop/payment-successM', {
+               res.status(200).render('shop/payment-successM', {
                     title: 'Successful Payment',
                     specialProds: specialProds
                });
+          }
+     } catch(err) {
+          console.log(err);
+     }
+}
+
+
+exports.getPayWithPaypal = async (req, res, next) => {
+     try {
+          // Check if cart is empty
+          if(typeof req.session.cart == 'undefined' || req.session.cart.length < 1) {
+               await req.flash('message-danger', 'Your cart is empty, add products to your cart before checkout!')
+               res.status(404).redirect('/cart/checkout');
+               return
+          }
+          // Check if user does not have billing address data
+          if(req.user.billAddress.firstName === '' || 
+               req.user.billAddress.lastName === '' ||
+               req.user.billAddress.street === '' ||
+               req.user.billAddress.city === '' ||
+               req.user.billAddress.postCode === null ||
+               req.user.billAddress.country === '') {
+                    await req.flash('message-danger', 'Please fill out the Billing Details form!')
+                    return res.status(404).redirect('/cart/checkout');
+          // Check if user does not have shipping address data
+          } else if(req.user.shippAddress.firstName === '' || 
+               req.user.shippAddress.lastName === '' ||
+               req.user.shippAddress.street === '' ||
+               req.user.shippAddress.city === '' ||
+               req.user.shippAddress.postCode === null ||
+               req.user.shippAddress.country === '') {
+                    await req.flash('message-danger', 'Please fill out the Delivery Details form!')
+                    return res.status(404).redirect('/cart/checkout');
+          // Check if 'shipping' variable exists in the session, i.e. if user has selected one of the Delivery methods
+          } else if(typeof req.session.shipping == 'undefined') {
+               await req.flash('message-danger', 'Please choose a Delivery Method!')
+               res.status(404).redirect('/cart/checkout');
+               return
+          } else {
+               //  Calculate total amount to be payed       
+               total = 0;
+               req.session.cart.forEach(item => {
+                    total += item.subtotal; 
+               });
+               if(req.session.shipping) {
+                    total += req.session.shipping.price;
+               }
+               // Find all special products in DB (needed for sidebar)
+               const specialProds = await Product.find({special: true})
+                    .sort({sorting: 1})
+                    .limit(3);	
+               // Find all user's orders - in order to calculate new order's number
+               const number = await Order.find().countDocuments() + 1;
+               // Format date function
+               function formatDate(date) {
+                    const day = date.getDate();
+                    const month = date.getMonth() + 1;
+                    const year = date.getFullYear();
+                    return year + "/" + (month <= 9 ? '0' + month : month) + "/" + (day <= 9 ? '0' + day : day);
+               }
+               const year = new Date().getFullYear();
+               // Create ORDER    
+               const order = new Order({
+                    items: req.session.cart,
+                    shipping: req.session.shipping,
+                    billAddress: req.user.billAddress, 
+                    orderNo: number <= 9 ? year + '00' + number : 10 >= number <=99 ? year + '0' + number : year + number,
+                    total: total,
+                    userId: req.user._id,
+                    createdAt: formatDate(new Date())
+               });
+               await order.save();
+               // Check if cart still exists and if it is maybe empty
+               if(req.session.cart) {
+                    // Clear session
+                    delete req.session.cart; 
+               }
+               // Render view file and send data
+               res.status(200).redirect('back');
           }
      } catch(err) {
           console.log(err);

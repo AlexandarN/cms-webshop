@@ -23,9 +23,9 @@
   <link href="/javascriptM/owl-carousel/owl.transitions.css" type="text/css" rel="stylesheet" media="screen" />
   
   <!-- FANCYBOX CSS for SLIDESHOW of Photos (product details page) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  <link href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" rel="stylesheet">
 
-  <!--  AJAX for REORDERING of ELEMENTS in the TABLE -->
+  <!--  AJAX for REORDERING of ELEMENTS in the TABLE and for PAYPAL 'Ajax-Loader' GIF -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
   <script type="text/javascript" src="/javascriptM/jquery-2.1.1.min.js"></script>
@@ -40,10 +40,19 @@
 
 <body class="index">
 
-  <!-- LOAD GIF -->
+  <!-- LOAD GIF (MOONSTORE Template) -->
   <div class="preloader loader" style="display: block;"> 
     <img src="/imageM/loader.gif">
   </div>
+
+
+  <!-- AJAX GIF for PAYPAL BUYNOW visualisation-->
+  <div class="ajax-bground">
+    <div class="ajax-inner">
+        <h3>You are now being redirected to Paypal ...</h3>
+        <img src="/images/ajax-loader.gif">   				                    
+    </div>
+  </div>	
 
 
   <header>

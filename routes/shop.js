@@ -31,5 +31,6 @@ router.get('/:slug', shopController.getIndexPage);
 router.get('/info/:slug', shopController.getInfoPage);
 
 router.post('/cart/checkout/pay', isAuth.isUser, shopController.postPayWithStripe);
+router.get('/cart/checkout/buynow', isAuth.isUser, shopController.getPayWithPaypal);
 
 module.exports = router;
